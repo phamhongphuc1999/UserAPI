@@ -1,7 +1,9 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Model
 {
@@ -9,18 +11,30 @@ namespace Model
     {
         MongoClient client;
         IMongoDatabase userDatabase;
-        IMongoCollection<BsonDocument> users;
+        IMongoCollection<User> users;
         public mongodb()
         {
             client = new MongoClient("mongodb://localhost:27017");
             userDatabase = client.GetDatabase("User");
-            users = userDatabase.GetCollection<BsonDocument>("UserList");
+            users = userDatabase.GetCollection<User>("user_list");
         }
 
-        public List<BsonElement> GetListUser()
+        public async Task<List<User>> GetListUser()
         {
-            List<BsonElement> userList = users.ToBsonDocument().ToList();
+            List<User> userList = await users.Find(x => x.Name != String.Empty).ToListAsync();
             return userList;
+        }
+
+        public async Task<bool> InsertUser()
+        {
+            await users.InsertOneAsync(new User()
+            {
+                Name = "abc",
+                Username = "abc",
+                Password = "abc",
+                Birthday = "123"
+            });
+            return true;
         }
     }
 }

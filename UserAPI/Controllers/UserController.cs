@@ -23,11 +23,31 @@ namespace UserAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<string> GetListUser()
+        public async Task<object> GetListUser()
         {
-            var userList = data.GetListUser();
-            string result = JsonConvert.SerializeObject(userList);
-            return result;
+            try
+            {
+                List<User> userList = await data.GetListUser();
+                return userList;
+            }
+            catch(Exception error)
+            {
+                return error.Message;
+            }
+        }
+
+        [HttpPost]
+        public async Task<string> InsertUser()
+        {
+            try
+            {
+                await data.InsertUser();
+                return "success";
+            }
+            catch(Exception error)
+            {
+                return error.Message;
+            }
         }
     }
 }
