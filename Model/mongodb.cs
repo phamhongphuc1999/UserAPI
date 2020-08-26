@@ -20,11 +20,22 @@ namespace Model
             users = userDatabase.GetCollection<User>("user_list");
         }
 
+        public async Task<bool> InsertUser(User entity)
+        {
+            User user = users.Find(x => x.username == entity.username).ToList().FirstOrDefault();
+            if (user != null) return false;
+            entity.createAt = Hepler.CurrentTime();
+            entity.updateAt = Hepler.CurrentTime();
+            entity.status = "enable";
+            await users.InsertOneAsync(entity);
+            return true;
+        }
+
         public async Task<User> GetUserById(string userId)
         {
-            List<User> user = await users.Find(x => x._id == userId).ToListAsync();
-            if (user.Count == 0) throw new Exception();
-            else return user[0];
+            List<User> result = await users.Find(x => x._id == userId).ToListAsync();
+            User user = result.FirstOrDefault();
+            return user;
         }
 
         public async Task<List<User>> GetListUser()
@@ -33,16 +44,11 @@ namespace Model
             return userList;
         }
 
-        public async Task<bool> InsertUser()
+        public async Task<bool> DeleteUSer(string userId)
         {
-            await users.InsertOneAsync(new User()
-            {
-                name = "abc",
-                username = "abc",
-                password = "abc",
-                birthday = "123"
-            });
-            return true;
+            User user = await users.FindOneAndDeleteAsync(x => x._id == userId);
+            if (user != null) return true;
+            else return false;
         }
     }
 }

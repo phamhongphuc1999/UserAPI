@@ -20,3 +20,4 @@
 ### tài liệu tham khảo
 - https://docs.mongodb.com/drivers/csharp
 - https://github.com/mongodb/mongo-csharp-driver
+- https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging/?view=aspnetcore-3.1
