@@ -12,11 +12,19 @@ namespace Model
         MongoClient client;
         IMongoDatabase userDatabase;
         IMongoCollection<User> users;
+
         public mongodb()
         {
-            client = new MongoClient("mongodb://localhost:27017");
+            client = new MongoClient(Config.MONGO_SCRIPT);
             userDatabase = client.GetDatabase("User");
             users = userDatabase.GetCollection<User>("user_list");
+        }
+
+        public async Task<User> GetUserById(string userId)
+        {
+            List<User> user = await users.Find(x => x._id == userId).ToListAsync();
+            if (user.Count == 0) throw new Exception();
+            else return user[0];
         }
 
         public async Task<List<User>> GetListUser()
