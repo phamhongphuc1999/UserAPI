@@ -32,7 +32,7 @@ namespace UserAPI.Controllers
             }
             catch(Exception error)
             {
-                return error.Message;
+                return error.ToString();
             }
         }
 

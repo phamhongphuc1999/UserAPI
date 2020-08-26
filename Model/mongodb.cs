@@ -21,7 +21,7 @@ namespace Model
 
         public async Task<List<User>> GetListUser()
         {
-            List<User> userList = await users.Find(x => x.Name != String.Empty).ToListAsync();
+            List<User> userList = await users.Find(x => x.name != String.Empty).ToListAsync();
             return userList;
         }
 
@@ -29,10 +29,10 @@ namespace Model
         {
             await users.InsertOneAsync(new User()
             {
-                Name = "abc",
-                Username = "abc",
-                Password = "abc",
-                Birthday = "123"
+                name = "abc",
+                username = "abc",
+                password = "abc",
+                birthday = "123"
             });
             return true;
         }
