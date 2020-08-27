@@ -43,10 +43,12 @@ namespace UserAPI.Controllers
             }
             catch (BsonException error)
             {
+                _logger.LogError("POST: {0}/users", _config.Value.ApplicationUrl);
                 return BadRequest(Responder.Fail(error.Message));
             }
             catch (Exception error)
             {
+                _logger.LogError("POST: {0}/users", _config.Value.ApplicationUrl);
                 return BadRequest(Responder.Fail(error.Message));
             }
         }
@@ -66,10 +68,12 @@ namespace UserAPI.Controllers
             }
             catch (BsonException error)
             {
+                _logger.LogError("GET: {0}/users/{1}", _config.Value.ApplicationUrl, userId);
                 return BadRequest(Responder.Fail(error.Message));
             }
             catch (Exception error)
             {
+                _logger.LogError("GET: {0}/users/{1}", _config.Value.ApplicationUrl, userId);
                 return BadRequest(Responder.Fail(error.Message));
             }
         }
@@ -88,10 +92,12 @@ namespace UserAPI.Controllers
             }
             catch (BsonException error)
             {
+                _logger.LogError("GET: {0}/users", _config.Value.ApplicationUrl);
                 return BadRequest(Responder.Fail(error.Message));
             }
             catch (Exception error)
             {
+                _logger.LogError("GET: {0}/users", _config.Value.ApplicationUrl);
                 return BadRequest(Responder.Fail(error.Message));
             }
         }
@@ -109,10 +115,12 @@ namespace UserAPI.Controllers
             }
             catch (BsonException error)
             {
+                _logger.LogError("DELETE: {0}/users/{1}", _config.Value.ApplicationUrl, userId);
                 return BadRequest(Responder.Fail(error.Message));
             }
             catch (Exception error)
             {
+                _logger.LogError("DELETE: {0}/users/{1}", _config.Value.ApplicationUrl, userId);
                 return BadRequest(Responder.Fail(error.Message));
             }
         }
