@@ -25,6 +25,7 @@ namespace UserAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.Configure<Config>(Configuration.GetSection("Config"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -36,9 +37,7 @@ namespace UserAPI
             }
 
             app.UseRouting();
-
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

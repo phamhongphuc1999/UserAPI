@@ -21,3 +21,4 @@
 - https://docs.mongodb.com/drivers/csharp
 - https://github.com/mongodb/mongo-csharp-driver
 - https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging/?view=aspnetcore-3.1
+- https://stackoverflow.com/questions/31453495/how-to-read-appsettings-values-from-a-json-file-in-asp-net-core
