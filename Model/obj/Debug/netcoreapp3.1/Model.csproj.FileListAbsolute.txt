@@ -6,4 +6,3 @@ D:\Documents\VisualStudio\UserAPI\Model\obj\Debug\netcoreapp3.1\Model.AssemblyIn
 D:\Documents\VisualStudio\UserAPI\Model\obj\Debug\netcoreapp3.1\Model.dll
 D:\Documents\VisualStudio\UserAPI\Model\obj\Debug\netcoreapp3.1\Model.pdb
 D:\Documents\VisualStudio\UserAPI\Model\obj\Debug\netcoreapp3.1\Model.csproj.CoreCompileInputs.cache
-D:\Documents\VisualStudio\UserAPI\Model\obj\Debug\netcoreapp3.1\Model.csprojAssemblyReference.cache

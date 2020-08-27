@@ -12,6 +12,7 @@ using MongoDB.Bson;
 namespace UserAPI.Controllers
 {
     [ApiController]
+    [Produces("application/json")]
     public class UserController : ControllerBase
     {
         private readonly ILogger<UserController> _logger;
@@ -39,11 +40,11 @@ namespace UserAPI.Controllers
             }
             catch (BsonException error)
             {
-                return BadRequest(error.Message);
+                return BadRequest(Responder.Fail(error.Message));
             }
             catch (Exception error)
             {
-                return BadRequest(error.Message);
+                return BadRequest(Responder.Fail(error.Message));
             }
         }
 
@@ -58,15 +59,15 @@ namespace UserAPI.Controllers
                 //string[] fileds = filedsString.Split(',');
 
                 User user = await data.GetUserById(userId);
-                return user;
+                return Responder.Success(user);
             }
             catch (BsonException error)
             {
-                return BadRequest(error.Message);
+                return BadRequest(Responder.Fail(error.Message));
             }
             catch (Exception error)
             {
-                return BadRequest(error.Message);
+                return BadRequest(Responder.Fail(error.Message));
             }
         }
 
@@ -83,11 +84,11 @@ namespace UserAPI.Controllers
             }
             catch (BsonException error)
             {
-                return BadRequest(error.Message);
+                return BadRequest(Responder.Fail(error.Message));
             }
             catch (Exception error)
             {
-                return BadRequest(error.Message);
+                return BadRequest(Responder.Fail(error.Message));
             }
         }
 
@@ -103,11 +104,11 @@ namespace UserAPI.Controllers
             }
             catch (BsonException error)
             {
-                return BadRequest(error.Message);
+                return BadRequest(Responder.Fail(error.Message));
             }
             catch (Exception error)
             {
-                return BadRequest(error.Message);
+                return BadRequest(Responder.Fail(error.Message));
             }
         }
     }
