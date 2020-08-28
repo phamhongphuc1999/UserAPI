@@ -24,3 +24,5 @@
 - https://stackoverflow.com/questions/31453495/how-to-read-appsettings-values-from-a-json-file-in-asp-net-core
 - https://stackoverflow.com/questions/46364293/automatically-set-appsettings-json-for-dev-and-release-environments-in-asp-net-c
 - https://dotnettutorials.net/lesson/asp-net-core-launchsettings-json-file/
+- https://github.com/TechMaster/DockerizeDotNetCoreConsoleApp
+- https://stackoverflow.com/questions/51769324/how-to-create-run-net-core-console-app-in-docker
