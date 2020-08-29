@@ -20,6 +20,8 @@
     chắc chắn máy tính đã cài make
     muốn biết chương trình có những profile nào đọc trrong file: launchSettings.json
 
+##### Collection postman: https://www.getpostman.com/collections/1276a5fd32ba82f3f967
+
 ### tài liệu tham khảo
 - https://docs.mongodb.com/drivers/csharp
 - https://github.com/mongodb/mongo-csharp-driver
