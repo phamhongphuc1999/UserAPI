@@ -24,6 +24,7 @@ namespace Model
         {
             User user = users.Find(x => x.username == entity.username).ToList().FirstOrDefault();
             if (user != null) return false;
+            entity.password = Hepler.ComputeSha256Hash(entity.password);
             entity.createAt = Hepler.CurrentTime();
             entity.updateAt = Hepler.CurrentTime();
             entity.status = "enable";
@@ -44,7 +45,17 @@ namespace Model
             return userList;
         }
 
-        public async Task<bool> DeleteUSer(string userId)
+        public async Task<bool> UpdateUser(string userId, User updateUser)
+        {
+            updateUser.updateAt = Hepler.CurrentTime();
+            if (updateUser.password != null) updateUser.password = Hepler.ComputeSha256Hash(updateUser.password);
+            var updateBuilder = Builders<User>.Update.Set(x => x, updateUser);
+            User user = await users.FindOneAndUpdateAsync(x => x._id == userId, updateBuilder);
+            if (user != null) return true;
+            else return false;
+        }
+
+        public async Task<bool> DeleteUser(string userId)
         {
             User user = await users.FindOneAndDeleteAsync(x => x._id == userId);
             if (user != null) return true;

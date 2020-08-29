@@ -43,19 +43,19 @@ namespace UserAPI.Controllers
             }
             catch (BsonException error)
             {
-                _logger.LogError("POST: {0}/users", _config.Value.ApplicationUrl);
+                _logger.LogError("{0}", error.Message);
                 return BadRequest(Responder.Fail(error.Message));
             }
             catch (Exception error)
             {
-                _logger.LogError("POST: {0}/users", _config.Value.ApplicationUrl);
+                _logger.LogError("{0}", error.Message);
                 return BadRequest(Responder.Fail(error.Message));
             }
         }
 
         [HttpGet]
         [Route("/users/{userId}")]
-        public async Task<object> GetUSerById(string userId)
+        public async Task<object> GetUserById(string userId)
         {
             try
             {
@@ -68,12 +68,12 @@ namespace UserAPI.Controllers
             }
             catch (BsonException error)
             {
-                _logger.LogError("GET: {0}/users/{1}", _config.Value.ApplicationUrl, userId);
+                _logger.LogError("{0}", error.Message);
                 return BadRequest(Responder.Fail(error.Message));
             }
             catch (Exception error)
             {
-                _logger.LogError("GET: {0}/users/{1}", _config.Value.ApplicationUrl, userId);
+                _logger.LogError("{0}", error.Message);
                 return BadRequest(Responder.Fail(error.Message));
             }
         }
@@ -92,35 +92,61 @@ namespace UserAPI.Controllers
             }
             catch (BsonException error)
             {
-                _logger.LogError("GET: {0}/users", _config.Value.ApplicationUrl);
+                _logger.LogError("{0}", error.Message);
                 return BadRequest(Responder.Fail(error.Message));
             }
             catch (Exception error)
             {
-                _logger.LogError("GET: {0}/users", _config.Value.ApplicationUrl);
+                _logger.LogError("{0}", error.Message);
+                return BadRequest(Responder.Fail(error.Message));
+            }
+        }
+
+        [HttpPut]
+        [Route("/users/{userId}")]
+        public async Task<object> UpdateUser(string userId)
+        {
+            try
+            {
+                _logger.LogInformation("PUT: {0}/users/{1}", _config.Value.ApplicationUrl, userId);
+                StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8);
+                string userInfo = await reader.ReadToEndAsync();
+                User updateUser = JsonConvert.DeserializeObject<User>(userInfo);
+                bool result = await data.UpdateUser(userId, updateUser);
+                if (result) return "success";
+                else return BadRequest($"Fail to update user with id: {userId}");
+            }
+            catch (BsonException error)
+            {
+                _logger.LogError("{0}", error.Message);
+                return BadRequest(Responder.Fail(error.Message));
+            }
+            catch (Exception error)
+            {
+                _logger.LogError("{0}", error.Message);
                 return BadRequest(Responder.Fail(error.Message));
             }
         }
 
         [HttpDelete]
         [Route("/users/{userId}")]
-        public async Task<object> DeleteUSer(string userId)
+        public async Task<object> DeleteUser(string userId)
         {
             try
             {
                 _logger.LogInformation("DELETE: {0}/users/{1}", _config.Value.ApplicationUrl, userId);
-                bool result = await data.DeleteUSer(userId);
+                bool result = await data.DeleteUser(userId);
                 if (result) return "success";
                 else return BadRequest($"Fail to delete user with id: {userId}");
             }
             catch (BsonException error)
             {
-                _logger.LogError("DELETE: {0}/users/{1}", _config.Value.ApplicationUrl, userId);
+                _logger.LogError("{0}", error.Message);
                 return BadRequest(Responder.Fail(error.Message));
             }
             catch (Exception error)
             {
-                _logger.LogError("DELETE: {0}/users/{1}", _config.Value.ApplicationUrl, userId);
+                _logger.LogError("{0}", error.Message);
                 return BadRequest(Responder.Fail(error.Message));
             }
         }

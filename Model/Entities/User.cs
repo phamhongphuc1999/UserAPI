@@ -11,7 +11,7 @@ namespace Model
 
         public string username { get; set; }
 
-        public string password { protected get; set; }
+        public string password { internal get; set; }
 
         public string name { get; set; }
 

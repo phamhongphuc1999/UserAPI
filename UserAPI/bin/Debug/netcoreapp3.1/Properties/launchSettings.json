@@ -14,7 +14,7 @@
       "launchBrowser": true,
       "launchUrl": "users",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Production"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "UserAPI": {
@@ -29,7 +29,7 @@
     "Docker": {
       "commandName": "Docker",
       "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/weatherforecast",
+      "launchUrl": "http://0.0.0.0:5000",
       "publishAllPorts": true
     }
   }

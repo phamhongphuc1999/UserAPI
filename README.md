@@ -9,13 +9,16 @@
 
 ### cách chạy chương trình
 ##### chạy bằng .NET CLI trên visual studio 2019
-    để chạy chương trình gọi lệnh: make run
     cài đặt thư viện gọi lệnh: make install
+    để chạy chương trình gọi lệnh: make run
+    để chạy chương trình với profile UserAPI gọi lệnh: make runuser
+    để chạy chương trình với profile Docker gọi lệnh: make rundocker
 ##### chạy bằng docker
     để chạy chương trình, gọi lệnh: docker-compose up
 
 ### những lưu ý
     chắc chắn máy tính đã cài make
+    muốn biết chương trình có những profile nào đọc trrong file: launchSettings.json
 
 ### tài liệu tham khảo
 - https://docs.mongodb.com/drivers/csharp
@@ -26,3 +29,4 @@
 - https://dotnettutorials.net/lesson/asp-net-core-launchsettings-json-file/
 - https://github.com/TechMaster/DockerizeDotNetCoreConsoleApp
 - https://stackoverflow.com/questions/51769324/how-to-create-run-net-core-console-app-in-docker
+- https://www.mongodb.com/blog/post/quick-start-csharp-and-mongodb--update-operation#:~:text=Set(%22class_id%22%2C%20483,no%20documents%20will%20be%20updated.
