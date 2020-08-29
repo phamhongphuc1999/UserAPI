@@ -28,6 +28,46 @@ namespace UserAPI.Controllers
         }
 
         [HttpPost]
+        [Route("/login")]
+        public async Task<object> Login()
+        {
+            try
+            {
+                return "success";
+            }
+            catch (BsonException error)
+            {
+                _logger.LogError("{0}", error.Message);
+                return BadRequest(Responder.Fail(error.Message));
+            }
+            catch (Exception error)
+            {
+                _logger.LogError("{0}", error.Message);
+                return BadRequest(Responder.Fail(error.Message));
+            }
+        }
+
+        [HttpPost]
+        [Route("/logout")]
+        public async Task<object> Logout()
+        {
+            try
+            {
+                return "success";
+            }
+            catch (BsonException error)
+            {
+                _logger.LogError("{0}", error.Message);
+                return BadRequest(Responder.Fail(error.Message));
+            }
+            catch (Exception error)
+            {
+                _logger.LogError("{0}", error.Message);
+                return BadRequest(Responder.Fail(error.Message));
+            }
+        }
+
+        [HttpPost]
         [Route("/users")]
         public async Task<object> CreateNewUser()
         {
@@ -38,8 +78,8 @@ namespace UserAPI.Controllers
                 string userInfo = await reader.ReadToEndAsync();
                 User newUser = JsonConvert.DeserializeObject<User>(userInfo);
                 bool result = await data.InsertUser(newUser);
-                if (result) return Ok("success");
-                else return BadRequest("fail");
+                if (result) return Ok(Responder.Success());
+                else return BadRequest(Responder.Fail("Can not create new user"));
             }
             catch (BsonException error)
             {
@@ -88,7 +128,7 @@ namespace UserAPI.Controllers
                 string pageSize = Request.Query["page_size"];
                 string pageIndex = Request.Query["page-index"];
                 List<User> userList = await data.GetListUser();
-                return userList;
+                return Responder.Success(userList);
             }
             catch (BsonException error)
             {
@@ -113,8 +153,28 @@ namespace UserAPI.Controllers
                 string userInfo = await reader.ReadToEndAsync();
                 User updateUser = JsonConvert.DeserializeObject<User>(userInfo);
                 bool result = await data.UpdateUser(userId, updateUser);
-                if (result) return "success";
-                else return BadRequest($"Fail to update user with id: {userId}");
+                if (result) return Ok(Responder.Success());
+                else return BadRequest(Responder.Fail($"Fail to update user with id: {userId}"));
+            }
+            catch (BsonException error)
+            {
+                _logger.LogError("{0}", error.Message);
+                return BadRequest(Responder.Fail(error.Message));
+            }
+            catch (Exception error)
+            {
+                _logger.LogError("{0}", error.Message);
+                return BadRequest(Responder.Fail(error.Message));
+            }
+        }
+
+        [HttpPut]
+        [Route("/admin/users/{userId}")]
+        public async Task<object> UpdateRole(string userId)
+        {
+            try
+            {
+                return Responder.Success("success");
             }
             catch (BsonException error)
             {
@@ -136,8 +196,8 @@ namespace UserAPI.Controllers
             {
                 _logger.LogInformation("DELETE: {0}/users/{1}", _config.Value.ApplicationUrl, userId);
                 bool result = await data.DeleteUser(userId);
-                if (result) return "success";
-                else return BadRequest($"Fail to delete user with id: {userId}");
+                if (result) return Ok(Responder.Success());
+                else return BadRequest(Responder.Fail($"Fail to delete user with id: {userId}"));
             }
             catch (BsonException error)
             {

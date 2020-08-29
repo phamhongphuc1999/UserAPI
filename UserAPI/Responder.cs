@@ -2,12 +2,17 @@
 {
     public static class Responder
     {
-        public static object Success(object data)
+        public static object Success(object data = null)
         {
-            return new
+            if(data != null) return new
             {
                 status = "success",
                 data = data
+            };
+            return new
+            {
+                status = "success",
+                data = "null"
             };
         }
 
