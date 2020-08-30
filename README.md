@@ -38,3 +38,8 @@
 - https://stackoverflow.com/questions/51769324/how-to-create-run-net-core-console-app-in-docker
 ##### swagger
 - https://docs.microsoft.com/vi-vn/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-3.1&tabs=visual-studio
+##### JWT
+- https://stackoverflow.com/questions/51943722/how-to-validate-jwt-token-in-aspnet-core-web-api
+##### middleware
+- https://stackoverflow.com/questions/36711068/call-controllers-action-method-from-middleware
+- https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-3.1#:~:text=Middleware%20is%20software%20that's%20assembled,next%20component%20in%20the%20pipeline.
