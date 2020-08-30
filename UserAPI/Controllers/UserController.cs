@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Model;
+using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Model;
 using Newtonsoft.Json;
 using MongoDB.Bson;
 using Model.Entities;
@@ -33,8 +33,11 @@ namespace UserAPI.Controllers
             data = new mongodb();
         }
 
-        [HttpGet]
-        [Route("/login")]
+        /// <summary>
+        /// login account
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("/login")]
         public async Task<object> Login()
         {
             try
@@ -65,8 +68,11 @@ namespace UserAPI.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("/logout")]
+        /// <summary>
+        /// logout account
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("/logout")]
         public async Task<object> Logout()
         {
             try
@@ -87,8 +93,11 @@ namespace UserAPI.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("/users")]
+        /// <summary>
+        /// create new user
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("/users")]
         public async Task<object> CreateNewUser()
         {
             try
@@ -113,8 +122,12 @@ namespace UserAPI.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("/users/{userId}")]
+        /// <summary>
+        /// get user by id
+        /// </summary>
+        /// <param name="userId">the user id who want to get</param>
+        /// <returns></returns>
+        [HttpGet("/users/{userId}")]
         public async Task<object> GetUserById(string userId)
         {
             try
@@ -143,8 +156,11 @@ namespace UserAPI.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("/users")]
+        /// <summary>
+        /// get list user
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("/users")]
         public async Task<object> GetListUser()
         {
             try
@@ -167,8 +183,12 @@ namespace UserAPI.Controllers
             }
         }
 
-        [HttpPut]
-        [Route("/users/{userId}")]
+        /// <summary>
+        /// update user
+        /// </summary>
+        /// <param name="userId">the user id who want to update</param>
+        /// <returns></returns>
+        [HttpPut("/users/{userId}")]
         public async Task<object> UpdateUser(string userId)
         {
             try
@@ -193,8 +213,12 @@ namespace UserAPI.Controllers
             }
         }
 
-        [HttpPut]
-        [Route("/admin/users/{userId}")]
+        /// <summary>
+        /// update role of a user
+        /// </summary>
+        /// <param name="userId">the user id who want to update role</param>
+        /// <returns></returns>
+        [HttpPut("/admin/users/{userId}")]
         public async Task<object> UpdateRole(string userId)
         {
             try
@@ -213,8 +237,12 @@ namespace UserAPI.Controllers
             }
         }
 
-        [HttpDelete]
-        [Route("/users/{userId}")]
+        /// <summary>
+        /// delete a user
+        /// </summary>
+        /// <param name="userId">the user id who want to delete</param>
+        /// <returns></returns>
+        [HttpDelete("/users/{userId}")]
         public async Task<object> DeleteUser(string userId)
         {
             try

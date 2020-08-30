@@ -33,5 +33,10 @@ D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\Microsoft.Iden
 D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Logging.dll
 D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Tokens.dll
 D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\System.IdentityModel.Tokens.Jwt.dll
+D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\Microsoft.OpenApi.dll
+D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\Swashbuckle.AspNetCore.Swagger.dll
+D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\Swashbuckle.AspNetCore.SwaggerGen.dll
+D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\Swashbuckle.AspNetCore.SwaggerUI.dll
 D:\Documents\VisualStudio\UserAPI\UserAPI\obj\Debug\netcoreapp3.1\UserAPI.csproj.CoreCompileInputs.cache
+D:\Documents\VisualStudio\UserAPI\UserAPI\obj\Debug\netcoreapp3.1\UserAPI.MvcApplicationPartsAssemblyInfo.cs
 D:\Documents\VisualStudio\UserAPI\UserAPI\obj\Debug\netcoreapp3.1\UserAPI.MvcApplicationPartsAssemblyInfo.cache
