@@ -19,9 +19,7 @@ namespace UserAPI.JWT
         {
             if (string.IsNullOrEmpty(token))
                 throw new ArgumentException("Given token is null or empty.");
-
             TokenValidationParameters tokenValidationParameters = GetTokenValidationParameters();
-
             JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
             try
             {

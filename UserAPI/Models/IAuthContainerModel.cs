@@ -4,10 +4,9 @@ namespace UserAPI.Models
 {
     public interface IAuthContainerModel
     {
-        string SecretKey { get; set; }
+        string SecretKey { get; }
         string SecurityAlgorithm { get; set; }
-        int ExpireMinutes { get; set; }
-
+        int ExpireMinutes { get; }
         Claim[] Claims { get; set; }
     }
 }

@@ -24,22 +24,16 @@ namespace UserAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            if (_env.IsDevelopment()) services.Configure<Config>(Configuration.GetSection("Develop"));
-            else if (_env.IsProduction()) services.Configure<Config>(Configuration.GetSection("Product"));
+            services.Configure<JWTConfig>(Configuration.GetSection("JWT"));
+            if (_env.IsDevelopment()) services.Configure<DevelopmentConfig>(Configuration.GetSection("Develop"));
+            else if (_env.IsProduction()) services.Configure<ProductionConfig>(Configuration.GetSection("Product"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app)
         {
-            if (_env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else if (_env.IsProduction())
-            {
-                app.UseExceptionHandler();
-            }
-
+            if (_env.IsDevelopment()) app.UseDeveloperExceptionPage();
+            else if (_env.IsProduction()) app.UseExceptionHandler();
             app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>

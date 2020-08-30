@@ -1,12 +1,13 @@
-﻿using System.Security.Claims;
+﻿using Microsoft.Extensions.Options;
+using System.Security.Claims;
 
 namespace UserAPI.Models
 {
     public static class Helper
     {
-        public static JWTContainerModel GetJWTContainerModel(string username, string password)
+        public static JWTContainerModel GetJWTContainerModel(string username, string password, IOptions<JWTConfig> config)
         {
-            return new JWTContainerModel()
+            return new JWTContainerModel(config)
             {
                 Claims = new Claim[]
                 {

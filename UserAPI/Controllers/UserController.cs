@@ -20,13 +20,16 @@ namespace UserAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly ILogger<UserController> _logger;
-        private readonly IOptions<Config> _config;
+        private readonly IOptions<DevelopmentConfig> _developmentConfig;
+        private readonly IOptions<JWTConfig> _jwtConfig;
         private mongodb data;
 
-        public UserController(ILogger<UserController> logger, IOptions<Config> config)
+        public UserController(ILogger<UserController> logger, IOptions<DevelopmentConfig> developmentConfig, 
+            IOptions<JWTConfig> jwtConfig)
         {
             _logger = logger;
-            _config = config;
+            _developmentConfig = developmentConfig;
+            _jwtConfig = jwtConfig;
             data = new mongodb();
         }
 
@@ -44,7 +47,7 @@ namespace UserAPI.Controllers
                 Result result = await data.Login(info["username"], info["password"]);
                 if (!result.status) return BadRequest(Responder.Fail(result.data));
                 node1:
-                IAuthContainerModel model = Helper.GetJWTContainerModel(info["username"], info["password"]);
+                IAuthContainerModel model = Helper.GetJWTContainerModel(info["username"], info["password"], _jwtConfig);
                 IAuthService authService = new JWTService(model.SecretKey);
                 string accessToken = authService.GenerateToken(model);
                 if (!authService.IsTokenValid(accessToken)) goto node1;
@@ -90,7 +93,7 @@ namespace UserAPI.Controllers
         {
             try
             {
-                _logger.LogInformation("POST: {0}/users", _config.Value.ApplicationUrl);
+                _logger.LogInformation("POST: {0}/users", _developmentConfig.Value.ApplicationUrl);
                 StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8);
                 string userInfo = await reader.ReadToEndAsync();
                 User newUser = JsonConvert.DeserializeObject<User>(userInfo);
@@ -116,7 +119,7 @@ namespace UserAPI.Controllers
         {
             try
             {
-                _logger.LogInformation("GET: {0}/users/{1}", _config.Value.ApplicationUrl, userId);
+                _logger.LogInformation("GET: {0}/users/{1}", _developmentConfig.Value.ApplicationUrl, userId);
                 string fieldsString = Request.Query["fields"];
                 Result result;
                 if (fieldsString != null)
@@ -146,7 +149,7 @@ namespace UserAPI.Controllers
         {
             try
             {
-                _logger.LogInformation("GET: {0}/users", _config.Value.ApplicationUrl);
+                _logger.LogInformation("GET: {0}/users", _developmentConfig.Value.ApplicationUrl);
                 string pageSize = Request.Query["page_size"];
                 string pageIndex = Request.Query["page-index"];
                 Result result = await data.GetListUser();
@@ -170,7 +173,7 @@ namespace UserAPI.Controllers
         {
             try
             {
-                _logger.LogInformation("PUT: {0}/users/{1}", _config.Value.ApplicationUrl, userId);
+                _logger.LogInformation("PUT: {0}/users/{1}", _developmentConfig.Value.ApplicationUrl, userId);
                 StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8);
                 string userInfo = await reader.ReadToEndAsync();
                 User updateUser = JsonConvert.DeserializeObject<User>(userInfo);
@@ -216,7 +219,7 @@ namespace UserAPI.Controllers
         {
             try
             {
-                _logger.LogInformation("DELETE: {0}/users/{1}", _config.Value.ApplicationUrl, userId);
+                _logger.LogInformation("DELETE: {0}/users/{1}", _developmentConfig.Value.ApplicationUrl, userId);
                 Result result = await data.DeleteUser(userId);
                 if (result.status) return Ok(Responder.Success(result.data));
                 else return BadRequest(Responder.Fail(result.data));
