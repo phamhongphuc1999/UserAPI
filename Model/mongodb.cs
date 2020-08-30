@@ -22,21 +22,33 @@ namespace Model
             users = userDatabase.GetCollection<User>("user_list");
         }
 
-        //public async Task<Result> Login(string username, string password)
-        //{
-        //    User user = users.Find(x => x.username == username).ToList().FirstOrDefault();
-        //    if (user != null) return new Result
-        //    {
-        //        status = false,
-        //        data = $"username or password wrong"
-        //    };
-        //    string rawPassword = SHA256Hash.CalcuteHash(password);
-        //    if(user.password != rawPassword) return new Result
-        //    {
-        //        status = false,
-        //        data = $"username or password wrong"
-        //    };
-        //}
+        public async Task<Result> Login(string username, string password)
+        {
+            User user = users.Find(x => x.username == username).ToList().FirstOrDefault();
+            if (user == null) return new Result
+            {
+                status = false,
+                data = $"username or password wrong"
+            };
+            string rawPassword = SHA256Hash.CalcuteHash(password);
+            if (user.password != rawPassword) return new Result
+            {
+                status = false,
+                data = $"username or password wrong"
+            };
+            if (user.status == "disable") return new Result
+            {
+                status = false,
+                data = "This account is enable to login"
+            };
+            UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.lastLogin, Hepler.CurrentTime());
+            await users.FindOneAndUpdateAsync(x => x.username == username, updateBuilder);
+            return new Result
+            {
+                status = true,
+                data = null
+            };
+        }
 
         public async Task<Result> InsertUser(User entity)
         {

@@ -13,8 +13,6 @@ D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\UserAPI.runtim
 D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\UserAPI.runtimeconfig.dev.json
 D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\UserAPI.dll
 D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\UserAPI.pdb
-D:\Documents\VisualStudio\UserAPI\UserAPI\obj\Debug\netcoreapp3.1\UserAPI.csproj.CoreCompileInputs.cache
-D:\Documents\VisualStudio\UserAPI\UserAPI\obj\Debug\netcoreapp3.1\UserAPI.MvcApplicationPartsAssemblyInfo.cache
 D:\Documents\VisualStudio\UserAPI\UserAPI\obj\Debug\netcoreapp3.1\UserAPI.dll
 D:\Documents\VisualStudio\UserAPI\UserAPI\obj\Debug\netcoreapp3.1\UserAPI.pdb
 D:\Documents\VisualStudio\UserAPI\UserAPI\obj\Debug\netcoreapp3.1\UserAPI.genruntimeconfig.cache
@@ -31,3 +29,9 @@ D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\runtimes\win\n
 D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\Model.dll
 D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\Model.pdb
 D:\Documents\VisualStudio\UserAPI\UserAPI\obj\Debug\netcoreapp3.1\UserAPI.csproj.CopyComplete
+D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Logging.dll
+D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Tokens.dll
+D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\System.IdentityModel.Tokens.Jwt.dll
+D:\Documents\VisualStudio\UserAPI\UserAPI\obj\Debug\netcoreapp3.1\UserAPI.csproj.CoreCompileInputs.cache
+D:\Documents\VisualStudio\UserAPI\UserAPI\obj\Debug\netcoreapp3.1\UserAPI.MvcApplicationPartsAssemblyInfo.cache

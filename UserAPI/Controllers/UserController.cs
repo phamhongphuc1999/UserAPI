@@ -9,6 +9,9 @@ using Model;
 using Newtonsoft.Json;
 using MongoDB.Bson;
 using Model.Entities;
+using System.Collections.Generic;
+using UserAPI.Models;
+using UserAPI.JWT;
 
 namespace UserAPI.Controllers
 {
@@ -27,35 +30,47 @@ namespace UserAPI.Controllers
             data = new mongodb();
         }
 
-        //[HttpPost]
-        //[Route("/login")]
-        //public async Task<object> Login()
-        //{
-        //    try
-        //    {
-        //        StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8);
-        //        string userInfo = await reader.ReadToEndAsync();
-        //        User newUser = JsonConvert.DeserializeObject<User>(userInfo);
-        //    }
-        //    catch (BsonException error)
-        //    {
-        //        _logger.LogError("{0}", error.Message);
-        //        return BadRequest(Responder.Fail(error.Message));
-        //    }
-        //    catch (Exception error)
-        //    {
-        //        _logger.LogError("{0}", error.Message);
-        //        return BadRequest(Responder.Fail(error.Message));
-        //    }
-        //}
+        [HttpGet]
+        [Route("/login")]
+        public async Task<object> Login()
+        {
+            try
+            {
+                string token = Request.Headers["token"];
+                if (token != "null") return Ok(Responder.Fail("Already logined"));
+                StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8);
+                string userInfo = await reader.ReadToEndAsync();
+                Dictionary<string, string> info = JsonConvert.DeserializeObject<Dictionary<string, string>>(userInfo);
+                Result result = await data.Login(info["username"], info["password"]);
+                if (!result.status) return BadRequest(Responder.Fail(result.data));
+                node1:
+                IAuthContainerModel model = Helper.GetJWTContainerModel(info["username"], info["password"]);
+                IAuthService authService = new JWTService(model.SecretKey);
+                string accessToken = authService.GenerateToken(model);
+                if (!authService.IsTokenValid(accessToken)) goto node1;
+                return Ok(Responder.Success(new { access_token = accessToken}));
+            }
+            catch (BsonException error)
+            {
+                _logger.LogError("{0}", error.Message);
+                return BadRequest(Responder.Fail(error.Message));
+            }
+            catch (Exception error)
+            {
+                _logger.LogError("{0}", error.Message);
+                return BadRequest(Responder.Fail(error.Message));
+            }
+        }
 
-        [HttpPost]
+        [HttpGet]
         [Route("/logout")]
         public async Task<object> Logout()
         {
             try
             {
-                return "success";
+                string token = Request.Headers["token"];
+                if (token == "null") return Ok(Responder.Fail("Already logouted"));
+                return Ok(Responder.Success(new { access_token = "null"}));
             }
             catch (BsonException error)
             {
