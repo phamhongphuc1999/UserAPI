@@ -6,7 +6,7 @@ namespace Model.Entities
 {
     public class Result
     {
-        public bool status { get; set; }
+        public int status { get; set; }
         public object data { get; set; }
     }
 }

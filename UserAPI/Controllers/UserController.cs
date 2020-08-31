@@ -48,13 +48,13 @@ namespace UserAPI.Controllers
                 string userInfo = await reader.ReadToEndAsync();
                 Dictionary<string, string> info = JsonConvert.DeserializeObject<Dictionary<string, string>>(userInfo);
                 Result result = await data.Login(info["username"], info["password"]);
-                if (!result.status) return BadRequest(Responder.Fail(result.data));
+                if (result.status != 200) return StatusCode(result.status, Responder.Fail(result.data));
                 node1:
                 IAuthContainerModel model = Helper.GetJWTContainerModel(info["username"], info["password"], _jwtConfig);
                 IAuthService authService = new JWTService(model.SecretKey);
                 string accessToken = authService.GenerateToken(model);
                 if (!authService.IsTokenValid(accessToken)) goto node1;
-                return Ok(Responder.Success(new { access_token = accessToken}));
+                return Ok(Responder.Success(new { access_token = accessToken }));
             }
             catch (BsonException error)
             {
@@ -79,7 +79,7 @@ namespace UserAPI.Controllers
             {
                 string token = Request.Headers["token"];
                 if (token == "null") return Ok(Responder.Fail("Already logouted"));
-                return Ok(Responder.Success(new { access_token = "null"}));
+                return Ok(Responder.Success(new { access_token = "null" }));
             }
             catch (BsonException error)
             {
@@ -107,8 +107,8 @@ namespace UserAPI.Controllers
                 string userInfo = await reader.ReadToEndAsync();
                 User newUser = JsonConvert.DeserializeObject<User>(userInfo);
                 Result result = await data.InsertUser(newUser);
-                if (result.status) return Ok(Responder.Success(result.data));
-                else return BadRequest(Responder.Fail(result.data));
+                if (result.status == 200) return Ok(Responder.Success(result.data));
+                else return StatusCode(result.status, Responder.Fail(result.data));
             }
             catch (BsonException error)
             {
@@ -141,8 +141,8 @@ namespace UserAPI.Controllers
                     result = await data.GetUserById(userId, fields);
                 }
                 else result = await data.GetUserById(userId);
-                if(result.status) return Ok(Responder.Success(result.data));
-                return BadRequest(Responder.Fail(result.data));
+                if(result.status == 200) return Ok(Responder.Success(result.data));
+                return StatusCode(result.status, Responder.Fail(result.data));
             }
             catch (BsonException error)
             {
@@ -169,7 +169,7 @@ namespace UserAPI.Controllers
                 string pageSize = Request.Query["page_size"];
                 string pageIndex = Request.Query["page-index"];
                 Result result = await data.GetListUser();
-                return Responder.Success(result.data);
+                return Ok(Responder.Success(result.data));
             }
             catch (BsonException error)
             {
@@ -198,8 +198,8 @@ namespace UserAPI.Controllers
                 string userInfo = await reader.ReadToEndAsync();
                 User updateUser = JsonConvert.DeserializeObject<User>(userInfo);
                 Result result = await data.UpdateUser(userId, updateUser);
-                if (result.status) return Ok(Responder.Success(result.data));
-                else return BadRequest(Responder.Fail(result.data));
+                if (result.status == 200) return Ok(Responder.Success(result.data));
+                else return StatusCode(result.status, Responder.Fail(result.data));
             }
             catch (BsonException error)
             {
@@ -227,8 +227,8 @@ namespace UserAPI.Controllers
                 string userInfo = await reader.ReadToEndAsync();
                 User user = JsonConvert.DeserializeObject<User>(userInfo);
                 Result result = await data.UpdateRole(userId, user);
-                if (result.status) return Ok(Responder.Success(result.data));
-                else return BadRequest(Responder.Fail(result.data));
+                if (result.status == 200) return Ok(Responder.Success(result.data));
+                else return StatusCode(result.status, Responder.Fail(result.data));
             }
             catch (BsonException error)
             {
@@ -254,8 +254,8 @@ namespace UserAPI.Controllers
             {
                 _logger.LogInformation("DELETE: {0}/users/{1}", _developmentConfig.Value.ApplicationUrl, userId);
                 Result result = await data.DeleteUser(userId);
-                if (result.status) return Ok(Responder.Success(result.data));
-                else return BadRequest(Responder.Fail(result.data));
+                if (result.status == 200) return Ok(Responder.Success(result.data));
+                else return StatusCode(result.status, Responder.Fail(result.data));
             }
             catch (BsonException error)
             {

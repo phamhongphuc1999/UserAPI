@@ -27,25 +27,25 @@ namespace Model
             User user = users.Find(x => x.username == username).ToList().FirstOrDefault();
             if (user == null) return new Result
             {
-                status = false,
+                status = 401,
                 data = $"username or password wrong"
             };
             string rawPassword = SHA256Hash.CalcuteHash(password);
             if (user.password != rawPassword) return new Result
             {
-                status = false,
+                status = 401,
                 data = $"username or password wrong"
             };
             if (user.status == "disable") return new Result
             {
-                status = false,
+                status = 403,
                 data = "This account is enable to login"
             };
             UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.lastLogin, Hepler.CurrentTime());
             await users.FindOneAndUpdateAsync(x => x.username == username, updateBuilder);
             return new Result
             {
-                status = true,
+                status = 200,
                 data = null
             };
         }
@@ -55,7 +55,7 @@ namespace Model
             User user = users.Find(x => x.username == entity.username).ToList().FirstOrDefault();
             if (user != null) return new Result
             {
-                status = false,
+                status = 400,
                 data = $"username {entity.username} have existed"
             };
             entity.password = SHA256Hash.CalcuteHash(entity.password);
@@ -66,7 +66,7 @@ namespace Model
             User newUser = users.Find(x => x.username == entity.username).ToList().FirstOrDefault();
             return new Result
             {
-                status = true,
+                status = 200,
                 data = newUser
             };
         }
@@ -77,12 +77,12 @@ namespace Model
             User user = result.FirstOrDefault();
             if (user == null) return new Result
             {
-                status = false,
+                status = 400,
                 data = $"the user with id: {userId} do not exist"
             };
             if (fields == null) return new Result
             {
-                status = true,
+                status = 200,
                 data = user
             };
             BsonDocument sUser = user.ToBsonDocument();
@@ -92,7 +92,7 @@ namespace Model
                     data.Add(field, sUser.GetElement(field).Value.ToString());
             return new Result
             {
-                status = true,
+                status = 200,
                 data = data
             };
         }
@@ -102,7 +102,7 @@ namespace Model
             List<User> userList = await users.Find(x => x.name != String.Empty).ToListAsync();
             return new Result
             {
-                status = true,
+                status = 200,
                 data = userList
             };
         }
@@ -119,7 +119,7 @@ namespace Model
                 User checkUser = users.Find(x => x.username == updateUser.username).ToList().FirstOrDefault();
                 if (checkUser != null) return new Result
                 {
-                    status = false,
+                    status = 400,
                     data = $"the username: {updateUser.username} is exist"
                 };
                 updateBuilder = updateBuilder.Set(x => x.username, updateUser.username);
@@ -132,12 +132,12 @@ namespace Model
             User user = await users.FindOneAndUpdateAsync(x => x._id == userId, updateBuilder);
             if (user != null) return new Result
             {
-                status = true,
+                status = 200,
                 data = user
             };
             else return new Result
             {
-                status = false,
+                status = 400,
                 data = $"do not update user with id: {userId}"
             };
         }
@@ -152,19 +152,19 @@ namespace Model
                     updateBuilder.Set(x => x.status, updateRoleUser.status);
                 else return new Result
                 {
-                    status = false,
+                    status = 422,
                     data = $"Invalid value status: {updateRoleUser.status}"
                 };
             }
             User user = await users.FindOneAndUpdateAsync(x => x._id == userId, updateBuilder);
             if (user != null) return new Result
             {
-                status = true,
+                status = 200,
                 data = user
             };
             else return new Result
             {
-                status = false,
+                status = 400,
                 data = $"do not update role user with id: {userId}"
             };
         }
@@ -174,12 +174,12 @@ namespace Model
             User user = await users.FindOneAndDeleteAsync(x => x._id == userId);
             if (user != null) return new Result
             {
-                status = true,
+                status = 200,
                 data = user
             };
             else return new Result
             {
-                status = false,
+                status = 400,
                 data = $"do not delete user with id: {userId}"
             };
         }
