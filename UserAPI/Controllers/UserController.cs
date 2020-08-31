@@ -223,7 +223,12 @@ namespace UserAPI.Controllers
         {
             try
             {
-                return Responder.Success("success");
+                StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8);
+                string userInfo = await reader.ReadToEndAsync();
+                User user = JsonConvert.DeserializeObject<User>(userInfo);
+                Result result = await data.UpdateRole(userId, user);
+                if (result.status) return Ok(Responder.Success(result.data));
+                else return BadRequest(Responder.Fail(result.data));
             }
             catch (BsonException error)
             {

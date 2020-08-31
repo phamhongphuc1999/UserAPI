@@ -109,7 +109,6 @@ namespace Model
 
         public async Task<Result> UpdateUser(string userId, User updateUser)
         {
-            updateUser.updateAt = Hepler.CurrentTime();
             UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.updateAt, Hepler.CurrentTime());
             if (updateUser.name != null) updateBuilder = updateBuilder.Set(x => x.name, updateUser.name);
             if (updateUser.location != null) updateBuilder = updateBuilder.Set(x => x.location, updateUser.location);
@@ -140,6 +139,33 @@ namespace Model
             {
                 status = false,
                 data = $"do not update user with id: {userId}"
+            };
+        }
+
+        public async Task<Result> UpdateRole(string userId, User updateRoleUser)
+        {
+            UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.updateAt, Hepler.CurrentTime());
+            if (updateRoleUser.role != null) updateBuilder.Set(x => x.role, updateRoleUser.role);
+            if(updateRoleUser.status != null)
+            {
+                if (Config.userRole.ContainsKey(updateRoleUser.status))
+                    updateBuilder.Set(x => x.status, updateRoleUser.status);
+                else return new Result
+                {
+                    status = false,
+                    data = $"Invalid value status: {updateRoleUser.status}"
+                };
+            }
+            User user = await users.FindOneAndUpdateAsync(x => x._id == userId, updateBuilder);
+            if (user != null) return new Result
+            {
+                status = true,
+                data = user
+            };
+            else return new Result
+            {
+                status = false,
+                data = $"do not update role user with id: {userId}"
             };
         }
 
