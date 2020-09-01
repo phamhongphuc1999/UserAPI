@@ -12,6 +12,9 @@ using Model.Entities;
 using System.Collections.Generic;
 using UserAPI.Models;
 using UserAPI.JWT;
+using System.Security.Claims;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace UserAPI.Controllers
 {
@@ -133,6 +136,11 @@ namespace UserAPI.Controllers
             try
             {
                 _logger.LogInformation("GET: {0}/users/{1}", _developmentConfig.Value.ApplicationUrl, userId);
+                string token = Request.Headers["token"];
+                IAuthService authService = new JWTService(_jwtConfig.Value.SecretKey);
+                List<Claim> claims = authService.GetTokenClaims(token).ToList();
+                string username = claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value;
+                _logger.LogInformation(username);
                 string fieldsString = Request.Query["fields"];
                 Result result;
                 if (fieldsString != null)

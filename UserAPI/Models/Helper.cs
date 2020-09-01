@@ -11,7 +11,7 @@ namespace UserAPI.Models
             {
                 Claims = new Claim[]
                 {
-                    new Claim(ClaimTypes.NameIdentifier, password),
+                    new Claim("Password", password),
                     new Claim(ClaimTypes.Name, username)
                 }
             };
