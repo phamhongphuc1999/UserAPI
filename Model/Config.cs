@@ -6,10 +6,16 @@ namespace Model
     {
         public static string MONGO_SCRIPT = "mongodb://localhost:27017";
 
-        public static Dictionary<string, string> userRole = new Dictionary<string, string>()
+        public static Dictionary<string, string> userStatus = new Dictionary<string, string>()
         {
             {"enable", "0" },
             {"disable", "0" }
+        };
+
+        public static Dictionary<string, int> userRole = new Dictionary<string, int>()
+        {
+            {"admin", 0 },
+            {"user", 1 }
         };
 
         public static Dictionary<string, string> userFields = new Dictionary<string, string>()

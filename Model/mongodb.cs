@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Model.Secrets;
+using System.Text;
 
 namespace Model
 {
@@ -43,10 +44,15 @@ namespace Model
             };
             UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.lastLogin, Hepler.CurrentTime());
             await users.FindOneAndUpdateAsync(x => x.username == username, updateBuilder);
+            string[] listRole = user.role;
+            StringBuilder stringRole = new StringBuilder("00");
+            foreach (string role in listRole)
+                if (Config.userRole.ContainsKey(role))
+                    stringRole[Config.userRole[role]] = '1';
             return new Result
             {
                 status = 200,
-                data = null
+                data = stringRole.ToString()
             };
         }
 
@@ -148,7 +154,7 @@ namespace Model
             if (updateRoleUser.role != null) updateBuilder.Set(x => x.role, updateRoleUser.role);
             if(updateRoleUser.status != null)
             {
-                if (Config.userRole.ContainsKey(updateRoleUser.status))
+                if (Config.userStatus.ContainsKey(updateRoleUser.status))
                     updateBuilder.Set(x => x.status, updateRoleUser.status);
                 else return new Result
                 {

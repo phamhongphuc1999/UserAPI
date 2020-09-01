@@ -14,7 +14,6 @@ using UserAPI.Models;
 using UserAPI.JWT;
 using System.Security.Claims;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 
 namespace UserAPI.Controllers
 {
@@ -53,7 +52,7 @@ namespace UserAPI.Controllers
                 Result result = await data.Login(info["username"], info["password"]);
                 if (result.status != 200) return StatusCode(result.status, Responder.Fail(result.data));
                 node1:
-                IAuthContainerModel model = Helper.GetJWTContainerModel(info["username"], info["password"], _jwtConfig);
+                IAuthContainerModel model = Helper.GetJWTContainerModel(info["username"], info["password"], result.data.ToString(), _jwtConfig);
                 IAuthService authService = new JWTService(model.SecretKey);
                 string accessToken = authService.GenerateToken(model);
                 if (!authService.IsTokenValid(accessToken)) goto node1;
@@ -175,7 +174,7 @@ namespace UserAPI.Controllers
             {
                 _logger.LogInformation("GET: {0}/users", _developmentConfig.Value.ApplicationUrl);
                 string pageSize = Request.Query["page_size"];
-                string pageIndex = Request.Query["page-index"];
+                string pageIndex = Request.Query["page_index"];
                 Result result = await data.GetListUser();
                 return Ok(Responder.Success(result.data));
             }
