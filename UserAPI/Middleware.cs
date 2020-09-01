@@ -20,7 +20,7 @@ namespace UserAPI
 
         public async Task Invoke(HttpContext httpContext)
         {
-            if (httpContext.Request.Path == "/users")
+            if (httpContext.Request.Path == "/users" && httpContext.Request.Method != "POST")
             {
                 string token = httpContext.Request.Headers["token"];
                 if (token == "null") await httpContext.Response.WriteAsync("You Need To Login Before Action");
@@ -29,6 +29,8 @@ namespace UserAPI
                     IAuthService authService = new JWTService(secretKey);
                     List<Claim> claims = authService.GetTokenClaims(token).ToList();
                     string role = claims.Find(x => x.Type == "Role").Value;
+                    if (role == "10") role = "admin";
+                    else if (role == "01") role = "user";
                     string username = claims.Find(x => x.Type == ClaimTypes.Name).Value;
                     string password = claims.Find(x => x.Type == "Password").Value;
                     httpContext.Request.Headers.Add("username", username);

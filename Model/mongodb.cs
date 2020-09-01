@@ -44,15 +44,10 @@ namespace Model
             };
             UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.lastLogin, Hepler.CurrentTime());
             await users.FindOneAndUpdateAsync(x => x.username == username, updateBuilder);
-            string[] listRole = user.role;
-            StringBuilder stringRole = new StringBuilder("00");
-            foreach (string role in listRole)
-                if (Config.userRole.ContainsKey(role))
-                    stringRole[Config.userRole[role]] = '1';
             return new Result
             {
                 status = 200,
-                data = stringRole.ToString()
+                data = user.role
             };
         }
 

@@ -23,7 +23,7 @@ namespace Model
 
         public string phone { get; set; }
 
-        public string[] role { get; set; }
+        public string role { get; set; }
 
         public string createAt { get; set; }
 
