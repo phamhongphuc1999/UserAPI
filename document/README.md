@@ -10,6 +10,7 @@
     1. [Tổng quan](#section2.1)
     2. [Custom Middleware](#section2.2)
     3. [Map](#section2.3)
+    4. [Truyền dữ liệu từ Startup vào middleware](#section2.4)
 
 ### Cấu hình trong ASP.NET Core<a name="section1"></a>
 Cấu hình trong ASP.NET Core được lưu dưới dạng key-value, người dùng có thể lưu cấu hình trong các file định dạng
@@ -213,3 +214,14 @@ Map được sử dụng để có thể rẽ nhánh trong pipeline, ví dụ b�
             // "/level1/level2b" processing
         });
     });
+#### Truyền dữ liệu từ startup vào middleware<a name="section2.4"></a>    
+để truyền dữ liệu vào middleware, ta thay đổi một chút ở hàm UseMiddleware
+    
+    string data = "data for middleware"
+    app.UseMiddleware<RedirectMiddleware>(data);
+và contructor của RedirectMiddleware sẽ được sửa lại như sau
+
+    public RedirectMiddleware(RequestDelegate next, string data)
+    {
+        _next = next;
+    }

@@ -4,7 +4,6 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using MongoDB.Bson;
@@ -19,16 +18,11 @@ namespace UserAPI.Controllers
     [Produces("application/json")]
     public class UserController : ControllerBase
     {
-        private readonly ILogger<UserController> _logger;
-        private readonly IOptions<DevelopmentConfig> _developmentConfig;
         private readonly IOptions<JWTConfig> _jwtConfig;
         private UserModel userModel;
 
-        public UserController(ILogger<UserController> logger, IOptions<DevelopmentConfig> developmentConfig, 
-            IOptions<JWTConfig> jwtConfig)
+        public UserController(IOptions<JWTConfig> jwtConfig)
         {
-            _logger = logger;
-            _developmentConfig = developmentConfig;
             _jwtConfig = jwtConfig;
             userModel = new UserModel();
         }
@@ -58,12 +52,10 @@ namespace UserAPI.Controllers
             }
             catch (BsonException error)
             {
-                _logger.LogError("{0}", error.Message);
                 return BadRequest(Responder.Fail(error.Message));
             }
             catch (Exception error)
             {
-                _logger.LogError("{0}", error.Message);
                 return BadRequest(Responder.Fail(error.Message));
             }
         }
@@ -83,12 +75,10 @@ namespace UserAPI.Controllers
             }
             catch (BsonException error)
             {
-                _logger.LogError("{0}", error.Message);
                 return BadRequest(Responder.Fail(error.Message));
             }
             catch (Exception error)
             {
-                _logger.LogError("{0}", error.Message);
                 return BadRequest(Responder.Fail(error.Message));
             }
         }
@@ -102,7 +92,6 @@ namespace UserAPI.Controllers
         {
             try
             {
-                _logger.LogInformation("POST: {0}/users", _developmentConfig.Value.ApplicationUrl);
                 StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8);
                 string userInfo = await reader.ReadToEndAsync();
                 User newUser = JsonConvert.DeserializeObject<User>(userInfo);
@@ -112,12 +101,10 @@ namespace UserAPI.Controllers
             }
             catch (BsonException error)
             {
-                _logger.LogError("{0}", error.Message);
                 return BadRequest(Responder.Fail(error.Message));
             }
             catch (Exception error)
             {
-                _logger.LogError("{0}", error.Message);
                 return BadRequest(Responder.Fail(error.Message));
             }
         }
@@ -132,7 +119,6 @@ namespace UserAPI.Controllers
         {
             try
             {
-                _logger.LogInformation("GET: {0}/users/{1}", _developmentConfig.Value.ApplicationUrl, userId);
                 string fieldsString = Request.Query["fields"];
                 Result result;
                 if (fieldsString != null)
@@ -146,12 +132,10 @@ namespace UserAPI.Controllers
             }
             catch (BsonException error)
             {
-                _logger.LogError("{0}", error.Message);
                 return BadRequest(Responder.Fail(error.Message));
             }
             catch (Exception error)
             {
-                _logger.LogError("{0}", error.Message);
                 return BadRequest(Responder.Fail(error.Message));
             }
         }
@@ -165,7 +149,6 @@ namespace UserAPI.Controllers
         {
             try
             {
-                _logger.LogInformation("GET: {0}/users", _developmentConfig.Value.ApplicationUrl);
                 string pageSize = Request.Query["page_size"];
                 string pageIndex = Request.Query["page_index"];
                 Result result = await userModel.GetListUser();
@@ -173,12 +156,10 @@ namespace UserAPI.Controllers
             }
             catch (BsonException error)
             {
-                _logger.LogError("{0}", error.Message);
                 return BadRequest(Responder.Fail(error.Message));
             }
             catch (Exception error)
             {
-                _logger.LogError("{0}", error.Message);
                 return BadRequest(Responder.Fail(error.Message));
             }
         }
@@ -193,7 +174,6 @@ namespace UserAPI.Controllers
         {
             try
             {
-                _logger.LogInformation("PUT: {0}/users/{1}", _developmentConfig.Value.ApplicationUrl, userId);
                 StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8);
                 string userInfo = await reader.ReadToEndAsync();
                 User updateUser = JsonConvert.DeserializeObject<User>(userInfo);
@@ -203,12 +183,10 @@ namespace UserAPI.Controllers
             }
             catch (BsonException error)
             {
-                _logger.LogError("{0}", error.Message);
                 return BadRequest(Responder.Fail(error.Message));
             }
             catch (Exception error)
             {
-                _logger.LogError("{0}", error.Message);
                 return BadRequest(Responder.Fail(error.Message));
             }
         }
@@ -234,12 +212,10 @@ namespace UserAPI.Controllers
             }
             catch (BsonException error)
             {
-                _logger.LogError("{0}", error.Message);
                 return BadRequest(Responder.Fail(error.Message));
             }
             catch (Exception error)
             {
-                _logger.LogError("{0}", error.Message);
                 return BadRequest(Responder.Fail(error.Message));
             }
         }
@@ -254,19 +230,16 @@ namespace UserAPI.Controllers
         {
             try
             {
-                _logger.LogInformation("DELETE: {0}/users/{1}", _developmentConfig.Value.ApplicationUrl, userId);
                 Result result = await userModel.DeleteUser(userId);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
             }
             catch (BsonException error)
             {
-                _logger.LogError("{0}", error.Message);
                 return BadRequest(Responder.Fail(error.Message));
             }
             catch (Exception error)
             {
-                _logger.LogError("{0}", error.Message);
                 return BadRequest(Responder.Fail(error.Message));
             }
         }
