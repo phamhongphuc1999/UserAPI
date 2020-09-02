@@ -22,13 +22,13 @@ namespace MongoDatabase.Models
             if (user == null) return new Result
             {
                 status = 401,
-                data = $"username or password wrong"
+                data = "username or password wrong"
             };
             string rawPassword = SHA256Hash.CalcuteHash(password);
             if (user.password != rawPassword) return new Result
             {
                 status = 401,
-                data = $"username or password wrong"
+                data = "username or password wrong"
             };
             if (user.status == "disable") return new Result
             {
@@ -104,10 +104,6 @@ namespace MongoDatabase.Models
         public async Task<Result> UpdateUser(string userId, User updateUser)
         {
             UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.updateAt, Hepler.CurrentTime());
-            if (updateUser.name != null) updateBuilder = updateBuilder.Set(x => x.name, updateUser.name);
-            if (updateUser.location != null) updateBuilder = updateBuilder.Set(x => x.location, updateUser.location);
-            if (updateUser.birthday != null) updateBuilder = updateBuilder.Set(x => x.birthday, updateUser.birthday);
-            if (updateUser.phone != null) updateBuilder = updateBuilder.Set(x => x.phone, updateUser.phone);
             if (updateUser.username != null)
             {
                 User checkUser = mCollection.Find(x => x.username == updateUser.username).ToList().FirstOrDefault();
@@ -118,6 +114,10 @@ namespace MongoDatabase.Models
                 };
                 updateBuilder = updateBuilder.Set(x => x.username, updateUser.username);
             }
+            if (updateUser.name != null) updateBuilder = updateBuilder.Set(x => x.name, updateUser.name);
+            if (updateUser.location != null) updateBuilder = updateBuilder.Set(x => x.location, updateUser.location);
+            if (updateUser.birthday != null) updateBuilder = updateBuilder.Set(x => x.birthday, updateUser.birthday);
+            if (updateUser.phone != null) updateBuilder = updateBuilder.Set(x => x.phone, updateUser.phone);
             if (updateUser.password != null)
             {
                 string newPassword = SHA256Hash.CalcuteHash(updateUser.password);

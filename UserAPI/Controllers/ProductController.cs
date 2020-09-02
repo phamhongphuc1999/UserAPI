@@ -14,12 +14,10 @@ namespace UserAPI.Controllers
     [Produces("application/json")]
     public class ProductController : ControllerBase
     {
-        private readonly IOptions<JWTConfig> _jwtConfig;
         private ProductModel productModel;
 
-        public ProductController(IOptions<JWTConfig> jwtConfig)
+        public ProductController()
         {
-            _jwtConfig = jwtConfig;
             productModel = new ProductModel();
         }
 

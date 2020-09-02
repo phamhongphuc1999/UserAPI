@@ -15,33 +15,6 @@ thêm đoạn code dưới đây vào file <project>.csproj để enabled XML Co
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <NoWarn>$(NoWarn);1591</NoWarn>
     </PropertyGroup>
-thêm đoạn code dưới đây vào hàm Configure của Startup.cs
-
-    // Enable middleware to serve generated Swagger as a JSON endpoint.
-    app.UseSwagger(c =>
-    {
-        c.SerializeAsV2 = true;
-    });
-
-    // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-    // specifying the Swagger JSON endpoint.
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-    });
-thêm đoạn code dưới đây vào hàm ConfigureServices của Startup.cs
-
-    services.AddSwaggerGen(c =>
-    {
-        c.SwaggerDoc("v1", new OpenApiInfo
-        {
-            //code here
-        });
-        // Set the comments path for the Swagger JSON and UI.
-        var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-        c.IncludeXmlComments(xmlPath);
-    });
 thông tin chi tiết ở [đây](https://docs.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-3.1&tabs=visual-studio)
     
 ### chạy chương trình
