@@ -45,7 +45,7 @@ namespace UserAPI.Controllers
             try
             {
                 string token = Request.Headers["token"];
-                if (token != "null") return Ok(Responder.Fail("Already logined"));
+                if (token != "null") return Ok(Responder.Success("Already logined"));
                 StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8);
                 string userInfo = await reader.ReadToEndAsync();
                 Dictionary<string, string> info = JsonConvert.DeserializeObject<Dictionary<string, string>>(userInfo);
@@ -80,7 +80,7 @@ namespace UserAPI.Controllers
             try
             {
                 string token = Request.Headers["token"];
-                if (token == "null") return Ok(Responder.Fail("Already logouted"));
+                if (token == "null") return Ok(Responder.Success("Already logouted"));
                 return Ok(Responder.Success(new { access_token = "null" }));
             }
             catch (BsonException error)
@@ -233,6 +233,8 @@ namespace UserAPI.Controllers
                 StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8);
                 string userInfo = await reader.ReadToEndAsync();
                 User user = JsonConvert.DeserializeObject<User>(userInfo);
+                string role = Request.Headers["role"];
+                if (role == "user") return StatusCode(401, Responder.Fail("You not allow to update role"));
                 Result result = await data.UpdateRole(userId, user);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
