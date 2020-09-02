@@ -23,6 +23,11 @@ namespace UserAPI.Controllers
             productModel = new ProductModel();
         }
 
+        /// <summary>create new product</summary>
+        /// <remarks>create new product</remarks>
+        /// <returns></returns>
+        /// <response code="200">return infomation of new product</response>
+        /// <response code="400">if get mistake</response>
         [HttpPost("/products")]
         [ProducesResponseType(200, Type = typeof(ResponseType))]
         [ProducesResponseType(400, Type = typeof(ResponseType))]
@@ -43,6 +48,11 @@ namespace UserAPI.Controllers
             }
         }
 
+        /// <summary>get product by id</summary>
+        /// <remarks>get product by id</remarks>
+        /// <returns></returns>
+        /// <response code="200">return infomation of product with specified fields</response>
+        /// <response code="400">if get mistake</response>
         [HttpGet("/products/{productId}")]
         [ProducesResponseType(200, Type = typeof(ResponseType))]
         [ProducesResponseType(400, Type = typeof(ResponseType))]
@@ -67,6 +77,11 @@ namespace UserAPI.Controllers
             }
         }
 
+        /// <summary>get list products</summary>
+        /// <remarks>get list products</remarks>
+        /// <returns></returns>
+        /// <response code="200">return infomation of list products</response>
+        /// <response code="400">if get mistake</response>
         [HttpGet("/products")]
         [ProducesResponseType(200, Type = typeof(ResponseType))]
         [ProducesResponseType(400, Type = typeof(ResponseType))]
@@ -85,6 +100,11 @@ namespace UserAPI.Controllers
             }
         }
 
+        /// <summary>update product</summary>
+        /// <remarks>update product</remarks>
+        /// <returns></returns>
+        /// <response code="200">return infomation of product you updated</response>
+        /// <response code="400">if get mistake</response>
         [HttpPut("/products/{productId}")]
         [ProducesResponseType(200, Type = typeof(ResponseType))]
         [ProducesResponseType(400, Type = typeof(ResponseType))]
@@ -105,6 +125,11 @@ namespace UserAPI.Controllers
             }
         }
 
+        /// <summary>delete product</summary>
+        /// <remarks>delete product</remarks>
+        /// <returns></returns>
+        /// <response code="200">return infomation of product you deleted</response>
+        /// <response code="400">if get mistake</response>
         [HttpDelete("/products/{productId}")]
         [ProducesResponseType(200, Type = typeof(ResponseType))]
         [ProducesResponseType(400, Type = typeof(ResponseType))]

@@ -10,8 +10,6 @@ using MongoDatabase.Entities;
 using System.Collections.Generic;
 using UserAPI.Models;
 using UserAPI.JWT;
-using Microsoft.AspNetCore.Components;
-using System.ComponentModel;
 
 namespace UserAPI.Controllers
 {
@@ -27,9 +25,13 @@ namespace UserAPI.Controllers
             _jwtConfig = jwtConfig;
             userModel = new UserModel();
         }
-   
+
+        /// <summary>login</summary>
+        /// <remarks>login</remarks>
+        /// <returns></returns>
+        /// <response code="200">return the new access token or annount already login</response>
+        /// <response code="400">if username or password is wrong</response>   
         [HttpGet("/login")]
-        [Description("login with username and password")]
         [ProducesResponseType(200, Type = typeof(ResponseType))]
         [ProducesResponseType(400, Type = typeof(ResponseType))]
         public async Task<object> Login()
@@ -56,9 +58,11 @@ namespace UserAPI.Controllers
             }
         }
 
+        /// <summary>logout</summary>
+        /// <remarks>logout</remarks>
+        /// <returns></returns>
         [HttpGet("/logout")]
         [ProducesResponseType(200, Type = typeof(ResponseType))]
-        [ProducesResponseType(400, Type = typeof(ResponseType))]
         public async Task<object> Logout()
         {
             try
@@ -73,6 +77,11 @@ namespace UserAPI.Controllers
             }
         }
 
+        /// <summary>create new user</summary>
+        /// <remarks>create new user</remarks>
+        /// <returns></returns>
+        /// <response code="200">return infomation of new user</response>
+        /// <response code="400">if get mistake</response>
         [HttpPost("/users")]
         [ProducesResponseType(200, Type = typeof(ResponseType))]
         [ProducesResponseType(400, Type = typeof(ResponseType))]
@@ -93,6 +102,12 @@ namespace UserAPI.Controllers
             }
         }
 
+        /// <summary>get user by id</summary>
+        /// <remarks>get user by id</remarks>
+        /// <param name="userId">the id of user you want to get</param>
+        /// <returns></returns>
+        /// <response code="200">return infomation of user with specified fields</response>
+        /// <response code="400">if get mistake</response>
         [HttpGet("/users/{userId}")]
         [ProducesResponseType(200, Type = typeof(ResponseType))]
         [ProducesResponseType(400, Type = typeof(ResponseType))]
@@ -117,6 +132,11 @@ namespace UserAPI.Controllers
             }
         }
 
+        /// <summary>get list users</summary>
+        /// <remarks>get list users</remarks>
+        /// <returns></returns>
+        /// <response code="200">return infomation of list user with pagination</response>
+        /// <response code="400">if get mistake</response>
         [HttpGet("/users")]
         [ProducesResponseType(200, Type = typeof(ResponseType))]
         [ProducesResponseType(400, Type = typeof(ResponseType))]
@@ -135,6 +155,11 @@ namespace UserAPI.Controllers
             }
         }
 
+        /// <summary>update user</summary>
+        /// <remarks>update user</remarks>
+        /// <returns></returns>
+        /// <response code="200">return infomation of user you updated</response>
+        /// <response code="400">if get mistake</response>
         [HttpPut("/users/{userId}")]
         [ProducesResponseType(200, Type = typeof(ResponseType))]
         [ProducesResponseType(400, Type = typeof(ResponseType))]
@@ -155,6 +180,11 @@ namespace UserAPI.Controllers
             }
         }
 
+        /// <summary>update role of user</summary>
+        /// <remarks>update role of user</remarks>
+        /// <returns></returns>
+        /// <response code="200">return infomation of user you updated</response>
+        /// <response code="400">if get mistake</response>
         [HttpPut("/admin/users/{userId}")]
         [ProducesResponseType(200, Type = typeof(ResponseType))]
         [ProducesResponseType(400, Type = typeof(ResponseType))]
@@ -177,6 +207,11 @@ namespace UserAPI.Controllers
             }
         }
 
+        /// <summary>delete user</summary>
+        /// <remarks>delete user</remarks>
+        /// <returns></returns>
+        /// <response code="200">return infomation of user you deleted</response>
+        /// <response code="400">if get mistake</response>
         [HttpDelete("/users/{userId}")]
         [ProducesResponseType(200, Type = typeof(ResponseType))]
         [ProducesResponseType(400, Type = typeof(ResponseType))]
