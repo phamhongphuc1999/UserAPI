@@ -1,5 +1,11 @@
 ﻿namespace UserAPI
 {
+    public class ResponseType
+    {
+        public string status { get; set; }
+        public object data { get; set; }
+    }
+
     public static class Responder
     {
         public static object Success(object data = null)

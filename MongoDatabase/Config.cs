@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MongoDB
+namespace MongoDatabase
 {
     public static class Config
     {

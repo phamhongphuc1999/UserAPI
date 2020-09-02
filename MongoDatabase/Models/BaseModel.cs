@@ -1,6 +1,6 @@
 ﻿using MongoDB.Driver;
 
-namespace MongoDB.Models
+namespace MongoDatabase.Models
 {
     public class BaseModel<T>
     {

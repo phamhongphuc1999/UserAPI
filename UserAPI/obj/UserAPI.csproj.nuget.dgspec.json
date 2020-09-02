@@ -4,14 +4,14 @@
     "D:\\Documents\\VisualStudio\\UserAPI\\UserAPI\\UserAPI.csproj": {}
   },
   "projects": {
-    "D:\\Documents\\VisualStudio\\UserAPI\\MongoDB\\MongoDB.csproj": {
+    "D:\\Documents\\VisualStudio\\UserAPI\\MongoDatabase\\MongoDatabase.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Documents\\VisualStudio\\UserAPI\\MongoDB\\MongoDB.csproj",
-        "projectName": "MongoDB",
-        "projectPath": "D:\\Documents\\VisualStudio\\UserAPI\\MongoDB\\MongoDB.csproj",
+        "projectUniqueName": "D:\\Documents\\VisualStudio\\UserAPI\\MongoDatabase\\MongoDatabase.csproj",
+        "projectName": "MongoDatabase",
+        "projectPath": "D:\\Documents\\VisualStudio\\UserAPI\\MongoDatabase\\MongoDatabase.csproj",
         "packagesPath": "C:\\Users\\phamh\\.nuget\\packages\\",
-        "outputPath": "D:\\Documents\\VisualStudio\\UserAPI\\MongoDB\\obj\\",
+        "outputPath": "D:\\Documents\\VisualStudio\\UserAPI\\MongoDatabase\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\phamh\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -89,8 +89,8 @@
         "frameworks": {
           "netcoreapp3.1": {
             "projectReferences": {
-              "D:\\Documents\\VisualStudio\\UserAPI\\MongoDB\\MongoDB.csproj": {
-                "projectPath": "D:\\Documents\\VisualStudio\\UserAPI\\MongoDB\\MongoDB.csproj"
+              "D:\\Documents\\VisualStudio\\UserAPI\\MongoDatabase\\MongoDatabase.csproj": {
+                "projectPath": "D:\\Documents\\VisualStudio\\UserAPI\\MongoDatabase\\MongoDatabase.csproj"
               }
             }
           }

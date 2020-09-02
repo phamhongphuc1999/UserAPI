@@ -1,14 +1,14 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
-using MongoDB.Entities;
+using MongoDatabase.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MongoDB.Models
+namespace MongoDatabase.Models
 {
-    public class ProductModel: BaseModel<Product>
+    public class ProductModel : BaseModel<Product>
     {
         public ProductModel() : base()
         {

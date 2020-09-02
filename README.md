@@ -4,7 +4,7 @@
 
 ### cấu trúc chương trình
 ##### chương trình có hai project
-- MongoDB: class core, có chức năng tương tác với mongodb
+- MongoDatabase: class core, có chức năng tương tác với mongodb
 - UserAPI: ASP.NET API Core, tạo API tương tác với mongodb thông qua Model
 
 ### cách chạy chương trình

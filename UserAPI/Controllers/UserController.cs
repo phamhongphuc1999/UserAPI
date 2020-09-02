@@ -1,4 +1,4 @@
-﻿using MongoDB.Models;
+﻿using MongoDatabase.Models;
 using System;
 using System.IO;
 using System.Text;
@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using MongoDB.Bson;
-using MongoDB.Entities;
+using MongoDatabase.Entities;
 using System.Collections.Generic;
 using UserAPI.Models;
 using UserAPI.JWT;
+using Microsoft.AspNetCore.Components;
+using System.ComponentModel;
 
 namespace UserAPI.Controllers
 {
@@ -26,12 +27,11 @@ namespace UserAPI.Controllers
             _jwtConfig = jwtConfig;
             userModel = new UserModel();
         }
-
-        /// <summary>
-        /// login account
-        /// </summary>
-        /// <returns></returns>
+   
         [HttpGet("/login")]
+        [Description("login with username and password")]
+        [ProducesResponseType(200, Type = typeof(ResponseType))]
+        [ProducesResponseType(400, Type = typeof(ResponseType))]
         public async Task<object> Login()
         {
             try
@@ -50,21 +50,15 @@ namespace UserAPI.Controllers
                 if (!authService.IsTokenValid(accessToken)) goto node1;
                 return Ok(Responder.Success(new { access_token = accessToken }));
             }
-            catch (BsonException error)
-            {
-                return BadRequest(Responder.Fail(error.Message));
-            }
             catch (Exception error)
             {
                 return BadRequest(Responder.Fail(error.Message));
             }
         }
 
-        /// <summary>
-        /// logout account
-        /// </summary>
-        /// <returns></returns>
         [HttpGet("/logout")]
+        [ProducesResponseType(200, Type = typeof(ResponseType))]
+        [ProducesResponseType(400, Type = typeof(ResponseType))]
         public async Task<object> Logout()
         {
             try
@@ -73,21 +67,15 @@ namespace UserAPI.Controllers
                 if (token == "null") return Ok(Responder.Success("Already logouted"));
                 return Ok(Responder.Success(new { access_token = "null" }));
             }
-            catch (BsonException error)
-            {
-                return BadRequest(Responder.Fail(error.Message));
-            }
             catch (Exception error)
             {
                 return BadRequest(Responder.Fail(error.Message));
             }
         }
 
-        /// <summary>
-        /// create new user
-        /// </summary>
-        /// <returns></returns>
         [HttpPost("/users")]
+        [ProducesResponseType(200, Type = typeof(ResponseType))]
+        [ProducesResponseType(400, Type = typeof(ResponseType))]
         public async Task<object> CreateNewUser()
         {
             try
@@ -99,22 +87,15 @@ namespace UserAPI.Controllers
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
             }
-            catch (BsonException error)
-            {
-                return BadRequest(Responder.Fail(error.Message));
-            }
             catch (Exception error)
             {
                 return BadRequest(Responder.Fail(error.Message));
             }
         }
 
-        /// <summary>
-        /// get user by id
-        /// </summary>
-        /// <param name="userId">the user id who want to get</param>
-        /// <returns></returns>
         [HttpGet("/users/{userId}")]
+        [ProducesResponseType(200, Type = typeof(ResponseType))]
+        [ProducesResponseType(400, Type = typeof(ResponseType))]
         public async Task<object> GetUserById(string userId)
         {
             try
@@ -130,21 +111,15 @@ namespace UserAPI.Controllers
                 if(result.status == 200) return Ok(Responder.Success(result.data));
                 return StatusCode(result.status, Responder.Fail(result.data));
             }
-            catch (BsonException error)
-            {
-                return BadRequest(Responder.Fail(error.Message));
-            }
             catch (Exception error)
             {
                 return BadRequest(Responder.Fail(error.Message));
             }
         }
 
-        /// <summary>
-        /// get list user
-        /// </summary>
-        /// <returns></returns>
         [HttpGet("/users")]
+        [ProducesResponseType(200, Type = typeof(ResponseType))]
+        [ProducesResponseType(400, Type = typeof(ResponseType))]
         public async Task<object> GetListUser()
         {
             try
@@ -154,22 +129,15 @@ namespace UserAPI.Controllers
                 Result result = await userModel.GetListUser();
                 return Ok(Responder.Success(result.data));
             }
-            catch (BsonException error)
-            {
-                return BadRequest(Responder.Fail(error.Message));
-            }
             catch (Exception error)
             {
                 return BadRequest(Responder.Fail(error.Message));
             }
         }
 
-        /// <summary>
-        /// update user
-        /// </summary>
-        /// <param name="userId">the user id who want to update</param>
-        /// <returns></returns>
         [HttpPut("/users/{userId}")]
+        [ProducesResponseType(200, Type = typeof(ResponseType))]
+        [ProducesResponseType(400, Type = typeof(ResponseType))]
         public async Task<object> UpdateUser(string userId)
         {
             try
@@ -181,22 +149,15 @@ namespace UserAPI.Controllers
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
             }
-            catch (BsonException error)
-            {
-                return BadRequest(Responder.Fail(error.Message));
-            }
             catch (Exception error)
             {
                 return BadRequest(Responder.Fail(error.Message));
             }
         }
 
-        /// <summary>
-        /// update role of a user
-        /// </summary>
-        /// <param name="userId">the user id who want to update role</param>
-        /// <returns></returns>
         [HttpPut("/admin/users/{userId}")]
+        [ProducesResponseType(200, Type = typeof(ResponseType))]
+        [ProducesResponseType(400, Type = typeof(ResponseType))]
         public async Task<object> UpdateRole(string userId)
         {
             try
@@ -210,22 +171,15 @@ namespace UserAPI.Controllers
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
             }
-            catch (BsonException error)
-            {
-                return BadRequest(Responder.Fail(error.Message));
-            }
             catch (Exception error)
             {
                 return BadRequest(Responder.Fail(error.Message));
             }
         }
 
-        /// <summary>
-        /// delete a user
-        /// </summary>
-        /// <param name="userId">the user id who want to delete</param>
-        /// <returns></returns>
         [HttpDelete("/users/{userId}")]
+        [ProducesResponseType(200, Type = typeof(ResponseType))]
+        [ProducesResponseType(400, Type = typeof(ResponseType))]
         public async Task<object> DeleteUser(string userId)
         {
             try
@@ -233,10 +187,6 @@ namespace UserAPI.Controllers
                 Result result = await userModel.DeleteUser(userId);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
-            }
-            catch (BsonException error)
-            {
-                return BadRequest(Responder.Fail(error.Message));
             }
             catch (Exception error)
             {

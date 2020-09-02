@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MongoDB
+namespace MongoDatabase
 {
     public static class Hepler
     {

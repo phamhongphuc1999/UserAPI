@@ -1,4 +1,4 @@
-﻿namespace MongoDB.Entities
+﻿namespace MongoDatabase.Entities
 {
     public class Result
     {

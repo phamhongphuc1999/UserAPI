@@ -1443,7 +1443,7 @@
           "lib/netstandard1.3/System.Xml.XDocument.dll": {}
         }
       },
-      "MongoDB/1.0.0": {
+      "MongoDatabase/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v3.1",
         "dependencies": {
@@ -1451,10 +1451,10 @@
           "MongoDB.Driver": "2.11.1"
         },
         "compile": {
-          "bin/placeholder/MongoDB.dll": {}
+          "bin/placeholder/MongoDatabase.dll": {}
         },
         "runtime": {
-          "bin/placeholder/MongoDB.dll": {}
+          "bin/placeholder/MongoDatabase.dll": {}
         }
       }
     }
@@ -5302,16 +5302,16 @@
         "system.xml.xdocument.nuspec"
       ]
     },
-    "MongoDB/1.0.0": {
+    "MongoDatabase/1.0.0": {
       "type": "project",
-      "path": "../MongoDB/MongoDB.csproj",
-      "msbuildProject": "../MongoDB/MongoDB.csproj"
+      "path": "../MongoDatabase/MongoDatabase.csproj",
+      "msbuildProject": "../MongoDatabase/MongoDatabase.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.1": [
       "Microsoft.VisualStudio.Azure.Containers.Tools.Targets >= 1.10.9",
-      "MongoDB >= 1.0.0",
+      "MongoDatabase >= 1.0.0",
       "Newtonsoft.Json >= 12.0.3",
       "Swashbuckle.AspNetCore >= 5.5.1",
       "System.IdentityModel.Tokens.Jwt >= 6.7.1"
@@ -5343,8 +5343,8 @@
       "frameworks": {
         "netcoreapp3.1": {
           "projectReferences": {
-            "D:\\Documents\\VisualStudio\\UserAPI\\MongoDB\\MongoDB.csproj": {
-              "projectPath": "D:\\Documents\\VisualStudio\\UserAPI\\MongoDB\\MongoDB.csproj"
+            "D:\\Documents\\VisualStudio\\UserAPI\\MongoDatabase\\MongoDatabase.csproj": {
+              "projectPath": "D:\\Documents\\VisualStudio\\UserAPI\\MongoDatabase\\MongoDatabase.csproj"
             }
           }
         }

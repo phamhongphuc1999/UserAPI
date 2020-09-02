@@ -1,17 +1,16 @@
-﻿using MongoDB.Entities;
+﻿using MongoDatabase.Entities;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MongoDB.Secrets;
 
-namespace MongoDB.Models
+namespace MongoDatabase.Models
 {
-    public class UserModel: BaseModel<User>
+    public class UserModel : BaseModel<User>
     {
-        public UserModel(): base()
+        public UserModel() : base()
         {
             mDatabase = client.GetDatabase("User");
             mCollection = mDatabase.GetCollection<User>("user_list");
