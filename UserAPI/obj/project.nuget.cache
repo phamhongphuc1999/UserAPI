@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "D0R3Ti8mZpnk0CVWttJTryfAWT1Gb1d2tr6J4cHz/1rnV18/h+R6yZ3Ne0yxc8q3Boou1rEey6XD7ykaxuMS0g==",
+  "dgSpecHash": "weE4JTDgYTfpgi/OJI+ro+A3YLSJwfVOL6xLgDmhtdTLvyR9EJ4UKvwOVrcHYFetnRvOYkabvy2lwmOAtp5ZbQ==",
   "success": true,
   "projectFilePath": "D:\\Documents\\VisualStudio\\UserAPI\\UserAPI\\UserAPI.csproj",
   "expectedPackageFiles": [
@@ -15,9 +15,9 @@
     "C:\\Users\\phamh\\.nuget\\packages\\microsoft.openapi\\1.1.4\\microsoft.openapi.1.1.4.nupkg.sha512",
     "C:\\Users\\phamh\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.10.9\\microsoft.visualstudio.azure.containers.tools.targets.1.10.9.nupkg.sha512",
     "C:\\Users\\phamh\\.nuget\\packages\\microsoft.win32.primitives\\4.3.0\\microsoft.win32.primitives.4.3.0.nupkg.sha512",
-    "C:\\Users\\phamh\\.nuget\\packages\\mongodb.bson\\2.11.0\\mongodb.bson.2.11.0.nupkg.sha512",
-    "C:\\Users\\phamh\\.nuget\\packages\\mongodb.driver\\2.11.0\\mongodb.driver.2.11.0.nupkg.sha512",
-    "C:\\Users\\phamh\\.nuget\\packages\\mongodb.driver.core\\2.11.0\\mongodb.driver.core.2.11.0.nupkg.sha512",
+    "C:\\Users\\phamh\\.nuget\\packages\\mongodb.bson\\2.11.1\\mongodb.bson.2.11.1.nupkg.sha512",
+    "C:\\Users\\phamh\\.nuget\\packages\\mongodb.driver\\2.11.1\\mongodb.driver.2.11.1.nupkg.sha512",
+    "C:\\Users\\phamh\\.nuget\\packages\\mongodb.driver.core\\2.11.1\\mongodb.driver.core.2.11.1.nupkg.sha512",
     "C:\\Users\\phamh\\.nuget\\packages\\mongodb.libmongocrypt\\1.0.0\\mongodb.libmongocrypt.1.0.0.nupkg.sha512",
     "C:\\Users\\phamh\\.nuget\\packages\\netstandard.library\\1.6.1\\netstandard.library.1.6.1.nupkg.sha512",
     "C:\\Users\\phamh\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512",

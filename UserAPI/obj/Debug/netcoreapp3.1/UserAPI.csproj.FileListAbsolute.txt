@@ -26,8 +26,6 @@ D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\SharpCompress.
 D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\runtimes\win\native\libzstd.dll
 D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\runtimes\win\native\snappy32.dll
 D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\runtimes\win\native\snappy64.dll
-D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\Model.dll
-D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\Model.pdb
 D:\Documents\VisualStudio\UserAPI\UserAPI\obj\Debug\netcoreapp3.1\UserAPI.csproj.CopyComplete
 D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.JsonWebTokens.dll
 D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Logging.dll
@@ -40,3 +38,5 @@ D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\Swashbuckle.As
 D:\Documents\VisualStudio\UserAPI\UserAPI\obj\Debug\netcoreapp3.1\UserAPI.csproj.CoreCompileInputs.cache
 D:\Documents\VisualStudio\UserAPI\UserAPI\obj\Debug\netcoreapp3.1\UserAPI.MvcApplicationPartsAssemblyInfo.cs
 D:\Documents\VisualStudio\UserAPI\UserAPI\obj\Debug\netcoreapp3.1\UserAPI.MvcApplicationPartsAssemblyInfo.cache
+D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\MongoDB.dll
+D:\Documents\VisualStudio\UserAPI\UserAPI\bin\Debug\netcoreapp3.1\MongoDB.pdb

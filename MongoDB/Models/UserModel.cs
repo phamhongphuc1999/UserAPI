@@ -1,31 +1,25 @@
-﻿using Model.Entities;
+﻿using MongoDB.Entities;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Model.Secrets;
-using System.Text;
+using MongoDB.Secrets;
 
-namespace Model
+namespace MongoDB.Models
 {
-    public class mongodb
+    public class UserModel: BaseModel<User>
     {
-        MongoClient client;
-        IMongoDatabase userDatabase;
-        IMongoCollection<User> users;
-
-        public mongodb()
+        public UserModel(): base()
         {
-            client = new MongoClient(Config.MONGO_SCRIPT);
-            userDatabase = client.GetDatabase("User");
-            users = userDatabase.GetCollection<User>("user_list");
+            mCollection = client.GetDatabase("User");
+            mDocument = mCollection.GetCollection<User>("user_list");
         }
 
         public async Task<Result> Login(string username, string password)
         {
-            User user = users.Find(x => x.username == username).ToList().FirstOrDefault();
+            User user = mDocument.Find(x => x.username == username).ToList().FirstOrDefault();
             if (user == null) return new Result
             {
                 status = 401,
@@ -43,7 +37,7 @@ namespace Model
                 data = "This account is enable to login"
             };
             UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.lastLogin, Hepler.CurrentTime());
-            await users.FindOneAndUpdateAsync(x => x.username == username, updateBuilder);
+            await mDocument.FindOneAndUpdateAsync(x => x.username == username, updateBuilder);
             return new Result
             {
                 status = 200,
@@ -53,7 +47,7 @@ namespace Model
 
         public async Task<Result> InsertUser(User entity)
         {
-            User user = users.Find(x => x.username == entity.username).ToList().FirstOrDefault();
+            User user = mDocument.Find(x => x.username == entity.username).ToList().FirstOrDefault();
             if (user != null) return new Result
             {
                 status = 400,
@@ -63,8 +57,8 @@ namespace Model
             entity.createAt = Hepler.CurrentTime();
             entity.updateAt = Hepler.CurrentTime();
             entity.status = "enable";
-            await users.InsertOneAsync(entity);
-            User newUser = users.Find(x => x.username == entity.username).ToList().FirstOrDefault();
+            await mDocument.InsertOneAsync(entity);
+            User newUser = mDocument.Find(x => x.username == entity.username).ToList().FirstOrDefault();
             return new Result
             {
                 status = 200,
@@ -74,7 +68,7 @@ namespace Model
 
         public async Task<Result> GetUserById(string userId, string[] fields = null)
         {
-            List<User> result = await users.Find(x => x._id == userId).ToListAsync();
+            List<User> result = await mDocument.Find(x => x._id == userId).ToListAsync();
             User user = result.FirstOrDefault();
             if (user == null) return new Result
             {
@@ -88,8 +82,8 @@ namespace Model
             };
             BsonDocument sUser = user.ToBsonDocument();
             Dictionary<string, string> data = new Dictionary<string, string>();
-            foreach(string field in fields)
-                if (Config.userFields.ContainsKey(field)) 
+            foreach (string field in fields)
+                if (Config.userFields.ContainsKey(field))
                     data.Add(field, sUser.GetElement(field).Value.ToString());
             return new Result
             {
@@ -100,7 +94,7 @@ namespace Model
 
         public async Task<Result> GetListUser()
         {
-            List<User> userList = await users.Find(x => x.name != String.Empty).ToListAsync();
+            List<User> userList = await mDocument.Find(x => x.name != String.Empty).ToListAsync();
             return new Result
             {
                 status = 200,
@@ -117,7 +111,7 @@ namespace Model
             if (updateUser.phone != null) updateBuilder = updateBuilder.Set(x => x.phone, updateUser.phone);
             if (updateUser.username != null)
             {
-                User checkUser = users.Find(x => x.username == updateUser.username).ToList().FirstOrDefault();
+                User checkUser = mDocument.Find(x => x.username == updateUser.username).ToList().FirstOrDefault();
                 if (checkUser != null) return new Result
                 {
                     status = 400,
@@ -130,7 +124,7 @@ namespace Model
                 string newPassword = SHA256Hash.CalcuteHash(updateUser.password);
                 updateBuilder = updateBuilder.Set(x => x.password, newPassword);
             }
-            User user = await users.FindOneAndUpdateAsync(x => x._id == userId, updateBuilder);
+            User user = await mDocument.FindOneAndUpdateAsync(x => x._id == userId, updateBuilder);
             if (user != null) return new Result
             {
                 status = 200,
@@ -147,7 +141,7 @@ namespace Model
         {
             UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.updateAt, Hepler.CurrentTime());
             if (updateRoleUser.role != null) updateBuilder.Set(x => x.role, updateRoleUser.role);
-            if(updateRoleUser.status != null)
+            if (updateRoleUser.status != null)
             {
                 if (Config.userStatus.ContainsKey(updateRoleUser.status))
                     updateBuilder.Set(x => x.status, updateRoleUser.status);
@@ -157,7 +151,7 @@ namespace Model
                     data = $"Invalid value status: {updateRoleUser.status}"
                 };
             }
-            User user = await users.FindOneAndUpdateAsync(x => x._id == userId, updateBuilder);
+            User user = await mDocument.FindOneAndUpdateAsync(x => x._id == userId, updateBuilder);
             if (user != null) return new Result
             {
                 status = 200,
@@ -172,7 +166,7 @@ namespace Model
 
         public async Task<Result> DeleteUser(string userId)
         {
-            User user = await users.FindOneAndDeleteAsync(x => x._id == userId);
+            User user = await mDocument.FindOneAndDeleteAsync(x => x._id == userId);
             if (user != null) return new Result
             {
                 status = 200,

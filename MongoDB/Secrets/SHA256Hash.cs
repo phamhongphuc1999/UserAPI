@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace Model.Secrets
+namespace MongoDB.Secrets
 {
     public static class SHA256Hash
     {

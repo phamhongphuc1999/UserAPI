@@ -4,14 +4,14 @@
     "D:\\Documents\\VisualStudio\\UserAPI\\UserAPI\\UserAPI.csproj": {}
   },
   "projects": {
-    "D:\\Documents\\VisualStudio\\UserAPI\\Model\\Model.csproj": {
+    "D:\\Documents\\VisualStudio\\UserAPI\\MongoDB\\MongoDB.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Documents\\VisualStudio\\UserAPI\\Model\\Model.csproj",
-        "projectName": "Model",
-        "projectPath": "D:\\Documents\\VisualStudio\\UserAPI\\Model\\Model.csproj",
+        "projectUniqueName": "D:\\Documents\\VisualStudio\\UserAPI\\MongoDB\\MongoDB.csproj",
+        "projectName": "MongoDB",
+        "projectPath": "D:\\Documents\\VisualStudio\\UserAPI\\MongoDB\\MongoDB.csproj",
         "packagesPath": "C:\\Users\\phamh\\.nuget\\packages\\",
-        "outputPath": "D:\\Documents\\VisualStudio\\UserAPI\\Model\\obj\\",
+        "outputPath": "D:\\Documents\\VisualStudio\\UserAPI\\MongoDB\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\phamh\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -40,11 +40,11 @@
           "dependencies": {
             "MongoDB.Bson": {
               "target": "Package",
-              "version": "[2.11.0, )"
+              "version": "[2.11.1, )"
             },
             "MongoDB.Driver": {
               "target": "Package",
-              "version": "[2.11.0, )"
+              "version": "[2.11.1, )"
             }
           },
           "imports": [
@@ -89,8 +89,8 @@
         "frameworks": {
           "netcoreapp3.1": {
             "projectReferences": {
-              "D:\\Documents\\VisualStudio\\UserAPI\\Model\\Model.csproj": {
-                "projectPath": "D:\\Documents\\VisualStudio\\UserAPI\\Model\\Model.csproj"
+              "D:\\Documents\\VisualStudio\\UserAPI\\MongoDB\\MongoDB.csproj": {
+                "projectPath": "D:\\Documents\\VisualStudio\\UserAPI\\MongoDB\\MongoDB.csproj"
               }
             }
           }

@@ -1,4 +1,4 @@
-﻿using Model;
+﻿using MongoDB.Models;
 using System;
 using System.IO;
 using System.Text;
@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using MongoDB.Bson;
-using Model.Entities;
+using MongoDB.Entities;
 using System.Collections.Generic;
 using UserAPI.Models;
 using UserAPI.JWT;
@@ -24,7 +24,7 @@ namespace UserAPI.Controllers
         private readonly ILogger<UserController> _logger;
         private readonly IOptions<DevelopmentConfig> _developmentConfig;
         private readonly IOptions<JWTConfig> _jwtConfig;
-        private mongodb data;
+        private UserModel data;
 
         public UserController(ILogger<UserController> logger, IOptions<DevelopmentConfig> developmentConfig, 
             IOptions<JWTConfig> jwtConfig)
@@ -32,7 +32,7 @@ namespace UserAPI.Controllers
             _logger = logger;
             _developmentConfig = developmentConfig;
             _jwtConfig = jwtConfig;
-            data = new mongodb();
+            data = new UserModel();
         }
 
         /// <summary>
