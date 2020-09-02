@@ -48,6 +48,8 @@ namespace UserAPI
                 });
             });
             services.AddControllers();
+            services.AddHttpContextAccessor();
+            services.AddMvcCore();
             services.Configure<JWTConfig>(Configuration.GetSection("JWT"));
             if (_env.IsDevelopment()) services.Configure<DevelopmentConfig>(Configuration.GetSection("Develop"));
             else if (_env.IsProduction()) services.Configure<ProductionConfig>(Configuration.GetSection("Product"));

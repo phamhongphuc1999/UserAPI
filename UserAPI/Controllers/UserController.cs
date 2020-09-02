@@ -22,16 +22,16 @@ namespace UserAPI.Controllers
     [Produces("application/json")]
     public class UserController : ControllerBase
     {
-        private HttpContext httpContext;
+        private readonly IHttpContextAccessor _httpContext;
         private readonly ILogger<UserController> _logger;
         private readonly IOptions<DevelopmentConfig> _developmentConfig;
         private readonly IOptions<JWTConfig> _jwtConfig;
         private mongodb data;
 
-        public UserController(HttpContext httpContext, ILogger<UserController> logger, 
+        public UserController(IHttpContextAccessor httpContext, ILogger<UserController> logger, 
             IOptions<DevelopmentConfig> developmentConfig, IOptions<JWTConfig> jwtConfig)
         {
-            this.httpContext = httpContext;
+            this._httpContext = httpContext;
             _logger = logger;
             _developmentConfig = developmentConfig;
             _jwtConfig = jwtConfig;
@@ -47,8 +47,9 @@ namespace UserAPI.Controllers
         {
             try
             {
-                string token = Request.Headers["token"];
-                if (token != "null") return Ok(Responder.Fail("Already logined"));
+                //string token = Request.Headers["token"];
+                string token = _httpContext.HttpContext.Request.Headers["token"];
+                if (token != "null") return Ok(Responder.Success("Already logined"));
                 StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8);
                 string userInfo = await reader.ReadToEndAsync();
                 Dictionary<string, string> info = JsonConvert.DeserializeObject<Dictionary<string, string>>(userInfo);
@@ -236,7 +237,7 @@ namespace UserAPI.Controllers
                 StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8);
                 string userInfo = await reader.ReadToEndAsync();
                 User user = JsonConvert.DeserializeObject<User>(userInfo);
-                string role = httpContext.Request.Headers["role"];
+            string role = Request.Headers["Role"];
             _logger.LogInformation(role);
                 if (role == "user") return StatusCode(401, Responder.Fail("You not allow to update role"));
                 Result result = await data.UpdateRole(userId, user);
