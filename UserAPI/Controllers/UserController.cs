@@ -14,7 +14,6 @@ using UserAPI.Models;
 using UserAPI.JWT;
 using System.Security.Claims;
 using System.Linq;
-using Microsoft.AspNetCore.Http;
 
 namespace UserAPI.Controllers
 {
@@ -22,16 +21,14 @@ namespace UserAPI.Controllers
     [Produces("application/json")]
     public class UserController : ControllerBase
     {
-        private readonly IHttpContextAccessor _httpContext;
         private readonly ILogger<UserController> _logger;
         private readonly IOptions<DevelopmentConfig> _developmentConfig;
         private readonly IOptions<JWTConfig> _jwtConfig;
         private mongodb data;
 
-        public UserController(IHttpContextAccessor httpContext, ILogger<UserController> logger, 
-            IOptions<DevelopmentConfig> developmentConfig, IOptions<JWTConfig> jwtConfig)
+        public UserController(ILogger<UserController> logger, IOptions<DevelopmentConfig> developmentConfig, 
+            IOptions<JWTConfig> jwtConfig)
         {
-            this._httpContext = httpContext;
             _logger = logger;
             _developmentConfig = developmentConfig;
             _jwtConfig = jwtConfig;
@@ -47,8 +44,7 @@ namespace UserAPI.Controllers
         {
             try
             {
-                //string token = Request.Headers["token"];
-                string token = _httpContext.HttpContext.Request.Headers["token"];
+                string token = Request.Headers["token"];
                 if (token != "null") return Ok(Responder.Success("Already logined"));
                 StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8);
                 string userInfo = await reader.ReadToEndAsync();
@@ -232,28 +228,27 @@ namespace UserAPI.Controllers
         [HttpPut("/admin/users/{userId}")]
         public async Task<object> UpdateRole(string userId)
         {
-            //try
-            //{
+            try
+            {
                 StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8);
                 string userInfo = await reader.ReadToEndAsync();
                 User user = JsonConvert.DeserializeObject<User>(userInfo);
-            string role = Request.Headers["Role"];
-            _logger.LogInformation(role);
+                string role = Request.Headers["role"];
                 if (role == "user") return StatusCode(401, Responder.Fail("You not allow to update role"));
                 Result result = await data.UpdateRole(userId, user);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
-            //}
-            //catch (BsonException error)
-            //{
-            //    _logger.LogError("{0}", error.Message);
-            //    return BadRequest(Responder.Fail(error.Message));
-            //}
-            //catch (Exception error)
-            //{
-            //    _logger.LogError("{0}", error.Message);
-            //    return BadRequest(Responder.Fail(error.Message));
-            //}
+            }
+            catch (BsonException error)
+            {
+                _logger.LogError("{0}", error.Message);
+                return BadRequest(Responder.Fail(error.Message));
+            }
+            catch (Exception error)
+            {
+                _logger.LogError("{0}", error.Message);
+                return BadRequest(Responder.Fail(error.Message));
+            }
         }
 
         /// <summary>

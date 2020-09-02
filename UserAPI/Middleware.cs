@@ -20,7 +20,8 @@ namespace UserAPI
 
         public async Task Invoke(HttpContext httpContext)
         {
-            if (httpContext.Request.Path == "/users")
+            PathString path = httpContext.Request.Path;
+            if (path.Value != "/login" && path.Value != "/logout")
             {
                 string token = httpContext.Request.Headers["token"];
                 if (token == "null") await httpContext.Response.WriteAsync("You Need To Login Before Action");
@@ -33,21 +34,13 @@ namespace UserAPI
                     else if (role == "01") role = "user";
                     string username = claims.Find(x => x.Type == ClaimTypes.Name).Value;
                     string password = claims.Find(x => x.Type == "Password").Value;
-                    //httpContext.Request.Headers.Add("username", username);
-                    //httpContext.Request.Headers.Add("password", password);
-                    //httpContext.Request.Headers.Add("role", role);
-                    //httpContext.Items["password"] = password;
-                    //httpContext.Items["username"] = username;
-                    httpContext.Request.Headers.Add("Role", "123");
-
+                    httpContext.Request.Headers.Add("username", username);
+                    httpContext.Request.Headers.Add("password", password);
+                    httpContext.Request.Headers.Add("role", role);
                     await _next(httpContext);
                 }
             }
-            else
-            {
-                httpContext.Request.Headers.Add("Role", "123");
-                await _next(httpContext);
-            }
+            else await _next(httpContext);
         }
     }
 }
