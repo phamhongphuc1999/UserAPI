@@ -6,41 +6,77 @@
 ##### chương trình có hai project
 - MongoDatabase: class core, có chức năng tương tác với mongodb
 - UserAPI: ASP.NET API Core, tạo API tương tác với mongodb thông qua Model
+### lưu ý setup chương trình
+###### cài đặt thư viện gọi lệnh: make install
+###### setup service swagger
+thêm đoạn code dưới đây vào file <project>.csproj để enabled XML Comments
 
-### cách chạy chương trình
-##### chạy bằng .NET CLI trên visual studio 2019
-    cài đặt thư viện gọi lệnh: make install
+    <PropertyGroup>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);1591</NoWarn>
+    </PropertyGroup>
+thêm đoạn code dưới đây vào hàm Configure của Startup.cs
+
+    // Enable middleware to serve generated Swagger as a JSON endpoint.
+    app.UseSwagger(c =>
+    {
+        c.SerializeAsV2 = true;
+    });
+
+    // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+    // specifying the Swagger JSON endpoint.
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+    });
+thêm đoạn code dưới đây vào hàm ConfigureServices của Startup.cs
+
+    services.AddSwaggerGen(c =>
+    {
+        c.SwaggerDoc("v1", new OpenApiInfo
+        {
+            //code here
+        });
+        // Set the comments path for the Swagger JSON and UI.
+        var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+        c.IncludeXmlComments(xmlPath);
+    });
+thông tin chi tiết ở [đây](https://docs.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-3.1&tabs=visual-studio)
+    
+### chạy chương trình
+###### chạy bằng .NET CLI trên visual studio 2019
     để chạy chương trình gọi lệnh: make run
     để chạy chương trình với profile UserAPI gọi lệnh: make runuser
     để chạy chương trình với profile Docker gọi lệnh: make rundocker
-##### chạy bằng docker
+###### chạy bằng docker
     để chạy chương trình, gọi lệnh: docker-compose up
 
 ### những lưu ý
     chắc chắn máy tính đã cài make
     muốn biết chương trình có những profile nào đọc trrong file: launchSettings.json
 
-##### Collection postman: https://www.getpostman.com/collections/1276a5fd32ba82f3f967
+###### Collection postman: https://www.getpostman.com/collections/1276a5fd32ba82f3f967
 
 ### tài liệu tham khảo
-##### mongo
+###### mongo
 - https://docs.mongodb.com/drivers/csharp
 - https://github.com/mongodb/mongo-csharp-driver
 - https://www.mongodb.com/blog/post/quick-start-csharp-and-mongodb--update-operation#:~:text=Set(%22class_id%22%2C%20483,no%20documents%20will%20be%20updated.
-##### logger
+###### logger
 - https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging/?view=aspnetcore-3.1
-##### config file
+###### config file
 - https://stackoverflow.com/questions/31453495/how-to-read-appsettings-values-from-a-json-file-in-asp-net-core
 - https://stackoverflow.com/questions/46364293/automatically-set-appsettings-json-for-dev-and-release-environments-in-asp-net-c
 - https://dotnettutorials.net/lesson/asp-net-core-launchsettings-json-file/
-##### docker
+###### docker
 - https://github.com/TechMaster/DockerizeDotNetCoreConsoleApp
 - https://stackoverflow.com/questions/51769324/how-to-create-run-net-core-console-app-in-docker
-##### swagger
+###### swagger
 - https://docs.microsoft.com/vi-vn/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-3.1&tabs=visual-studio
 - https://github.com/hinault/SwaggerDemo
-##### JWT
+###### JWT
 - https://stackoverflow.com/questions/51943722/how-to-validate-jwt-token-in-aspnet-core-web-api
-##### middleware
+###### middleware
 - https://stackoverflow.com/questions/36711068/call-controllers-action-method-from-middleware
 - https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-3.1#:~:text=Middleware%20is%20software%20that's%20assembled,next%20component%20in%20the%20pipeline.
