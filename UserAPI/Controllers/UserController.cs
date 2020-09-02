@@ -12,8 +12,6 @@ using MongoDB.Entities;
 using System.Collections.Generic;
 using UserAPI.Models;
 using UserAPI.JWT;
-using System.Security.Claims;
-using System.Linq;
 
 namespace UserAPI.Controllers
 {
@@ -24,7 +22,7 @@ namespace UserAPI.Controllers
         private readonly ILogger<UserController> _logger;
         private readonly IOptions<DevelopmentConfig> _developmentConfig;
         private readonly IOptions<JWTConfig> _jwtConfig;
-        private UserModel data;
+        private UserModel userModel;
 
         public UserController(ILogger<UserController> logger, IOptions<DevelopmentConfig> developmentConfig, 
             IOptions<JWTConfig> jwtConfig)
@@ -32,7 +30,7 @@ namespace UserAPI.Controllers
             _logger = logger;
             _developmentConfig = developmentConfig;
             _jwtConfig = jwtConfig;
-            data = new UserModel();
+            userModel = new UserModel();
         }
 
         /// <summary>
@@ -49,7 +47,7 @@ namespace UserAPI.Controllers
                 StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8);
                 string userInfo = await reader.ReadToEndAsync();
                 Dictionary<string, string> info = JsonConvert.DeserializeObject<Dictionary<string, string>>(userInfo);
-                Result result = await data.Login(info["username"], info["password"]);
+                Result result = await userModel.Login(info["username"], info["password"]);
                 if (result.status != 200) return StatusCode(result.status, Responder.Fail(result.data));
                 node1:
                 IAuthContainerModel model = Helper.GetJWTContainerModel(info["username"], info["password"], result.data.ToString(), _jwtConfig);
@@ -108,7 +106,7 @@ namespace UserAPI.Controllers
                 StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8);
                 string userInfo = await reader.ReadToEndAsync();
                 User newUser = JsonConvert.DeserializeObject<User>(userInfo);
-                Result result = await data.InsertUser(newUser);
+                Result result = await userModel.InsertUser(newUser);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
             }
@@ -135,19 +133,14 @@ namespace UserAPI.Controllers
             try
             {
                 _logger.LogInformation("GET: {0}/users/{1}", _developmentConfig.Value.ApplicationUrl, userId);
-                string token = Request.Headers["token"];
-                IAuthService authService = new JWTService(_jwtConfig.Value.SecretKey);
-                List<Claim> claims = authService.GetTokenClaims(token).ToList();
-                string username = claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value;
-                _logger.LogInformation(username);
                 string fieldsString = Request.Query["fields"];
                 Result result;
                 if (fieldsString != null)
                 {
                     string[] fields = fieldsString.Split(',');
-                    result = await data.GetUserById(userId, fields);
+                    result = await userModel.GetUserById(userId, fields);
                 }
-                else result = await data.GetUserById(userId);
+                else result = await userModel.GetUserById(userId);
                 if(result.status == 200) return Ok(Responder.Success(result.data));
                 return StatusCode(result.status, Responder.Fail(result.data));
             }
@@ -175,7 +168,7 @@ namespace UserAPI.Controllers
                 _logger.LogInformation("GET: {0}/users", _developmentConfig.Value.ApplicationUrl);
                 string pageSize = Request.Query["page_size"];
                 string pageIndex = Request.Query["page_index"];
-                Result result = await data.GetListUser();
+                Result result = await userModel.GetListUser();
                 return Ok(Responder.Success(result.data));
             }
             catch (BsonException error)
@@ -204,7 +197,7 @@ namespace UserAPI.Controllers
                 StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8);
                 string userInfo = await reader.ReadToEndAsync();
                 User updateUser = JsonConvert.DeserializeObject<User>(userInfo);
-                Result result = await data.UpdateUser(userId, updateUser);
+                Result result = await userModel.UpdateUser(userId, updateUser);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
             }
@@ -235,7 +228,7 @@ namespace UserAPI.Controllers
                 User user = JsonConvert.DeserializeObject<User>(userInfo);
                 string role = Request.Headers["role"];
                 if (role == "user") return StatusCode(401, Responder.Fail("You not allow to update role"));
-                Result result = await data.UpdateRole(userId, user);
+                Result result = await userModel.UpdateRole(userId, user);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
             }
@@ -262,7 +255,7 @@ namespace UserAPI.Controllers
             try
             {
                 _logger.LogInformation("DELETE: {0}/users/{1}", _developmentConfig.Value.ApplicationUrl, userId);
-                Result result = await data.DeleteUser(userId);
+                Result result = await userModel.DeleteUser(userId);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
             }

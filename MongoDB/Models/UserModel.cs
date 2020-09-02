@@ -13,13 +13,13 @@ namespace MongoDB.Models
     {
         public UserModel(): base()
         {
-            mCollection = client.GetDatabase("User");
-            mDocument = mCollection.GetCollection<User>("user_list");
+            mDatabase = client.GetDatabase("User");
+            mCollection = mDatabase.GetCollection<User>("user_list");
         }
 
         public async Task<Result> Login(string username, string password)
         {
-            User user = mDocument.Find(x => x.username == username).ToList().FirstOrDefault();
+            User user = mCollection.Find(x => x.username == username).ToList().FirstOrDefault();
             if (user == null) return new Result
             {
                 status = 401,
@@ -37,7 +37,7 @@ namespace MongoDB.Models
                 data = "This account is enable to login"
             };
             UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.lastLogin, Hepler.CurrentTime());
-            await mDocument.FindOneAndUpdateAsync(x => x.username == username, updateBuilder);
+            await mCollection.FindOneAndUpdateAsync(x => x.username == username, updateBuilder);
             return new Result
             {
                 status = 200,
@@ -47,7 +47,7 @@ namespace MongoDB.Models
 
         public async Task<Result> InsertUser(User entity)
         {
-            User user = mDocument.Find(x => x.username == entity.username).ToList().FirstOrDefault();
+            User user = mCollection.Find(x => x.username == entity.username).ToList().FirstOrDefault();
             if (user != null) return new Result
             {
                 status = 400,
@@ -57,8 +57,8 @@ namespace MongoDB.Models
             entity.createAt = Hepler.CurrentTime();
             entity.updateAt = Hepler.CurrentTime();
             entity.status = "enable";
-            await mDocument.InsertOneAsync(entity);
-            User newUser = mDocument.Find(x => x.username == entity.username).ToList().FirstOrDefault();
+            await mCollection.InsertOneAsync(entity);
+            User newUser = mCollection.Find(x => x.username == entity.username).ToList().FirstOrDefault();
             return new Result
             {
                 status = 200,
@@ -68,7 +68,7 @@ namespace MongoDB.Models
 
         public async Task<Result> GetUserById(string userId, string[] fields = null)
         {
-            List<User> result = await mDocument.Find(x => x._id == userId).ToListAsync();
+            List<User> result = await mCollection.Find(x => x._id == userId).ToListAsync();
             User user = result.FirstOrDefault();
             if (user == null) return new Result
             {
@@ -94,7 +94,7 @@ namespace MongoDB.Models
 
         public async Task<Result> GetListUser()
         {
-            List<User> userList = await mDocument.Find(x => x.name != String.Empty).ToListAsync();
+            List<User> userList = await mCollection.Find(x => x.name != String.Empty).ToListAsync();
             return new Result
             {
                 status = 200,
@@ -111,7 +111,7 @@ namespace MongoDB.Models
             if (updateUser.phone != null) updateBuilder = updateBuilder.Set(x => x.phone, updateUser.phone);
             if (updateUser.username != null)
             {
-                User checkUser = mDocument.Find(x => x.username == updateUser.username).ToList().FirstOrDefault();
+                User checkUser = mCollection.Find(x => x.username == updateUser.username).ToList().FirstOrDefault();
                 if (checkUser != null) return new Result
                 {
                     status = 400,
@@ -124,7 +124,7 @@ namespace MongoDB.Models
                 string newPassword = SHA256Hash.CalcuteHash(updateUser.password);
                 updateBuilder = updateBuilder.Set(x => x.password, newPassword);
             }
-            User user = await mDocument.FindOneAndUpdateAsync(x => x._id == userId, updateBuilder);
+            User user = await mCollection.FindOneAndUpdateAsync(x => x._id == userId, updateBuilder);
             if (user != null) return new Result
             {
                 status = 200,
@@ -151,7 +151,7 @@ namespace MongoDB.Models
                     data = $"Invalid value status: {updateRoleUser.status}"
                 };
             }
-            User user = await mDocument.FindOneAndUpdateAsync(x => x._id == userId, updateBuilder);
+            User user = await mCollection.FindOneAndUpdateAsync(x => x._id == userId, updateBuilder);
             if (user != null) return new Result
             {
                 status = 200,
@@ -166,7 +166,7 @@ namespace MongoDB.Models
 
         public async Task<Result> DeleteUser(string userId)
         {
-            User user = await mDocument.FindOneAndDeleteAsync(x => x._id == userId);
+            User user = await mCollection.FindOneAndDeleteAsync(x => x._id == userId);
             if (user != null) return new Result
             {
                 status = 200,
