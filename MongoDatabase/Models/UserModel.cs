@@ -44,7 +44,7 @@ namespace MongoDatabase.Models
             };
         }
 
-        public async Task<Result> InsertUser(User entity)
+        public async Task<Result> InsertUser(NewUserInfo entity)
         {
             User user = mCollection.Find(x => x.username == entity.username).ToList().FirstOrDefault();
             if (user != null) return new Result
@@ -52,12 +52,21 @@ namespace MongoDatabase.Models
                 status = 400,
                 data = $"username {entity.username} have existed"
             };
-            entity.password = SHA256Hash.CalcuteHash(entity.password);
-            entity.createAt = Hepler.CurrentTime();
-            entity.updateAt = Hepler.CurrentTime();
-            entity.status = "enable";
-            await mCollection.InsertOneAsync(entity);
-            User newUser = mCollection.Find(x => x.username == entity.username).ToList().FirstOrDefault();
+            User newUser = new User()
+            {
+                username = entity.username,
+                password = SHA256Hash.CalcuteHash(entity.password),
+                name = entity.name,
+                location = entity.location,
+                email = entity.email,
+                phone = entity.phone,
+                role = "user",
+                birthday = entity.birthday,
+                createAt = Hepler.CurrentTime(),
+                updateAt = Hepler.CurrentTime(),
+                status = "enable"
+            };
+            await mCollection.InsertOneAsync(newUser);
             return new Result
             {
                 status = 200,
@@ -101,7 +110,7 @@ namespace MongoDatabase.Models
             };
         }
 
-        public async Task<Result> UpdateUser(string userId, User updateUser)
+        public async Task<Result> UpdateUser(string userId, UpdateUserInfo updateUser)
         {
             UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.updateAt, Hepler.CurrentTime());
             if (updateUser.username != null)
@@ -136,7 +145,7 @@ namespace MongoDatabase.Models
             };
         }
 
-        public async Task<Result> UpdateRole(string userId, User updateRoleUser)
+        public async Task<Result> UpdateRole(string userId, UpdateRoleUserInfo updateRoleUser)
         {
             UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.updateAt, Hepler.CurrentTime());
             if (updateRoleUser.role != null) updateBuilder.Set(x => x.role, updateRoleUser.role);
@@ -147,7 +156,7 @@ namespace MongoDatabase.Models
                 else return new Result
                 {
                     status = 422,
-                    data = $"Invalid value status: {updateRoleUser.status}"
+                    data = $"Invalied value status: {updateRoleUser.status}"
                 };
             }
             User user = await mCollection.FindOneAndUpdateAsync(x => x._id == userId, updateBuilder);

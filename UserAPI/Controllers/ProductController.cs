@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using MongoDatabase.Entities;
 using MongoDatabase.Models;
 using System;
-using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace UserAPI.Controllers
@@ -24,18 +20,16 @@ namespace UserAPI.Controllers
         /// <summary>create new product</summary>
         /// <remarks>create new product</remarks>
         /// <returns></returns>
+        /// <param name="newProduct">the information of new product you want to add in your database</param>
         /// <response code="200">return infomation of new product</response>
         /// <response code="400">if get mistake</response>
         [HttpPost("/products")]
         [ProducesResponseType(200, Type = typeof(ResponseType))]
         [ProducesResponseType(400, Type = typeof(ResponseType))]
-        public async Task<object> CreateNewProduct()
+        public async Task<object> CreateNewProduct([FromBody] NewProductInfo newProduct)
         {
             try
             {
-                StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8);
-                string productInfo = await reader.ReadToEndAsync();
-                Product newProduct = JsonConvert.DeserializeObject<Product>(productInfo);
                 Result result = await productModel.InsertProduct(newProduct);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
@@ -49,16 +43,17 @@ namespace UserAPI.Controllers
         /// <summary>get product by id</summary>
         /// <remarks>get product by id</remarks>
         /// <returns></returns>
+        /// <param name="productId">the id of product you want to get</param>
+        /// <param name="fieldsString">the specified fields you want to get</param>
         /// <response code="200">return infomation of product with specified fields</response>
         /// <response code="400">if get mistake</response>
         [HttpGet("/products/{productId}")]
         [ProducesResponseType(200, Type = typeof(ResponseType))]
         [ProducesResponseType(400, Type = typeof(ResponseType))]
-        public async Task<object> GetProductById(string productId)
+        public async Task<object> GetProductById(string productId, [FromQuery] string fieldsString)
         {
             try
             {
-                string fieldsString = Request.Query["fields"];
                 Result result;
                 if (fieldsString != null)
                 {
@@ -78,17 +73,17 @@ namespace UserAPI.Controllers
         /// <summary>get list products</summary>
         /// <remarks>get list products</remarks>
         /// <returns></returns>
+        /// <param name="pageIndex">the page index you want to get</param>
+        /// <param name="pageSize">the user per page you want to set</param>
         /// <response code="200">return infomation of list products</response>
         /// <response code="400">if get mistake</response>
         [HttpGet("/products")]
         [ProducesResponseType(200, Type = typeof(ResponseType))]
         [ProducesResponseType(400, Type = typeof(ResponseType))]
-        public async Task<object> GetListProduct()
+        public async Task<object> GetListProduct([FromQuery] int pageSize, [FromQuery] int pageIndex)
         {
             try
             {
-                string pageSize = Request.Query["page_size"];
-                string pageIndex = Request.Query["page_index"];
                 Result result = await productModel.GetListProduct();
                 return Ok(Responder.Success(result.data));
             }
@@ -101,18 +96,17 @@ namespace UserAPI.Controllers
         /// <summary>update product</summary>
         /// <remarks>update product</remarks>
         /// <returns></returns>
+        /// <param name="productId">the id of product you want to update</param>
+        /// <param name="updateProduct">the info used to update</param>
         /// <response code="200">return infomation of product you updated</response>
         /// <response code="400">if get mistake</response>
         [HttpPut("/products/{productId}")]
         [ProducesResponseType(200, Type = typeof(ResponseType))]
         [ProducesResponseType(400, Type = typeof(ResponseType))]
-        public async Task<object> UpdateProduct(string productId)
+        public async Task<object> UpdateProduct(string productId, [FromBody] UpdateProductInfo updateProduct)
         {
             try
             {
-                StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8);
-                string productInfo = await reader.ReadToEndAsync();
-                Product updateProduct = JsonConvert.DeserializeObject<Product>(productInfo);
                 Result result = await productModel.UpdateProduct(productId, updateProduct);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
@@ -126,6 +120,7 @@ namespace UserAPI.Controllers
         /// <summary>delete product</summary>
         /// <remarks>delete product</remarks>
         /// <returns></returns>
+        /// <param name="productId">the id of product you want to update</param>
         /// <response code="200">return infomation of product you deleted</response>
         /// <response code="400">if get mistake</response>
         [HttpDelete("/products/{productId}")]

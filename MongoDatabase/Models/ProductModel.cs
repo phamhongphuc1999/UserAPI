@@ -16,7 +16,7 @@ namespace MongoDatabase.Models
             mCollection = mDatabase.GetCollection<Product>("product_list");
         }
 
-        public async Task<Result> InsertProduct(Product entity)
+        public async Task<Result> InsertProduct(NewProductInfo entity)
         {
             Product product = mCollection.Find(x => x.name == entity.name).ToList().FirstOrDefault();
             if (product != null) return new Result
@@ -24,11 +24,19 @@ namespace MongoDatabase.Models
                 status = 400,
                 data = $"username {entity.name} have existed"
             };
-            entity.createAt = Hepler.CurrentTime();
-            entity.updateAt = Hepler.CurrentTime();
-            entity.status = "enable";
-            await mCollection.InsertOneAsync(entity);
-            Product newProduct = mCollection.Find(x => x.name == entity.name).ToList().FirstOrDefault();
+            Product newProduct = new Product()
+            {
+                name = entity.name,
+                origin = entity.origin,
+                amount = entity.amount,
+                price = entity.price,
+                guarantee = (entity.guarantee > 0) ? entity.guarantee : 0,
+                sale = (entity.sale > 0) ? entity.sale : 0,
+                createAt = Hepler.CurrentTime(),
+                updateAt = Hepler.CurrentTime(),
+                status = "enable"
+            };
+            await mCollection.InsertOneAsync(newProduct);
             return new Result
             {
                 status = 200,
@@ -72,7 +80,7 @@ namespace MongoDatabase.Models
             };
         }
 
-        public async Task<Result> UpdateProduct(string productId, Product updateProduct)
+        public async Task<Result> UpdateProduct(string productId, UpdateProductInfo updateProduct)
         {
             UpdateDefinition<Product> updateBuilder = Builders<Product>.Update.Set(x => x.updateAt, Hepler.CurrentTime());
             if (updateProduct.name != null) updateBuilder = updateBuilder.Set(x => x.name, updateProduct.name);
