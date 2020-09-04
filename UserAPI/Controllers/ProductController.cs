@@ -24,8 +24,8 @@ namespace UserAPI.Controllers
         /// <response code="200">return infomation of new product</response>
         /// <response code="400">if get mistake</response>
         [HttpPost("/products")]
-        [ProducesResponseType(200, Type = typeof(ResponseType))]
-        [ProducesResponseType(400, Type = typeof(ResponseType))]
+        [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
+        [ProducesResponseType(400, Type = typeof(ResponseFailType))]
         public async Task<object> CreateNewProduct([FromBody] NewProductInfo newProduct)
         {
             try
@@ -44,21 +44,21 @@ namespace UserAPI.Controllers
         /// <remarks>get product by id</remarks>
         /// <returns></returns>
         /// <param name="productId">the id of product you want to get</param>
-        /// <param name="fieldsString">the specified fields you want to get</param>
+        /// <param name="fields">the specified fields you want to get</param>
         /// <response code="200">return infomation of product with specified fields</response>
         /// <response code="400">if get mistake</response>
         [HttpGet("/products/{productId}")]
-        [ProducesResponseType(200, Type = typeof(ResponseType))]
-        [ProducesResponseType(400, Type = typeof(ResponseType))]
-        public async Task<object> GetProductById(string productId, [FromQuery] string fieldsString)
+        [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
+        [ProducesResponseType(400, Type = typeof(ResponseFailType))]
+        public async Task<object> GetProductById(string productId, [FromQuery] string fields)
         {
             try
             {
                 Result result;
-                if (fieldsString != null)
+                if (fields != null)
                 {
-                    string[] fields = fieldsString.Split(',');
-                    result = await productModel.GetProductById(productId, fields);
+                    string[] fieldList = fields.Split(',');
+                    result = await productModel.GetProductById(productId, fieldList);
                 }
                 else result = await productModel.GetProductById(productId);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
@@ -78,8 +78,8 @@ namespace UserAPI.Controllers
         /// <response code="200">return infomation of list products</response>
         /// <response code="400">if get mistake</response>
         [HttpGet("/products")]
-        [ProducesResponseType(200, Type = typeof(ResponseType))]
-        [ProducesResponseType(400, Type = typeof(ResponseType))]
+        [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
+        [ProducesResponseType(400, Type = typeof(ResponseFailType))]
         public async Task<object> GetListProduct([FromQuery] int pageSize, [FromQuery] int pageIndex)
         {
             try
@@ -101,8 +101,8 @@ namespace UserAPI.Controllers
         /// <response code="200">return infomation of product you updated</response>
         /// <response code="400">if get mistake</response>
         [HttpPut("/products/{productId}")]
-        [ProducesResponseType(200, Type = typeof(ResponseType))]
-        [ProducesResponseType(400, Type = typeof(ResponseType))]
+        [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
+        [ProducesResponseType(400, Type = typeof(ResponseFailType))]
         public async Task<object> UpdateProduct(string productId, [FromBody] UpdateProductInfo updateProduct)
         {
             try
@@ -124,8 +124,8 @@ namespace UserAPI.Controllers
         /// <response code="200">return infomation of product you deleted</response>
         /// <response code="400">if get mistake</response>
         [HttpDelete("/products/{productId}")]
-        [ProducesResponseType(200, Type = typeof(ResponseType))]
-        [ProducesResponseType(400, Type = typeof(ResponseType))]
+        [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
+        [ProducesResponseType(400, Type = typeof(ResponseFailType))]
         public async Task<object> DeleteProduct(string productId)
         {
             try

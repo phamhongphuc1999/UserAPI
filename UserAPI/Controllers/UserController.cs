@@ -7,6 +7,7 @@ using MongoDatabase.Entities;
 using UserAPI.Models;
 using UserAPI.JWT;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.Extensions.Logging;
 
 namespace UserAPI.Controllers
 {
@@ -15,11 +16,13 @@ namespace UserAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly IOptions<JWTConfig> _jwtConfig;
+        private readonly ILogger<UserController> _logger;
         private UserModel userModel;
 
-        public UserController(IOptions<JWTConfig> jwtConfig)
+        public UserController(IOptions<JWTConfig> jwtConfig, ILogger<UserController> logger)
         {
             _jwtConfig = jwtConfig;
+            _logger = logger;
             userModel = new UserModel();
         }
 
@@ -31,10 +34,10 @@ namespace UserAPI.Controllers
         /// <response code="401">username or password is wrong</response>
         /// <response code="403">This account is enable to login</response>
         [HttpGet("/login")]
-        [ProducesResponseType(200, Type = typeof(ResponseType))]
-        [ProducesResponseType(400, Type = typeof(ResponseType))]
-        [ProducesResponseType(401, Type = typeof(ResponseType))]
-        [ProducesResponseType(403, Type = typeof(ResponseType))]
+        [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
+        [ProducesResponseType(400, Type = typeof(ResponseFailType))]
+        [ProducesResponseType(401, Type = typeof(ResponseFailType))]
+        [ProducesResponseType(403, Type = typeof(ResponseFailType))]
         public async Task<object> Login([FromBody] UserLoginInfo info)
         {
             try
@@ -61,7 +64,7 @@ namespace UserAPI.Controllers
         /// <returns></returns>
         /// <response code="200">reset access token</response>
         [HttpGet("/logout")]
-        [ProducesResponseType(200, Type = typeof(ResponseType))]
+        [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
         public async Task<object> Logout()
         {
             try
@@ -83,8 +86,8 @@ namespace UserAPI.Controllers
         /// <response code="200">return infomation of new user</response>
         /// <response code="400">if get mistake</response>
         [HttpPost("/users")]
-        [ProducesResponseType(200, Type = typeof(ResponseType))]
-        [ProducesResponseType(400, Type = typeof(ResponseType))]
+        [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
+        [ProducesResponseType(400, Type = typeof(ResponseFailType))]
         public async Task<object> CreateNewUser([FromBody] NewUserInfo newUser)
         {
             try
@@ -102,22 +105,22 @@ namespace UserAPI.Controllers
         /// <summary>get user by id</summary>
         /// <remarks>get user by id</remarks>
         /// <param name="userId">the id of user you want to get</param>
-        /// <param name="fieldsString">the specified fields you want to get</param>
+        /// <param name="fields">the specified fields you want to get</param>
         /// <returns></returns>
         /// <response code="200">return infomation of user with specified fields</response>
         /// <response code="400">if get mistake</response>
         [HttpGet("/users/{userId}")]
-        [ProducesResponseType(200, Type = typeof(ResponseType))]
-        [ProducesResponseType(400, Type = typeof(ResponseType))]
-        public async Task<object> GetUserById(string userId, [FromQuery] string fieldsString)
+        [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
+        [ProducesResponseType(400, Type = typeof(ResponseFailType))]
+        public async Task<object> GetUserById(string userId, [FromQuery] string fields)
         {
             try
             {
                 Result result;
-                if (fieldsString != null)
+                if (fields != null)
                 {
-                    string[] fields = fieldsString.Split(',');
-                    result = await userModel.GetUserById(userId, fields);
+                    string[] fieldList = fields.Split(',');
+                    result = await userModel.GetUserById(userId, fieldList);
                 }
                 else result = await userModel.GetUserById(userId);
                 if(result.status == 200) return Ok(Responder.Success(result.data));
@@ -137,8 +140,8 @@ namespace UserAPI.Controllers
         /// <response code="200">return infomation of list user with pagination</response>
         /// <response code="400">if get mistake</response>
         [HttpGet("/users")]
-        [ProducesResponseType(200, Type = typeof(ResponseType))]
-        [ProducesResponseType(400, Type = typeof(ResponseType))]
+        [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
+        [ProducesResponseType(400, Type = typeof(ResponseFailType))]
         public async Task<object> GetListUser([FromQuery] int pageSize, [FromQuery] int pageIndex)
         {
             try
@@ -162,8 +165,8 @@ namespace UserAPI.Controllers
         /// <response code="200">return infomation of user you updated</response>
         /// <response code="400">if get mistake</response>
         [HttpPut("/users/{userId}")]
-        [ProducesResponseType(200, Type = typeof(ResponseType))]
-        [ProducesResponseType(400, Type = typeof(ResponseType))]
+        [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
+        [ProducesResponseType(400, Type = typeof(ResponseFailType))]
         public async Task<object> UpdateUser(string userId, [FromBody] UpdateUserInfo updateUser, 
             [FromQuery][Required] string oldUsername, [FromQuery][Required] string oldPassword)
         {
@@ -191,9 +194,9 @@ namespace UserAPI.Controllers
         /// <response code="400">if get mistake</response>
         /// <response code="422">Invalied argument</response>
         [HttpPut("/admin/users/{userId}")]
-        [ProducesResponseType(200, Type = typeof(ResponseType))]
-        [ProducesResponseType(400, Type = typeof(ResponseType))]
-        [ProducesResponseType(422, Type = typeof(ResponseType))]
+        [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
+        [ProducesResponseType(400, Type = typeof(ResponseFailType))]
+        [ProducesResponseType(422, Type = typeof(ResponseFailType))]
         public async Task<object> UpdateRole(string userId, [FromBody] UpdateRoleUserInfo updateRoleUser)
         {
             try
@@ -217,8 +220,8 @@ namespace UserAPI.Controllers
         /// <response code="200">return infomation of user you deleted</response>
         /// <response code="400">if get mistake</response>
         [HttpDelete("/users/{userId}")]
-        [ProducesResponseType(200, Type = typeof(ResponseType))]
-        [ProducesResponseType(400, Type = typeof(ResponseType))]
+        [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
+        [ProducesResponseType(400, Type = typeof(ResponseFailType))]
         public async Task<object> DeleteUser(string userId)
         {
             try
