@@ -12,7 +12,6 @@ namespace MongoDatabase.Models
     {
         public ProductModel() : base()
         {
-            mDatabase = client.GetDatabase("Product");
             mCollection = mDatabase.GetCollection<Product>("product_list");
         }
 
@@ -22,7 +21,7 @@ namespace MongoDatabase.Models
             if (product != null) return new Result
             {
                 status = 400,
-                data = $"username {entity.name} have existed"
+                data = $"product name {entity.name} have existed"
             };
             Product newProduct = new Product()
             {
@@ -51,7 +50,7 @@ namespace MongoDatabase.Models
             if (product == null) return new Result
             {
                 status = 400,
-                data = $"the user with id: {productId} do not exist"
+                data = $"the product with id: {productId} do not exist"
             };
             if (fields == null) return new Result
             {
@@ -70,20 +69,42 @@ namespace MongoDatabase.Models
             };
         }
 
-        public async Task<Result> GetListProduct()
+        public async Task<Result> GetListProduct(int pageSize = Int32.MinValue, int pageIndex = Int32.MinValue)
         {
             List<Product> productList = await mCollection.Find(x => x.name != String.Empty).ToListAsync();
+            int totalResult = productList.Count;
+            if (pageSize == Int32.MinValue) pageSize = totalResult;
+            if (pageIndex == Int32.MinValue) pageIndex = 1;
+            int index = pageSize * (pageIndex - 1);
             return new Result
             {
                 status = 200,
-                data = productList
+                data = new
+                {
+                    user_list = productList.GetRange(index, pageIndex),
+                    pagination = new
+                    {
+                        totalResult = totalResult,
+                        pageIndex = pageIndex,
+                        pageSize = pageSize
+                    }
+                }
             };
         }
 
         public async Task<Result> UpdateProduct(string productId, UpdateProductInfo updateProduct)
         {
             UpdateDefinition<Product> updateBuilder = Builders<Product>.Update.Set(x => x.updateAt, Hepler.CurrentTime());
-            if (updateProduct.name != null) updateBuilder = updateBuilder.Set(x => x.name, updateProduct.name);
+            if (updateProduct.name != null)
+            {
+                Product checkProduct = mCollection.Find(x => x.name == updateProduct.name).FirstOrDefault();
+                if(checkProduct != null) return new Result
+                {
+                    status = 400,
+                    data = $"the product name: {updateProduct.name} is exist"
+                };
+                updateBuilder = updateBuilder.Set(x => x.name, updateProduct.name);
+            }
             if (updateProduct.origin != null) updateBuilder = updateBuilder.Set(x => x.origin, updateProduct.origin);
             if (updateProduct.amount > 0) updateBuilder = updateBuilder.Set(x => x.amount, updateProduct.amount);
             if (updateProduct.price > 0) updateBuilder = updateBuilder.Set(x => x.price, updateProduct.price);
@@ -99,7 +120,7 @@ namespace MongoDatabase.Models
             else return new Result
             {
                 status = 400,
-                data = $"do not update user with id: {productId}"
+                data = $"do not update product with id: {productId}"
             };
         }
 
@@ -114,7 +135,7 @@ namespace MongoDatabase.Models
             else return new Result
             {
                 status = 400,
-                data = $"do not delete user with id: {productId}"
+                data = $"do not delete product with id: {productId}"
             };
         }
     }

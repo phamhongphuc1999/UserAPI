@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using MongoDatabase.Entities;
 using MongoDatabase.Models;
 using System;
@@ -11,10 +12,12 @@ namespace UserAPI.Controllers
     public class ProductController : ControllerBase
     {
         private ProductModel productModel;
+        private readonly ILogger<ProductController> _logger;
 
-        public ProductController()
+        public ProductController(ILogger<ProductController> logger)
         {
             productModel = new ProductModel();
+            _logger = logger;
         }
 
         /// <summary>create new product</summary>
@@ -23,13 +26,17 @@ namespace UserAPI.Controllers
         /// <param name="newProduct">the information of new product you want to add in your database</param>
         /// <response code="200">return infomation of new product</response>
         /// <response code="400">if get mistake</response>
+        /// <response code="401">You not allow to action</response>
         [HttpPost("/products")]
         [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
         [ProducesResponseType(400, Type = typeof(ResponseFailType))]
+        [ProducesResponseType(401, Type = typeof(ResponseFailType))]
         public async Task<object> CreateNewProduct([FromBody] NewProductInfo newProduct)
         {
             try
             {
+                string role = Request.Headers["role"];
+                if (role != "admin" && role != "user") return StatusCode(401, Responder.Fail("You not allow to action"));
                 Result result = await productModel.InsertProduct(newProduct);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
@@ -84,7 +91,7 @@ namespace UserAPI.Controllers
         {
             try
             {
-                Result result = await productModel.GetListProduct();
+                Result result = await productModel.GetListProduct(pageSize, pageIndex);
                 return Ok(Responder.Success(result.data));
             }
             catch (Exception error)
@@ -100,13 +107,17 @@ namespace UserAPI.Controllers
         /// <param name="updateProduct">the info used to update</param>
         /// <response code="200">return infomation of product you updated</response>
         /// <response code="400">if get mistake</response>
+        /// <response code="401">You not allow to action</response>
         [HttpPut("/products/{productId}")]
         [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
         [ProducesResponseType(400, Type = typeof(ResponseFailType))]
+        [ProducesResponseType(401, Type = typeof(ResponseFailType))]
         public async Task<object> UpdateProduct(string productId, [FromBody] UpdateProductInfo updateProduct)
         {
             try
             {
+                string role = Request.Headers["role"];
+                if (role != "admin" && role != "user") return StatusCode(401, Responder.Fail("You not allow to action"));
                 Result result = await productModel.UpdateProduct(productId, updateProduct);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
@@ -123,13 +134,17 @@ namespace UserAPI.Controllers
         /// <param name="productId">the id of product you want to update</param>
         /// <response code="200">return infomation of product you deleted</response>
         /// <response code="400">if get mistake</response>
+        /// <response code="401">You not allow to action</response>
         [HttpDelete("/products/{productId}")]
         [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
         [ProducesResponseType(400, Type = typeof(ResponseFailType))]
+        [ProducesResponseType(401, Type = typeof(ResponseFailType))]
         public async Task<object> DeleteProduct(string productId)
         {
             try
             {
+                string role = Request.Headers["role"];
+                if (role != "admin" && role != "user") return StatusCode(401, Responder.Fail("You not allow to action"));
                 Result result = await productModel.DeleteProduct(productId);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));

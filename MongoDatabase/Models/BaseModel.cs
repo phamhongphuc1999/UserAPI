@@ -11,6 +11,7 @@ namespace MongoDatabase.Models
         public BaseModel()
         {
             client = new MongoClient(Config.MONGO_SCRIPT);
+            mDatabase = client.GetDatabase("User");
         }
     }
 }

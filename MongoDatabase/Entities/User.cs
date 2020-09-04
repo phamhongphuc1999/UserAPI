@@ -37,13 +37,14 @@ namespace MongoDatabase.Entities
 
     public class NewUserInfo
     {
-        [Required(ErrorMessage = "the username is required")]
+        [Required(ErrorMessage = "the username is required", AllowEmptyStrings = false)]
         public string username { get; set; }
 
         [Required(ErrorMessage = "the password is required")]
+        [RegularExpression(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$", ErrorMessage = "Minimum eight characters, at least one letter and one number")]
         public string password { get; set; }
 
-        [Required(ErrorMessage = "the name is required")]
+        [Required(ErrorMessage = "the name is required", AllowEmptyStrings = false)]
         public string name { get; set; }
 
         [Required(ErrorMessage = "the location is required")]
@@ -61,17 +62,25 @@ namespace MongoDatabase.Entities
     public class UpdateUserInfo
     {
         public string username { get; set; }
+
+        [RegularExpression(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$", ErrorMessage = "Minimum eight characters, at least one letter and one number")]
         public string password { get; set; }
+        
         public string name { get; set; }
+        
         public string location { get; set; }
+        
         public string email { get; set; }
+        
         public string birthday { get; set; }
+        
         public string phone { get; set; }
     }
 
     public class UpdateRoleUserInfo
     {
         public string role { get; set; }
+        
         public string status { get; set; }
     }
 

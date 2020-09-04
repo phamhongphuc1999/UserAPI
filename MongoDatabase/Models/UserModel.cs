@@ -12,13 +12,12 @@ namespace MongoDatabase.Models
     {
         public UserModel() : base()
         {
-            mDatabase = client.GetDatabase("User");
             mCollection = mDatabase.GetCollection<User>("user_list");
         }
 
         public async Task<Result> Login(string username, string password)
         {
-            User user = mCollection.Find(x => x.username == username).ToList().FirstOrDefault();
+            User user = mCollection.Find(x => x.username == username).FirstOrDefault();
             if (user == null) return new Result
             {
                 status = 401,
@@ -100,13 +99,26 @@ namespace MongoDatabase.Models
             };
         }
 
-        public async Task<Result> GetListUser()
+        public async Task<Result> GetListUser(int pageSize = Int32.MinValue, int pageIndex = Int32.MinValue)
         {
             List<User> userList = await mCollection.Find(x => x.name != String.Empty).ToListAsync();
+            int totalResult = userList.Count;
+            if (pageSize == Int32.MinValue) pageSize = totalResult;
+            if (pageIndex == Int32.MinValue) pageIndex = 1;
+            int index = pageSize * (pageIndex - 1);
             return new Result
             {
                 status = 200,
-                data = userList
+                data = new
+                {
+                    user_list = userList.GetRange(index, pageIndex),
+                    pagination = new
+                    {
+                        totalResult = totalResult,
+                        pageIndex = pageIndex,
+                        pageSize = pageSize
+                    }
+                } 
             };
         }
 

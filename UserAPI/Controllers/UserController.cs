@@ -7,7 +7,7 @@ using MongoDatabase.Entities;
 using UserAPI.Models;
 using UserAPI.JWT;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 
 namespace UserAPI.Controllers
 {
@@ -16,13 +16,11 @@ namespace UserAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly IOptions<JWTConfig> _jwtConfig;
-        private readonly ILogger<UserController> _logger;
         private UserModel userModel;
 
-        public UserController(IOptions<JWTConfig> jwtConfig, ILogger<UserController> logger)
+        public UserController(IOptions<JWTConfig> jwtConfig)
         {
             _jwtConfig = jwtConfig;
-            _logger = logger;
             userModel = new UserModel();
         }
 
@@ -146,7 +144,7 @@ namespace UserAPI.Controllers
         {
             try
             {
-                Result result = await userModel.GetListUser();
+                Result result = await userModel.GetListUser(pageSize, pageIndex);
                 return Ok(Responder.Success(result.data));
             }
             catch (Exception error)
@@ -203,7 +201,6 @@ namespace UserAPI.Controllers
             try
             {
                 string role = Request.Headers["role"];
-                _logger.LogInformation(role);
                 if (role != "admin") return StatusCode(401, Responder.Fail("You not allow to update role"));
                 Result result = await userModel.UpdateRole(userId, updateRoleUser);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
@@ -221,13 +218,23 @@ namespace UserAPI.Controllers
         /// <param name="userId">the id of user you want to delete</param>
         /// <response code="200">return infomation of user you deleted</response>
         /// <response code="400">if get mistake</response>
+        /// <response code="401">You not allow to action</response>
         [HttpDelete("/users/{userId}")]
         [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
         [ProducesResponseType(400, Type = typeof(ResponseFailType))]
+        [ProducesResponseType(401, Type = typeof(ResponseFailType))]
         public async Task<object> DeleteUser(string userId)
         {
             try
             {
+                string role = Request.Headers["role"];
+                if(role != "admin")
+                {
+                    string username = Request.Headers["username"];
+                    Result temp = await userModel.GetUserById(userId, new string[] { "username" });
+                    Dictionary<string, string> data = (Dictionary<string, string>)temp.data;
+                    if (username != data["username"]) return StatusCode(401, Responder.Fail("You not allow to action"));
+                }
                 Result result = await userModel.DeleteUser(userId);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));

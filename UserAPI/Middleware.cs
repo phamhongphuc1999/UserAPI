@@ -44,14 +44,23 @@ namespace UserAPI
         public async Task Invoke(HttpContext httpContext)
         {
             PathString path = httpContext.Request.Path;
-            if (path.Value != "/login" && path.Value != "/logout")
+            if(path.Value == "/login" || path.Value == "/logout")
             {
-                if (httpContext.Request.Method == "POST" && path == "/users")
-                {
-                    await _next(httpContext);
-                    HelperMiddleware.LoggerHandler(httpContext, _logger, mainUrl);
-                    return;
-                }
+                await _next(httpContext);
+                HelperMiddleware.LoggerHandler(httpContext, _logger, mainUrl);
+            }
+            else if(path.Value == "/users" && httpContext.Request.Method == "POST")
+            {
+                await _next(httpContext);
+                HelperMiddleware.LoggerHandler(httpContext, _logger, mainUrl);
+            }
+            else if(path.Value.StartsWith("/products") && httpContext.Request.Method == "GET")
+            {
+                await _next(httpContext);
+                HelperMiddleware.LoggerHandler(httpContext, _logger, mainUrl);
+            }
+            else
+            {
                 string token = httpContext.Request.Headers["token"];
                 if (token == "null")
                 {
@@ -63,8 +72,6 @@ namespace UserAPI
                     IAuthService authService = new JWTService(secretKey);
                     List<Claim> claims = authService.GetTokenClaims(token).ToList();
                     string role = claims.Find(x => x.Type == "Role").Value;
-                    if (role == "10") role = "admin";
-                    else if (role == "01") role = "user";
                     string username = claims.Find(x => x.Type == ClaimTypes.Name).Value;
                     string password = claims.Find(x => x.Type == "Password").Value;
                     httpContext.Request.Headers.Add("username", username);
@@ -73,11 +80,6 @@ namespace UserAPI
                     await _next(httpContext);
                     HelperMiddleware.LoggerHandler(httpContext, _logger, mainUrl);
                 }
-            }
-            else
-            {
-                await _next(httpContext);
-                HelperMiddleware.LoggerHandler(httpContext, _logger, mainUrl);
             }
         }
     }
