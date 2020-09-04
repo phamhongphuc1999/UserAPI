@@ -110,7 +110,7 @@ namespace MongoDatabase.Models
             };
         }
 
-        public async Task<Result> UpdateUser(string userId, UpdateUserInfo updateUser)
+        public async Task<Result> UpdateUser(string username, UpdateUserInfo updateUser)
         {
             UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.updateAt, Hepler.CurrentTime());
             if (updateUser.username != null)
@@ -132,7 +132,7 @@ namespace MongoDatabase.Models
                 string newPassword = SHA256Hash.CalcuteHash(updateUser.password);
                 updateBuilder = updateBuilder.Set(x => x.password, newPassword);
             }
-            User user = await mCollection.FindOneAndUpdateAsync(x => x._id == userId, updateBuilder);
+            User user = await mCollection.FindOneAndUpdateAsync(x => x.username == username, updateBuilder);
             if (user != null) return new Result
             {
                 status = 200,
@@ -141,7 +141,7 @@ namespace MongoDatabase.Models
             else return new Result
             {
                 status = 400,
-                data = $"do not update user with id: {userId}"
+                data = $"do not update user with username: {username}"
             };
         }
 

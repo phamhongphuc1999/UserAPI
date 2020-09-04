@@ -158,16 +158,15 @@ namespace UserAPI.Controllers
         /// <summary>update user</summary>
         /// <remarks>update user</remarks>
         /// <returns></returns>
-        /// <param name="userId">the id of user you want to update</param>
         /// <param name="updateUser">the info used to update</param>
         /// <param name="oldPassword">the confirm password to update</param>
         /// <param name="oldUsername">the confirm username to update</param>
         /// <response code="200">return infomation of user you updated</response>
         /// <response code="400">if get mistake</response>
-        [HttpPut("/users/{userId}")]
+        [HttpPut("/users")]
         [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
         [ProducesResponseType(400, Type = typeof(ResponseFailType))]
-        public async Task<object> UpdateUser(string userId, [FromBody] UpdateUserInfo updateUser, 
+        public async Task<object> UpdateUser([FromBody] UpdateUserInfo updateUser, 
             [FromQuery][Required] string oldUsername, [FromQuery][Required] string oldPassword)
         {
             try
@@ -175,7 +174,7 @@ namespace UserAPI.Controllers
                 string username = Request.Headers["username"];
                 string password = Request.Headers["password"];
                 if (oldUsername != username || oldPassword != password) return StatusCode(401, Responder.Fail("wrong username or password"));
-                Result result = await userModel.UpdateUser(userId, updateUser);
+                Result result = await userModel.UpdateUser(username, updateUser);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
             }
