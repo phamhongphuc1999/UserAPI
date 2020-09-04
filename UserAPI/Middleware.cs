@@ -8,6 +8,24 @@ using UserAPI.JWT;
 
 namespace UserAPI
 {
+    internal static class HelperMiddleware
+    {
+        public static void LoggerHandler(HttpContext httpContext, ILogger _logger, string mainUrl)
+        {
+            int statusCode = httpContext.Response.StatusCode;
+            if (statusCode == 200) _logger.LogInformation("{0}: {1}{2} => {3}",
+                    httpContext.Request.Method,
+                    mainUrl,
+                    httpContext.Request.Path,
+                    statusCode);
+            else _logger.LogError("{0}: {1}{2} => {3}",
+                   httpContext.Request.Method,
+                   mainUrl,
+                   httpContext.Request.Path,
+                   statusCode);
+        }
+    }
+
     public class AuthorizedMiddleware
     {
         private readonly RequestDelegate _next;
@@ -28,11 +46,17 @@ namespace UserAPI
             PathString path = httpContext.Request.Path;
             if (path.Value != "/login" && path.Value != "/logout")
             {
+                if (httpContext.Request.Method == "POST" && path == "/users")
+                {
+                    await _next(httpContext);
+                    HelperMiddleware.LoggerHandler(httpContext, _logger, mainUrl);
+                    return;
+                }
                 string token = httpContext.Request.Headers["token"];
                 if (token == "null")
                 {
                     await httpContext.Response.WriteAsync("You Need To Login Before Action");
-                    this.LoggerHandler(httpContext);
+                    HelperMiddleware.LoggerHandler(httpContext, _logger, mainUrl);
                 }
                 else
                 {
@@ -47,29 +71,14 @@ namespace UserAPI
                     httpContext.Request.Headers.Add("password", password);
                     httpContext.Request.Headers.Add("role", role);
                     await _next(httpContext);
-                    this.LoggerHandler(httpContext);
+                    HelperMiddleware.LoggerHandler(httpContext, _logger, mainUrl);
                 }
             }
             else
             {
                 await _next(httpContext);
-                this.LoggerHandler(httpContext);
+                HelperMiddleware.LoggerHandler(httpContext, _logger, mainUrl);
             }
-        }
-
-        private void LoggerHandler(HttpContext httpContext)
-        {
-            int statusCode = httpContext.Response.StatusCode;
-            if (statusCode == 200) _logger.LogInformation("{0}: {1}{2} => {3}",
-                    httpContext.Request.Method,
-                    mainUrl,
-                    httpContext.Request.Path,
-                    statusCode);
-            else _logger.LogError("{0}: {1}{2} => {3}",
-                   httpContext.Request.Method,
-                   mainUrl,
-                   httpContext.Request.Path,
-                   statusCode);
         }
     }
 }

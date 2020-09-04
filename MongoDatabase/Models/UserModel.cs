@@ -133,11 +133,15 @@ namespace MongoDatabase.Models
                 updateBuilder = updateBuilder.Set(x => x.password, newPassword);
             }
             User user = await mCollection.FindOneAndUpdateAsync(x => x.username == username, updateBuilder);
-            if (user != null) return new Result
+            if (user != null)
             {
-                status = 200,
-                data = user
-            };
+                user = mCollection.Find(x => x._id == user._id).FirstOrDefault();
+                return new Result
+                {
+                    status = 200,
+                    data = user
+                };
+            }
             else return new Result
             {
                 status = 400,
@@ -160,11 +164,15 @@ namespace MongoDatabase.Models
                 };
             }
             User user = await mCollection.FindOneAndUpdateAsync(x => x._id == userId, updateBuilder);
-            if (user != null) return new Result
+            if (user != null)
             {
-                status = 200,
-                data = user
-            };
+                user = mCollection.Find(x => x._id == user._id).FirstOrDefault();
+                return new Result
+                {
+                    status = 200,
+                    data = user
+                };
+            }
             else return new Result
             {
                 status = 400,

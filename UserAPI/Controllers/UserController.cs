@@ -191,17 +191,20 @@ namespace UserAPI.Controllers
         /// <param name="updateRoleUser">the info used to update role</param>
         /// <response code="200">return infomation of user you updated</response>
         /// <response code="400">if get mistake</response>
+        /// <response code="401">you not allow to update role</response>
         /// <response code="422">Invalied argument</response>
         [HttpPut("/admin/users/{userId}")]
         [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
         [ProducesResponseType(400, Type = typeof(ResponseFailType))]
+        [ProducesResponseType(401, Type = typeof(ResponseFailType))]
         [ProducesResponseType(422, Type = typeof(ResponseFailType))]
         public async Task<object> UpdateRole(string userId, [FromBody] UpdateRoleUserInfo updateRoleUser)
         {
             try
             {
                 string role = Request.Headers["role"];
-                if (role == "user") return StatusCode(401, Responder.Fail("You not allow to update role"));
+                _logger.LogInformation(role);
+                if (role != "admin") return StatusCode(401, Responder.Fail("You not allow to update role"));
                 Result result = await userModel.UpdateRole(userId, updateRoleUser);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
