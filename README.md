@@ -56,3 +56,5 @@ thông tin chi tiết ở [đây](https://docs.microsoft.com/en-us/aspnet/core/t
 ###### middleware
 - https://stackoverflow.com/questions/36711068/call-controllers-action-method-from-middleware
 - https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-3.1#:~:text=Middleware%20is%20software%20that's%20assembled,next%20component%20in%20the%20pipeline.
+###### SQL Server
+- https://medium.com/@chathuranga94/connect-database-to-asp-net-core-web-api-63a53e8da1ca
