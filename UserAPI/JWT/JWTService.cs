@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using UserAPI.Models;
+using UserAPI.Models.JWT;
 
 namespace UserAPI.JWT
 {

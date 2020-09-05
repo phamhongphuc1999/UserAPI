@@ -11,6 +11,9 @@
     2. [Custom Middleware](#section2.2)
     3. [Map](#section2.3)
     4. [Truyền dữ liệu từ Startup vào middleware](#section2.4)
+3. [Swagger trong C#](#section3)
+    1. [Tổng quan](#section3.1)
+    2. [Cách xây dựng swagger trong C#](#section3.2)
 
 ### Cấu hình trong ASP.NET Core<a name="section1"></a>
 Cấu hình trong ASP.NET Core được lưu dưới dạng key-value, người dùng có thể lưu cấu hình trong các file định dạng
@@ -35,7 +38,7 @@ ASP.NET Core hỗ trợ đọc cấu hình từ các nguồn khác nhau và các
 - Command line Arguments (tham số dòng lệnh)
 - Environment variables (biến môi trường)
 - Custom Provider (cái này là tự tạo ra provider riêng theo ý muốn)
-### Load cấu hình<a name="section1.1"></a>
+#### Load cấu hình<a name="section1.1"></a>
        public class Program
        {
            public static void Main(string[] args)
@@ -225,3 +228,16 @@ và contructor của RedirectMiddleware sẽ được sửa lại như sau
     {
         _next = next;
     }
+### Swagger trong C#
+#### Tổng quan
+Swagger là 1 open source dùng để phát triển, thiết kế, xây dựng và làm tài liệu cho các hệ thống RESTfull Web Service. Ta có demo của Swagger như sau:
+![image](https://miro.medium.com/max/1050/1*2bl4noBhqE8z7bOubdYfXw.png)
+Swagger cung cấp những công cụ hỗ trợ việc tạo doc: Swagger UI, Swagger Editor, Swagger Codegen, Swagger Hub, Swagger Inspector. Trong đó 3 công cụ đầu tiên là open source, Swagger Hub và swagger Inspector là những công cụ cao cấp hơn nhưng sẽ phải trả phí, tuy nhiên chúng ta có thể dùng free trong vòng 30 ngày
+#### Cách xây dựng swagger trong C#
+thêm đoạn code dưới đây vào file <project>.csproj để enabled XML Comments
+    
+    <PropertyGroup>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);1591</NoWarn>
+    </PropertyGroup>
+

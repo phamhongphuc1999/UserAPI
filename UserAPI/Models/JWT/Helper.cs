@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using System.Security.Claims;
 
-namespace UserAPI.Models
+namespace UserAPI.Models.JWT
 {
     public static class Helper
     {

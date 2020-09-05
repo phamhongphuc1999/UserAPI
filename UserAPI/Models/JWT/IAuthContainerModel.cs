@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace UserAPI.Models
+namespace UserAPI.Models.JWT
 {
     public interface IAuthContainerModel
     {

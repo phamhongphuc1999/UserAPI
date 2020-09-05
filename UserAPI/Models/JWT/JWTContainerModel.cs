@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace UserAPI.Models
+namespace UserAPI.Models.JWT
 {
     public class JWTContainerModel: IAuthContainerModel
     {

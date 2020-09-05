@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace UserAPI.Models.SQLServer
+﻿namespace UserAPI.Models.SQLServer
 {
     public class Employee
     {

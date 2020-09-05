@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using MongoDatabase.Entities;
-using UserAPI.Models;
+using UserAPI.Models.JWT;
 using UserAPI.JWT;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;

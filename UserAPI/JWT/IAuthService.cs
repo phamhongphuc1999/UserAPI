@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 using System.Collections.Generic;
-using UserAPI.Models;
+using UserAPI.Models.JWT;
 
 namespace UserAPI.JWT
 {
