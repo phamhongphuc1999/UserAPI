@@ -29,7 +29,10 @@ thông tin chi tiết ở [đây](https://docs.microsoft.com/en-us/aspnet/core/t
     chắc chắn máy tính đã cài make
     muốn biết chương trình có những profile nào đọc trrong file: launchSettings.json
 
-###### Collection postman: https://www.getpostman.com/collections/1276a5fd32ba82f3f967
+### phát triển trong tương lai
+- chạy swagger bằng một custom swagger.json
+- chạy chương trình trên docker
+- viết unittest cho API
 
 ### tài liệu tham khảo
 ###### mongo
