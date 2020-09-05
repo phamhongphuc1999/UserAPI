@@ -38,9 +38,9 @@ namespace UserAPI
             });
 
             //connect SQL Server
-            services.AddDbContext<EmployeeDbContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("ConnectionStrings:SQLServer")));
-            services.AddScoped<EmployeeDbContext>();
+            services.AddDbContext<SQLData>(options =>
+              options.UseSqlServer(Configuration.GetConnectionString("SQLServer")));
+            services.AddScoped<SQLData>();
 
             services.AddControllers();
             services.AddHttpContextAccessor();

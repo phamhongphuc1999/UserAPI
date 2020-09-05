@@ -59,6 +59,11 @@ namespace UserAPI
                 await _next(httpContext);
                 HelperMiddleware.LoggerHandler(httpContext, _logger, mainUrl);
             }
+            else if (path.Value.StartsWith("/employees"))
+            {
+                await _next(httpContext);
+                HelperMiddleware.LoggerHandler(httpContext, _logger, mainUrl);
+            }
             else
             {
                 string token = httpContext.Request.Headers["token"];

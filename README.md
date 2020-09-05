@@ -1,11 +1,11 @@
-### API đơn giản kết nối với cơ sở dữ liệu mongo
+### API đơn giản kết nối với cơ sở dữ liệu mongo và SQL Server
     ngôn ngữ sử : C# ASP.NET Core
     trình biên dịch sử sụng: Visual Studio 2019
 
 ### cấu trúc chương trình
 ##### chương trình có hai project
 - MongoDatabase: class core, có chức năng tương tác với mongodb
-- UserAPI: ASP.NET API Core, tạo API tương tác với mongodb thông qua Model
+- UserAPI: ASP.NET API Core, tạo API tương tác với mongodb và SQL Server
 ### lưu ý setup chương trình
 ###### cài đặt thư viện gọi lệnh: make install
 ###### setup service swagger

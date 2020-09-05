@@ -111,7 +111,7 @@ namespace MongoDatabase.Models
                 status = 200,
                 data = new
                 {
-                    user_list = userList.GetRange(index, pageIndex),
+                    user_list = userList.GetRange(index, pageSize),
                     pagination = new
                     {
                         totalResult = totalResult,

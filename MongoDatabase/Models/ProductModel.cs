@@ -81,7 +81,7 @@ namespace MongoDatabase.Models
                 status = 200,
                 data = new
                 {
-                    user_list = productList.GetRange(index, pageIndex),
+                    user_list = productList.GetRange(index, pageSize),
                     pagination = new
                     {
                         totalResult = totalResult,
