@@ -94,5 +94,50 @@ namespace UserAPI.Controllers
                 return BadRequest(Responder.Fail(error.Message));
             }
         }
+
+        /// <summary>Update Employee</summary>
+        /// <remarks>Update Employee</remarks>
+        /// <param name="employeeId"></param>
+        /// <param name="updateEmployee"></param>
+        /// <returns></returns>
+        /// <response code="200">return infomation of updated employee</response>
+        /// <response code="400">if get mistake</response>
+        [HttpPut("/employees/{employeeId}")]
+        [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
+        [ProducesResponseType(400, Type = typeof(ResponseFailType))]
+        public async Task<ObjectResult> UpdateEmployee(int employeeId, [FromBody] InsertEmployeeInfo updateEmployee)
+        {
+            try
+            {
+                Result result = await employeeService.UpdateEmployee(employeeId, updateEmployee);
+                if (result.status == 200) return Ok(Responder.Success(result.data));
+                return StatusCode(result.status, Responder.Fail(result.data));
+            }
+            catch (Exception error)
+            {
+                return BadRequest(Responder.Fail(error.Message));
+            }
+        }
+
+        /// <summary>Delete Employee</summary>
+        /// <remarks>Delete Employee</remarks>
+        /// <param name="employeeId"></param>
+        /// <returns></returns>
+        [HttpDelete("/employees/{employeeId}")]
+        [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
+        [ProducesResponseType(400, Type = typeof(ResponseFailType))]
+        public async Task<ObjectResult> DeleteEmployee(int employeeId)
+        {
+            try
+            {
+                Result result = await employeeService.DeleteEmployee(employeeId);
+                if (result.status == 200) return Ok(Responder.Success(result.data));
+                return StatusCode(result.status, Responder.Fail(result.data));
+            }
+            catch (Exception error)
+            {
+                return BadRequest(Responder.Fail(error.Message));
+            }
+        }
     }
 }

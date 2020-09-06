@@ -6,7 +6,7 @@ namespace UserAPI.Services
 {
     public class BaseService
     {
-        protected SQLData sqlData;
+        private SQLData sqlData;
         private DbContextOptionsBuilder<SQLData> option;
 
         public BaseService(IConfiguration configuration)

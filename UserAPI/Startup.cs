@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.IO;
@@ -38,8 +37,7 @@ namespace UserAPI
             });
 
             //connect SQL Server
-            services.AddDbContext<SQLData>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("SQLServer")));
+            services.AddDbContext<SQLData>();
             services.AddScoped<SQLData>();
 
             services.AddControllers();
