@@ -38,10 +38,12 @@ namespace MongoDatabase.Entities
     public class NewUserInfo
     {
         [Required(ErrorMessage = "the username is required", AllowEmptyStrings = false)]
+        [StringLength(200)]
         public string username { get; set; }
 
         [Required(ErrorMessage = "the password is required")]
         [RegularExpression(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$", ErrorMessage = "Minimum eight characters, at least one letter and one number")]
+        [StringLength(200)]
         public string password { get; set; }
 
         [Required(ErrorMessage = "the name is required", AllowEmptyStrings = false)]
@@ -51,9 +53,11 @@ namespace MongoDatabase.Entities
         public string location { get; set; }
 
         [Required(ErrorMessage = "the email is required")]
+        [EmailAddress]
         public string email { get; set; }
 
         [Required(ErrorMessage = "the phone is required")]
+        [Phone]
         public string phone { get; set; }
 
         public string birthday { get; set; }
@@ -61,26 +65,32 @@ namespace MongoDatabase.Entities
 
     public class UpdateUserInfo
     {
+        [StringLength(200)]
         public string username { get; set; }
 
         [RegularExpression(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$", ErrorMessage = "Minimum eight characters, at least one letter and one number")]
+        [StringLength(200)]
         public string password { get; set; }
         
         public string name { get; set; }
         
         public string location { get; set; }
         
+        [EmailAddress]
         public string email { get; set; }
         
         public string birthday { get; set; }
         
+        [Phone]
         public string phone { get; set; }
     }
 
     public class UpdateRoleUserInfo
     {
+        [IncludeArray(true, CheckArray = new object[] { "admin", "user", "customer"}, ErrorMessage = "role is one of admin, user and customer")]
         public string role { get; set; }
         
+        [IncludeArray(true, CheckArray = new object[] { "enable", "disable"}, ErrorMessage = "status is enable or disable")]
         public string status { get; set; }
     }
 

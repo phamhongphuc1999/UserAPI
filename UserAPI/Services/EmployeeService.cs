@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using MongoDatabase;
 using MongoDatabase.Entities;
 using MongoDB.Bson;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UserAPI.Models.SQLServer;
@@ -75,12 +74,12 @@ namespace UserAPI.Services
             };
         }
 
-        public async Task<Result> GetListEmployees(int pageSize = Int32.MinValue, int pageIndex = Int32.MinValue)
+        public async Task<Result> GetListEmployees(int pageSize = 0, int pageIndex = 0)
         {
             List<Employee> employeeList = await SqlData.Employees.ToListAsync();
             int totalResult = employeeList.Count;
-            if (pageSize == Int32.MinValue) pageSize = totalResult;
-            if (pageIndex == Int32.MinValue) pageIndex = 1;
+            if (pageSize == 0) pageSize = totalResult;
+            if (pageIndex == 0) pageIndex = 1;
             int index = pageSize * (pageIndex - 1);
             return new Result
             {

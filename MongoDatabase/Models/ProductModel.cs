@@ -69,12 +69,12 @@ namespace MongoDatabase.Models
             };
         }
 
-        public async Task<Result> GetListProduct(int pageSize = Int32.MinValue, int pageIndex = Int32.MinValue)
+        public async Task<Result> GetListProduct(int pageSize = 0, int pageIndex = 0)
         {
             List<Product> productList = await mCollection.Find(x => x.name != String.Empty).ToListAsync();
             int totalResult = productList.Count;
-            if (pageSize == Int32.MinValue) pageSize = totalResult;
-            if (pageIndex == Int32.MinValue) pageIndex = 1;
+            if (pageSize == 0) pageSize = totalResult;
+            if (pageIndex == 0) pageIndex = 1;
             int index = pageSize * (pageIndex - 1);
             return new Result
             {
