@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Configuration;
 using MongoDatabase;
 using MongoDatabase.Entities;
@@ -35,12 +34,12 @@ namespace UserAPI.Services
                 Birthday = entity.Birthday ?? null,
                 Node = entity.Node ?? null
             };
-            EntityEntry result = SqlData.Employees.Add(newEmployee);
-            SqlData.SaveChanges();
-            if (result != null) return new Result
+            await SqlData.Employees.AddAsync(newEmployee);
+            int check = await SqlData.SaveChangesAsync();
+            if (check > 0) return new Result
             {
                 status = 200,
-                data = result
+                data = newEmployee
             };
             return new Result
             {
@@ -127,28 +126,39 @@ namespace UserAPI.Services
             if (updateEmployee.Sex != null) employee.Sex = updateEmployee.Sex;
             if (updateEmployee.Birthday != null) employee.Birthday = updateEmployee.Birthday;
             if (updateEmployee.Node != null) employee.Node = updateEmployee.Node;
-            SqlData.SaveChanges();
-            Employee result = SqlData.Employees.Find(employeeId);
-            return new Result
+            int check = await SqlData.SaveChangesAsync();
+            Employee result = await SqlData.Employees.FindAsync(employeeId);
+            if (check > 0) return new Result
             {
                 status = 200,
                 data = result
+            };
+            else return new Result
+            {
+                status = 400,
+                data = $"do not update employee with id: {employeeId}"
             };
         }
 
         public async Task<Result> DeleteEmployee(int employeeId)
         {
-            Employee employee = SqlData.Employees.Find(employeeId);
+            Employee employee = await SqlData.Employees.FindAsync(employeeId);
             if (employee == null) return new Result
             {
                 status = 400,
                 data = $"the employee with id: {employeeId} do not exist"
             };
-            EntityEntry<Employee> result = SqlData.Remove(employee);
-            return new Result
+            SqlData.Remove(employee);
+            int check =  await SqlData.SaveChangesAsync();
+            if (check > 0) return new Result
             {
                 status = 200,
-                data = result
+                data = employee
+            };
+            else return new Result
+            {
+                status = 400,
+                data = $"do not delete employee with id: {employeeId}"
             };
         }
     }
