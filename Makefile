@@ -8,10 +8,13 @@ install:
 	dotnet add ./UserAPI package Microsoft.EntityFrameworkCore.SqlServer --version 3.1.7
 
 run:
-	dotnet run -p ./UserAPI
+	dotnet run --launch-profile UserAPI --project ./UserAPI
 
 runuser:
-	dotnet run -p ./UserAPI --launch-profile "UserAPI"
+	dotnet run --launch-profile UserAPI --project ./UserAPI
+
+runiss:
+	dotnet run --launch-profile IISExpress --project ./UserAPI
 
 rundocker:
-	dotnet run -p ./UserAPI --launch-profile "Docker"
+	dotnet run --launch-profile Docker --project ./UserAPI
