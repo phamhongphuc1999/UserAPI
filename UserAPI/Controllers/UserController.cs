@@ -8,6 +8,7 @@ using UserAPI.Models.JWT;
 using UserAPI.JWT;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 
 namespace UserAPI.Controllers
 {
@@ -16,11 +17,13 @@ namespace UserAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly IOptions<JWTConfig> _jwtConfig;
+        private readonly ILogger<UserController> _logger;
         private UserModel userModel;
 
-        public UserController(IOptions<JWTConfig> jwtConfig)
+        public UserController(IOptions<JWTConfig> jwtConfig, ILogger<UserController> logger)
         {
             _jwtConfig = jwtConfig;
+            _logger = logger;
             userModel = new UserModel();
         }
 
@@ -145,6 +148,7 @@ namespace UserAPI.Controllers
             try
             {
                 Result result = await userModel.GetListUser(pageSize, pageIndex);
+                _logger.LogInformation(Request.Headers["phuc"]);
                 return Ok(Responder.Success(result.data));
             }
             catch (Exception error)
