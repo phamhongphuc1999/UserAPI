@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using MongoDatabase.Entities;
 using MongoDatabase.Models;
 using System;
@@ -12,12 +11,10 @@ namespace UserAPI.Controllers
     public class ProductController : ControllerBase
     {
         private ProductModel productModel;
-        private readonly ILogger<ProductController> _logger;
 
-        public ProductController(ILogger<ProductController> logger)
+        public ProductController()
         {
             productModel = new ProductModel();
-            _logger = logger;
         }
 
         /// <summary>create new product</summary>
@@ -37,7 +34,7 @@ namespace UserAPI.Controllers
             {
                 string role = Request.Headers["role"];
                 if (role != "admin" && role != "user") return StatusCode(401, Responder.Fail("You not allow to action"));
-                Result result = await productModel.InsertProduct(newProduct);
+                Result result = await productModel.InsertProductAsync(newProduct);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
             }
@@ -65,9 +62,9 @@ namespace UserAPI.Controllers
                 if (fields != null)
                 {
                     string[] fieldList = fields.Split(',');
-                    result = await productModel.GetProductById(productId, fieldList);
+                    result = await productModel.GetProductByIdAsync(productId, fieldList);
                 }
-                else result = await productModel.GetProductById(productId);
+                else result = await productModel.GetProductByIdAsync(productId);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 return StatusCode(result.status, Responder.Fail(result.data));
             }
@@ -91,7 +88,7 @@ namespace UserAPI.Controllers
         {
             try
             {
-                Result result = await productModel.GetListProduct(pageSize, pageIndex);
+                Result result = await productModel.GetListProductAsync(pageSize, pageIndex);
                 return Ok(Responder.Success(result.data));
             }
             catch (Exception error)
@@ -118,7 +115,7 @@ namespace UserAPI.Controllers
             {
                 string role = Request.Headers["role"];
                 if (role != "admin" && role != "user") return StatusCode(401, Responder.Fail("You not allow to action"));
-                Result result = await productModel.UpdateProduct(productId, updateProduct);
+                Result result = await productModel.UpdateProductAsync(productId, updateProduct);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
             }
@@ -145,7 +142,7 @@ namespace UserAPI.Controllers
             {
                 string role = Request.Headers["role"];
                 if (role != "admin" && role != "user") return StatusCode(401, Responder.Fail("You not allow to action"));
-                Result result = await productModel.DeleteProduct(productId);
+                Result result = await productModel.DeleteProductAsync(productId);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
             }

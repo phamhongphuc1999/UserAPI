@@ -8,7 +8,6 @@ using UserAPI.Models.JWT;
 using UserAPI.JWT;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
 
 namespace UserAPI.Controllers
 {
@@ -17,13 +16,11 @@ namespace UserAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly IOptions<JWTConfig> _jwtConfig;
-        private readonly ILogger<UserController> _logger;
         private UserModel userModel;
 
-        public UserController(IOptions<JWTConfig> jwtConfig, ILogger<UserController> logger)
+        public UserController(IOptions<JWTConfig> jwtConfig)
         {
             _jwtConfig = jwtConfig;
-            _logger = logger;
             userModel = new UserModel();
         }
 
@@ -45,7 +42,7 @@ namespace UserAPI.Controllers
             {
                 string token = Request.Headers["token"];
                 if (token != "null") return Ok(Responder.Success("Already logined"));
-                Result result = await userModel.Login(info.username, info.password);
+                Result result = await userModel.LoginAsync(info.username, info.password);
                 if (result.status != 200) return StatusCode(result.status, Responder.Fail(result.data));
                 node1:
                 IAuthContainerModel model = Helper.GetJWTContainerModel(info.username, info.password, result.data.ToString(), _jwtConfig);
@@ -93,7 +90,7 @@ namespace UserAPI.Controllers
         {
             try
             {
-                Result result = await userModel.InsertUser(newUser);
+                Result result = await userModel.InsertUserAsync(newUser);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
             }
@@ -121,9 +118,9 @@ namespace UserAPI.Controllers
                 if (fields != null)
                 {
                     string[] fieldList = fields.Split(',');
-                    result = await userModel.GetUserById(userId, fieldList);
+                    result = await userModel.GetUserByIdAsync(userId, fieldList);
                 }
-                else result = await userModel.GetUserById(userId);
+                else result = await userModel.GetUserByIdAsync(userId);
                 if(result.status == 200) return Ok(Responder.Success(result.data));
                 return StatusCode(result.status, Responder.Fail(result.data));
             }
@@ -147,8 +144,7 @@ namespace UserAPI.Controllers
         {
             try
             {
-                Result result = await userModel.GetListUser(pageSize, pageIndex);
-                _logger.LogInformation(Request.Headers["phuc"]);
+                Result result = await userModel.GetListUserAsync(pageSize, pageIndex);
                 return Ok(Responder.Success(result.data));
             }
             catch (Exception error)
@@ -176,7 +172,7 @@ namespace UserAPI.Controllers
                 string username = Request.Headers["username"];
                 string password = Request.Headers["password"];
                 if (oldUsername != username || oldPassword != password) return StatusCode(401, Responder.Fail("wrong username or password"));
-                Result result = await userModel.UpdateUser(username, updateUser);
+                Result result = await userModel.UpdateUserAsync(username, updateUser);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
             }
@@ -206,7 +202,7 @@ namespace UserAPI.Controllers
             {
                 string role = Request.Headers["role"];
                 if (role != "admin") return StatusCode(401, Responder.Fail("You not allow to update role"));
-                Result result = await userModel.UpdateRole(userId, updateRoleUser);
+                Result result = await userModel.UpdateRoleAsync(userId, updateRoleUser);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
             }
@@ -235,11 +231,11 @@ namespace UserAPI.Controllers
                 if(role != "admin")
                 {
                     string username = Request.Headers["username"];
-                    Result temp = await userModel.GetUserById(userId, new string[] { "username" });
+                    Result temp = await userModel.GetUserByIdAsync(userId, new string[] { "username" });
                     Dictionary<string, string> data = (Dictionary<string, string>)temp.data;
                     if (username != data["username"]) return StatusCode(401, Responder.Fail("You not allow to action"));
                 }
-                Result result = await userModel.DeleteUser(userId);
+                Result result = await userModel.DeleteUserAsync(userId);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
             }
