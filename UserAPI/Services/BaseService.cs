@@ -20,5 +20,10 @@ namespace UserAPI.Services
         {
             get { return sqlData; }
         }
+
+        public DbContextOptionsBuilder<SQLData> Option
+        {
+            get { return option; }
+        }
     }
 }

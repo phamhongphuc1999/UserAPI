@@ -32,7 +32,7 @@ namespace UserAPI.Controllers
         {
             try
             {
-                Result result = await employeeService.InsertEmployee(newEmployee);
+                Result result = await employeeService.InsertEmployeeAsync(newEmployee);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
             }
@@ -60,9 +60,9 @@ namespace UserAPI.Controllers
                 if (fields != null)
                 {
                     string[] fieldList = fields.Split(',');
-                    result = await employeeService.GetEmployeeByUsername(username, fieldList);
+                    result = await employeeService.GetEmployeeByUsernameAsync(username, fieldList);
                 }
-                else result = await employeeService.GetEmployeeByUsername(username);
+                else result = await employeeService.GetEmployeeByUsernameAsync(username);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 return StatusCode(result.status, Responder.Fail(result.data));
             }
@@ -86,7 +86,7 @@ namespace UserAPI.Controllers
         {
             try
             {
-                Result result = await employeeService.GetListEmployees(pageSize, pageIndex);
+                Result result = await employeeService.GetListEmployeesAsync(pageSize, pageIndex);
                 return Ok(Responder.Success(result.data));
             }
             catch(Exception error)
@@ -109,7 +109,7 @@ namespace UserAPI.Controllers
         {
             try
             {
-                Result result = await employeeService.UpdateEmployee(employeeId, updateEmployee);
+                Result result = await employeeService.UpdateEmployeeAsync(employeeId, updateEmployee);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 return StatusCode(result.status, Responder.Fail(result.data));
             }
@@ -130,7 +130,7 @@ namespace UserAPI.Controllers
         {
             try
             {
-                Result result = await employeeService.DeleteEmployee(employeeId);
+                Result result = await employeeService.DeleteEmployeeAsync(employeeId);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 return StatusCode(result.status, Responder.Fail(result.data));
             }
