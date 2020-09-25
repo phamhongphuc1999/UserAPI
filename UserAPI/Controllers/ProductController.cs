@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using MongoDatabase.Entities;
 using MongoDatabase.Models;
 using System;
@@ -79,16 +80,23 @@ namespace UserAPI.Controllers
         /// <returns></returns>
         /// <param name="pageIndex">the page index you want to get</param>
         /// <param name="pageSize">the user per page you want to set</param>
+        /// <param name="fields">the specified fields you want to get</param>
         /// <response code="200">return infomation of list products</response>
         /// <response code="400">if get mistake</response>
         [HttpGet("/products")]
         [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
         [ProducesResponseType(400, Type = typeof(ResponseFailType))]
-        public async Task<object> GetListProduct([FromQuery] int pageSize, [FromQuery] int pageIndex)
+        public async Task<object> GetListProduct([FromQuery] int pageSize, [FromQuery] int pageIndex, [FromQuery] string fields)
         {
             try
             {
-                Result result = await productModel.GetListProductAsync(pageSize, pageIndex);
+                Result result;
+                if(fields != null)
+                {
+                    string[] fieldList = fields.Split(',');
+                    result = await productModel.GetListProductAsync(pageSize, pageIndex, fieldList);
+                }
+                else result = await productModel.GetListProductAsync(pageSize, pageIndex);
                 return Ok(Responder.Success(result.data));
             }
             catch (Exception error)

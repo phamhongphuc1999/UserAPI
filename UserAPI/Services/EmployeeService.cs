@@ -99,7 +99,7 @@ namespace UserAPI.Services
             List<(string, object)> data = new List<(string, object)>();
             foreach (string field in fields)
                 if (Config.employeeFields.ContainsKey(field))
-                    data.Add((field, employee.GetType().GetField(field).GetValue(employee)));
+                    data.Add((field, employee.GetType().GetProperty(field).GetValue(employee)));
             return new Result
             {
                 status = 200,
@@ -123,7 +123,7 @@ namespace UserAPI.Services
             List<(string, object)> data = new List<(string, object)>();
             foreach (string field in fields)
                 if (Config.employeeFields.ContainsKey(field))
-                    data.Add((field, employee.GetType().GetField(field).GetValue(employee)));
+                    data.Add((field, employee.GetType().GetProperty(field).GetValue(employee)));
             return new Result
             {
                 status = 200,
@@ -158,7 +158,7 @@ namespace UserAPI.Services
                 List<(string, object)> result = new List<(string, object)>();
                 foreach (string field in fields)
                 {
-                    object value = e.GetType().GetField(field).GetValue(e);
+                    object value = e.GetType().GetProperty(field).GetValue(e);
                     result.Add((field, value));
                 }
                 return result;
@@ -206,7 +206,7 @@ namespace UserAPI.Services
                 List<(string, object)> result = new List<(string, object)>();
                 foreach (string field in fields)
                 {
-                    object value = e.GetType().GetField(field).GetValue(e);
+                    object value = e.GetType().GetProperty(field).GetValue(e);
                     result.Add((field, value));
                 }
                 return result;
@@ -217,29 +217,6 @@ namespace UserAPI.Services
                 data = new
                 {
                     user_list = employeeFilterList,
-                    pagination = new
-                    {
-                        totalResult = totalResult,
-                        pageIndex = pageIndex,
-                        pageSize = pageSize
-                    }
-                }
-            };
-        }
-
-        public async Task<Result> GetListEmployeesAsync(int pageSize = 0, int pageIndex = 0)
-        {
-            List<Employee> employeeList = await SqlData.Employees.ToListAsync();
-            int totalResult = employeeList.Count;
-            if (pageSize == 0) pageSize = totalResult;
-            if (pageIndex == 0) pageIndex = 1;
-            int index = pageSize * (pageIndex - 1);
-            return new Result
-            {
-                status = 200,
-                data = new
-                {
-                    user_list = employeeList.GetRange(index, pageSize),
                     pagination = new
                     {
                         totalResult = totalResult,

@@ -1,5 +1,4 @@
-﻿using MongoDB.Bson;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using MongoDatabase.Entities;
 using System;
 using System.Collections.Generic;
@@ -85,11 +84,10 @@ namespace MongoDatabase.Models
                 status = 200,
                 data = product
             };
-            BsonDocument sProduct = product.ToBsonDocument();
-            Dictionary<string, string> data = new Dictionary<string, string>();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             foreach (string field in fields)
                 if (Config.productFields.ContainsKey(field))
-                    data.Add(field, sProduct.GetElement(field).Value.ToString());
+                    data.Add(field, product.GetType().GetProperty(field).GetValue(product));
             return new Result
             {
                 status = 200,
@@ -111,11 +109,10 @@ namespace MongoDatabase.Models
                 status = 200,
                 data = product
             };
-            BsonDocument sProduct = product.ToBsonDocument();
-            Dictionary<string, string> data = new Dictionary<string, string>();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             foreach (string field in fields)
                 if (Config.productFields.ContainsKey(field))
-                    data.Add(field, sProduct.GetElement(field).Value.ToString());
+                    data.Add(field, product.GetType().GetProperty(field).GetValue(product));
             return new Result
             {
                 status = 200,
@@ -123,14 +120,14 @@ namespace MongoDatabase.Models
             };
         }
 
-        public Result GetListProduct(int pageSize = 0, int pageIndex = 0)
+        public Result GetListProduct(int pageSize = 0, int pageIndex = 0, string[] fields = null)
         {
             List<Product> productList = mCollection.Find(x => x.name != String.Empty).ToList();
             int totalResult = productList.Count;
             if (pageSize == 0) pageSize = totalResult;
             if (pageIndex == 0) pageIndex = 1;
             int index = pageSize * (pageIndex - 1);
-            return new Result
+            if(fields == null) return new Result
             {
                 status = 200,
                 data = new
@@ -144,21 +141,71 @@ namespace MongoDatabase.Models
                     }
                 }
             };
+            List<Product> tempList = productList.GetRange(index, pageSize);
+            IEnumerable<Dictionary<string, object>> productFilterList = tempList.Select(e =>
+            {
+                Dictionary<string, object> result = new Dictionary<string, object>();
+                foreach (string field in fields)
+                {
+                    object value = e.GetType().GetProperty(field).GetValue(e);
+                    result.Add(field, value);
+                }
+                return result;
+            });
+            return new Result
+            {
+                status = 200,
+                data = new
+                {
+                    user_list = productFilterList,
+                    pagination = new
+                    {
+                        totalResult = totalResult,
+                        pageIndex = pageIndex,
+                        pageSize = pageSize
+                    }
+                }
+            };
         }
 
-        public async Task<Result> GetListProductAsync(int pageSize = 0, int pageIndex = 0)
+        public async Task<Result> GetListProductAsync(int pageSize = 0, int pageIndex = 0, string[] fields = null)
         {
             List<Product> productList = await mCollection.Find(x => x.name != String.Empty).ToListAsync();
             int totalResult = productList.Count;
             if (pageSize == 0) pageSize = totalResult;
             if (pageIndex == 0) pageIndex = 1;
             int index = pageSize * (pageIndex - 1);
-            return new Result
+            if (fields == null) return new Result
             {
                 status = 200,
                 data = new
                 {
                     product_list = productList.GetRange(index, pageSize),
+                    pagination = new
+                    {
+                        totalResult = totalResult,
+                        pageIndex = pageIndex,
+                        pageSize = pageSize
+                    }
+                }
+            };
+            List<Product> tempList = productList.GetRange(index, pageSize);
+            IEnumerable<Dictionary<string, object>> productFilterList = tempList.Select(e =>
+            {
+                Dictionary<string, object> result = new Dictionary<string, object>();
+                foreach (string field in fields)
+                {
+                    object value = e.GetType().GetProperty(field).GetValue(e);
+                    result.Add(field, value);
+                }
+                return result;
+            });
+            return new Result
+            {
+                status = 200,
+                data = new
+                {
+                    user_list = productFilterList,
                     pagination = new
                     {
                         totalResult = totalResult,

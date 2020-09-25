@@ -76,17 +76,24 @@ namespace UserAPI.Controllers
         /// <remarks>Get List Employee</remarks>
         /// <param name="pageIndex">the page index you want to get</param>
         /// <param name="pageSize">the user per page you want to set</param>
+        /// <param name="fields">the specified fields you want to get</param>
         /// <returns></returns>
         /// <response code="200">return infomation of list employees</response>
         /// <response code="400">if get mistake</response>
         [HttpGet("/employees")]
         [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
         [ProducesResponseType(400, Type = typeof(ResponseFailType))]
-        public async Task<ObjectResult> GetListEmployees([FromQuery] int pageSize, [FromQuery] int pageIndex)
+        public async Task<ObjectResult> GetListEmployees([FromQuery] int pageSize, [FromQuery] int pageIndex, [FromQuery] string fields)
         {
             try
             {
-                Result result = await employeeService.GetListEmployeesAsync(pageSize, pageIndex);
+                Result result;
+                if(fields != null)
+                {
+                    string[] fieldList = fields.Split(',');
+                    result = await employeeService.GetListEmployeesAsync(pageSize, pageIndex, fieldList);
+                }
+                else result = await employeeService.GetListEmployeesAsync(pageSize, pageIndex);
                 return Ok(Responder.Success(result.data));
             }
             catch(Exception error)

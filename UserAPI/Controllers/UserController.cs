@@ -57,6 +57,7 @@ namespace UserAPI.Controllers
             }
         }
 
+#pragma warning disable CS1998
         /// <summary>logout</summary>
         /// <remarks>logout</remarks>
         /// <returns></returns>
@@ -134,17 +135,24 @@ namespace UserAPI.Controllers
         /// <remarks>get list users</remarks>
         /// <param name="pageIndex">the page index you want to get</param>
         /// <param name="pageSize">the user per page you want to set</param>
+        /// <param name="fields">the specified fields you want to get</param>
         /// <returns></returns>
         /// <response code="200">return infomation of list user with pagination</response>
         /// <response code="400">if get mistake</response>
         [HttpGet("/users")]
         [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
         [ProducesResponseType(400, Type = typeof(ResponseFailType))]
-        public async Task<object> GetListUser([FromQuery] int pageSize, [FromQuery] int pageIndex)
+        public async Task<object> GetListUser([FromQuery] int pageSize, [FromQuery] int pageIndex, [FromQuery] string fields)
         {
             try
             {
-                Result result = await userModel.GetListUserAsync(pageSize, pageIndex);
+                Result result;
+                if(fields != null)
+                {
+                    string[] fieldList = fields.Split(',');
+                    result = await userModel.GetListUserAsync(pageSize, pageIndex, fieldList);
+                }
+                else result = await userModel.GetListUserAsync(pageSize, pageIndex);
                 return Ok(Responder.Success(result.data));
             }
             catch (Exception error)
