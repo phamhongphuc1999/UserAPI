@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Configuration;
 using MongoDatabase;
 using MongoDatabase.Entities;
-using MongoDB.Bson;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,9 +9,9 @@ using UserAPI.Models.SQLServer;
 
 namespace UserAPI.Services
 {
-    public class EmployeeService: BaseService
+    public class EmployeeService : BaseService
     {
-        public EmployeeService(IConfiguration configuration): base(configuration) { }
+        public EmployeeService(IConfiguration configuration) : base(configuration) { }
 
         public Result InsertEmployee(InsertEmployeeInfo entity)
         {
@@ -52,7 +51,7 @@ namespace UserAPI.Services
         public async Task<Result> InsertEmployeeAsync(InsertEmployeeInfo entity)
         {
             Employee employee = await SqlData.Employees.SingleOrDefaultAsync(x => x.Username == entity.Username);
-            if(employee != null) return new Result
+            if (employee != null) return new Result
             {
                 status = 400,
                 data = $"username {entity.Username} have existed"
@@ -97,11 +96,10 @@ namespace UserAPI.Services
                 status = 200,
                 data = employee
             };
-            BsonDocument sEmployee = employee.ToBsonDocument();
-            Dictionary<string, string> data = new Dictionary<string, string>();
+            List<(string, object)> data = new List<(string, object)>();
             foreach (string field in fields)
                 if (Config.employeeFields.ContainsKey(field))
-                    data.Add(field, sEmployee.GetElement(field).Value.ToString());
+                    data.Add((field, employee.GetType().GetField(field).GetValue(employee)));
             return new Result
             {
                 status = 200,
@@ -122,11 +120,10 @@ namespace UserAPI.Services
                 status = 200,
                 data = employee
             };
-            BsonDocument sEmployee = employee.ToBsonDocument();
-            Dictionary<string, string> data = new Dictionary<string, string>();
+            List<(string, object)> data = new List<(string, object)>();
             foreach (string field in fields)
                 if (Config.employeeFields.ContainsKey(field))
-                    data.Add(field, sEmployee.GetElement(field).Value.ToString());
+                    data.Add((field, employee.GetType().GetField(field).GetValue(employee)));
             return new Result
             {
                 status = 200,
@@ -134,19 +131,92 @@ namespace UserAPI.Services
             };
         }
 
-        public Result GetListEmployees(int pageSize = 0, int pageIndex = 0)
+        public Result GetListEmployees(int pageSize = 0, int pageIndex = 0, string[] fields = null)
         {
             List<Employee> employeeList = SqlData.Employees.ToList();
             int totalResult = employeeList.Count;
             if (pageSize == 0) pageSize = totalResult;
             if (pageIndex == 0) pageIndex = 1;
             int index = pageSize * (pageIndex - 1);
-            return new Result
+            if (fields == null) return new Result
             {
                 status = 200,
                 data = new
                 {
                     user_list = employeeList.GetRange(index, pageSize),
+                    pagination = new
+                    {
+                        totalResult = totalResult,
+                        pageIndex = pageIndex,
+                        pageSize = pageSize
+                    }
+                }
+            };
+            List<Employee> tempList = employeeList.GetRange(index, pageSize);
+            IEnumerable<List<(string, object)>> employeeFilterList = tempList.Select(e =>
+            {
+                List<(string, object)> result = new List<(string, object)>();
+                foreach (string field in fields)
+                {
+                    object value = e.GetType().GetField(field).GetValue(e);
+                    result.Add((field, value));
+                }
+                return result;
+            });
+            return new Result
+            {
+                status = 200,
+                data = new
+                {
+                    user_list = employeeFilterList,
+                    pagination = new
+                    {
+                        totalResult = totalResult,
+                        pageIndex = pageIndex,
+                        pageSize = pageSize
+                    }
+                }
+            };
+        }
+
+        public async Task<Result> GetListEmployeesAsync(int pageSize = 0, int pageIndex = 0, string[] fields = null)
+        {
+            List<Employee> employeeList = await SqlData.Employees.ToListAsync();
+            int totalResult = employeeList.Count;
+            if (pageSize == 0) pageSize = totalResult;
+            if (pageIndex == 0) pageIndex = 1;
+            int index = pageSize * (pageIndex - 1);
+            if (fields == null) return new Result
+            {
+                status = 200,
+                data = new
+                {
+                    user_list = employeeList.GetRange(index, pageSize),
+                    pagination = new
+                    {
+                        totalResult = totalResult,
+                        pageIndex = pageIndex,
+                        pageSize = pageSize
+                    }
+                }
+            };
+            List<Employee> tempList = employeeList.GetRange(index, pageSize);
+            IEnumerable<List<(string, object)>> employeeFilterList = tempList.Select(e =>
+            {
+                List<(string, object)> result = new List<(string, object)>();
+                foreach (string field in fields)
+                {
+                    object value = e.GetType().GetField(field).GetValue(e);
+                    result.Add((field, value));
+                }
+                return result;
+            });
+            return new Result
+            {
+                status = 200,
+                data = new
+                {
+                    user_list = employeeFilterList,
                     pagination = new
                     {
                         totalResult = totalResult,
@@ -232,7 +302,7 @@ namespace UserAPI.Services
                 status = 400,
                 data = $"the employee with id: {employeeId} do not exist"
             };
-            if(updateEmployee.Username != null)
+            if (updateEmployee.Username != null)
             {
                 Employee checkEmployee = await SqlData.Employees.SingleOrDefaultAsync(x => x.Username == updateEmployee.Username);
                 if (checkEmployee != null) return new Result
@@ -242,7 +312,7 @@ namespace UserAPI.Services
                 };
                 employee.Username = updateEmployee.Username;
             }
-            if (updateEmployee.Password != null) 
+            if (updateEmployee.Password != null)
             {
                 string newPassword = SHA256Hash.CalcuteHash(updateEmployee.Password);
                 employee.Password = newPassword;
@@ -299,7 +369,7 @@ namespace UserAPI.Services
                 data = $"the employee with id: {employeeId} do not exist"
             };
             SqlData.Remove(employee);
-            int check =  await SqlData.SaveChangesAsync();
+            int check = await SqlData.SaveChangesAsync();
             if (check > 0) return new Result
             {
                 status = 200,
