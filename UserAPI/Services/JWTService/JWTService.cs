@@ -5,7 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using UserAPI.Models.JWT;
 
-namespace UserAPI.JWT
+namespace UserAPI.Services.JWTService
 {
     public class JWTService: IAuthService
     {

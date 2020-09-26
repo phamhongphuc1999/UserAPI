@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UserAPI.Models.JWT;
 
-namespace UserAPI.JWT
+namespace UserAPI.Services.JWTService
 {
     public interface IAuthService
     {

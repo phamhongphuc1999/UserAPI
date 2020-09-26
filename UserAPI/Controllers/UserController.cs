@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using MongoDatabase.Entities;
 using UserAPI.Models.JWT;
-using UserAPI.JWT;
+using UserAPI.Services.JWTService;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 
@@ -118,7 +118,7 @@ namespace UserAPI.Controllers
                 Result result;
                 if (fields != null)
                 {
-                    string[] fieldList = fields.Split(',');
+                    string[] fieldList = Support.SplipFields(fields);
                     result = await userModel.GetUserByIdAsync(userId, fieldList);
                 }
                 else result = await userModel.GetUserByIdAsync(userId);
@@ -149,7 +149,7 @@ namespace UserAPI.Controllers
                 Result result;
                 if(fields != null)
                 {
-                    string[] fieldList = fields.Split(',');
+                    string[] fieldList = Support.SplipFields(fields);
                     result = await userModel.GetListUserAsync(pageSize, pageIndex, fieldList);
                 }
                 else result = await userModel.GetListUserAsync(pageSize, pageIndex);

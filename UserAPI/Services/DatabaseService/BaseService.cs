@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using UserAPI.Models.SQLServer;
 
-namespace UserAPI.Services
+namespace UserAPI.Services.DatabaseService
 {
     public class BaseService
     {

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using MongoDatabase.Entities;
 using UserAPI.Models.SQLServer;
-using UserAPI.Services;
+using UserAPI.Services.DatabaseService;
 
 namespace UserAPI.Controllers
 {
@@ -59,7 +59,7 @@ namespace UserAPI.Controllers
                 Result result;
                 if (fields != null)
                 {
-                    string[] fieldList = fields.Split(',');
+                    string[] fieldList = Support.SplipFields(fields);
                     result = await employeeService.GetEmployeeByUsernameAsync(username, fieldList);
                 }
                 else result = await employeeService.GetEmployeeByUsernameAsync(username);
@@ -90,7 +90,7 @@ namespace UserAPI.Controllers
                 Result result;
                 if(fields != null)
                 {
-                    string[] fieldList = fields.Split(',');
+                    string[] fieldList = Support.SplipFields(fields);
                     result = await employeeService.GetListEmployeesAsync(pageSize, pageIndex, fieldList);
                 }
                 else result = await employeeService.GetListEmployeesAsync(pageSize, pageIndex);

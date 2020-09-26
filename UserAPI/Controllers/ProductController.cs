@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using MongoDatabase.Entities;
 using MongoDatabase.Models;
 using System;
@@ -62,7 +61,7 @@ namespace UserAPI.Controllers
                 Result result;
                 if (fields != null)
                 {
-                    string[] fieldList = fields.Split(',');
+                    string[] fieldList = Support.SplipFields(fields);
                     result = await productModel.GetProductByIdAsync(productId, fieldList);
                 }
                 else result = await productModel.GetProductByIdAsync(productId);
@@ -91,9 +90,9 @@ namespace UserAPI.Controllers
             try
             {
                 Result result;
-                if(fields != null)
+                if (fields != null)
                 {
-                    string[] fieldList = fields.Split(',');
+                    string[] fieldList = Support.SplipFields(fields);
                     result = await productModel.GetListProductAsync(pageSize, pageIndex, fieldList);
                 }
                 else result = await productModel.GetListProductAsync(pageSize, pageIndex);

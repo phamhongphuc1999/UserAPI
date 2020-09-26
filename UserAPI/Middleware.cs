@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using UserAPI.JWT;
+using UserAPI.Services.JWTService;
 
 namespace UserAPI
 {

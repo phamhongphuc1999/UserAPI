@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UserAPI.Models.SQLServer;
 
-namespace UserAPI.Services
+namespace UserAPI.Services.DatabaseService
 {
     public class EmployeeService : BaseService
     {
