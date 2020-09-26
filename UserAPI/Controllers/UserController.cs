@@ -153,7 +153,8 @@ namespace UserAPI.Controllers
                     result = await userModel.GetListUserAsync(pageSize, pageIndex, fieldList);
                 }
                 else result = await userModel.GetListUserAsync(pageSize, pageIndex);
-                return Ok(Responder.Success(result.data));
+                if (result.status == 200) return Ok(Responder.Success(result.data));
+                else return StatusCode(result.status, Responder.Fail(result.data));
             }
             catch (Exception error)
             {
