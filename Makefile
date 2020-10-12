@@ -6,6 +6,7 @@ install:
 	dotnet add ./UserAPI package Swashbuckle.AspNetCore --version 5.5.1
 	dotnet add ./UserAPI package Microsoft.EntityFrameworkCore --version 3.1.7
 	dotnet add ./UserAPI package Microsoft.EntityFrameworkCore.SqlServer --version 3.1.7
+	dotnet add ./UserAPI package NEST --version 7.9.0
 
 run:
 	dotnet run --launch-profile UserAPI --project ./UserAPI
