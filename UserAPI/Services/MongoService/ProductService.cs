@@ -1,15 +1,16 @@
 ﻿using MongoDB.Driver;
-using MongoDatabase.Entities;
+using UserAPI.Models.MongoModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UserAPI.Models.CommonModel;
 
-namespace MongoDatabase.Models
+namespace UserAPI.Services.MongoService
 {
-    public class ProductModel : BaseModel<Product>
+    public class ProductService : BaseService<Product>
     {
-        public ProductModel() : base()
+        public ProductService() : base()
         {
             mCollection = mDatabase.GetCollection<Product>("product_list");
         }
@@ -30,8 +31,8 @@ namespace MongoDatabase.Models
                 price = entity.price,
                 guarantee = (entity.guarantee > 0) ? entity.guarantee : 0,
                 sale = (entity.sale > 0) ? entity.sale : 0,
-                createAt = Hepler.CurrentTime(),
-                updateAt = Hepler.CurrentTime(),
+                createAt = HelperService.CurrentTime(),
+                updateAt = HelperService.CurrentTime(),
                 status = "enable"
             };
             mCollection.InsertOne(newProduct);
@@ -58,8 +59,8 @@ namespace MongoDatabase.Models
                 price = entity.price,
                 guarantee = (entity.guarantee > 0) ? entity.guarantee : 0,
                 sale = (entity.sale > 0) ? entity.sale : 0,
-                createAt = Hepler.CurrentTime(),
-                updateAt = Hepler.CurrentTime(),
+                createAt = HelperService.CurrentTime(),
+                updateAt = HelperService.CurrentTime(),
                 status = "enable"
             };
             await mCollection.InsertOneAsync(newProduct);
@@ -218,7 +219,7 @@ namespace MongoDatabase.Models
 
         public Result UpdateProduct(string productId, UpdateProductInfo updateProduct)
         {
-            UpdateDefinition<Product> updateBuilder = Builders<Product>.Update.Set(x => x.updateAt, Hepler.CurrentTime());
+            UpdateDefinition<Product> updateBuilder = Builders<Product>.Update.Set(x => x.updateAt, HelperService.CurrentTime());
             if (updateProduct.name != null)
             {
                 Product checkProduct = mCollection.Find(x => x.name == updateProduct.name).FirstOrDefault();
@@ -250,7 +251,7 @@ namespace MongoDatabase.Models
 
         public async Task<Result> UpdateProductAsync(string productId, UpdateProductInfo updateProduct)
         {
-            UpdateDefinition<Product> updateBuilder = Builders<Product>.Update.Set(x => x.updateAt, Hepler.CurrentTime());
+            UpdateDefinition<Product> updateBuilder = Builders<Product>.Update.Set(x => x.updateAt, HelperService.CurrentTime());
             if (updateProduct.name != null)
             {
                 Product checkProduct = mCollection.Find(x => x.name == updateProduct.name).FirstOrDefault();

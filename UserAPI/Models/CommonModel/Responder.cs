@@ -1,4 +1,4 @@
-﻿namespace UserAPI
+﻿namespace UserAPI.Models.CommonModel
 {
     public class ResponseSuccessType
     {

@@ -1,15 +1,16 @@
-﻿using MongoDatabase.Entities;
+﻿using UserAPI.Models.MongoModel;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UserAPI.Models.CommonModel;
 
-namespace MongoDatabase.Models
+namespace UserAPI.Services.MongoService
 {
-    public class UserModel : BaseModel<User>
+    public class UserService : BaseService<User>
     {
-        public UserModel() : base()
+        public UserService() : base()
         {
             mCollection = mDatabase.GetCollection<User>("user_list");
         }
@@ -22,7 +23,7 @@ namespace MongoDatabase.Models
                 status = 401,
                 data = "username or password wrong"
             };
-            string rawPassword = SHA256Hash.CalcuteHash(password);
+            string rawPassword = HelperService.CalcuteSHA256Hash(password);
             if (user.password != rawPassword) return new Result
             {
                 status = 401,
@@ -33,7 +34,7 @@ namespace MongoDatabase.Models
                 status = 403,
                 data = "This account is enable to login"
             };
-            UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.lastLogin, Hepler.CurrentTime());
+            UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.lastLogin, HelperService.CurrentTime());
             mCollection.FindOneAndUpdate(x => x.username == username, updateBuilder);
             return new Result
             {
@@ -50,7 +51,7 @@ namespace MongoDatabase.Models
                 status = 401,
                 data = "username or password wrong"
             };
-            string rawPassword = SHA256Hash.CalcuteHash(password);
+            string rawPassword = HelperService.CalcuteSHA256Hash(password);
             if (user.password != rawPassword) return new Result
             {
                 status = 401,
@@ -61,7 +62,7 @@ namespace MongoDatabase.Models
                 status = 403,
                 data = "This account is enable to login"
             };
-            UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.lastLogin, Hepler.CurrentTime());
+            UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.lastLogin, HelperService.CurrentTime());
             await mCollection.FindOneAndUpdateAsync(x => x.username == username, updateBuilder);
             return new Result
             {
@@ -81,15 +82,15 @@ namespace MongoDatabase.Models
             User newUser = new User()
             {
                 username = entity.username,
-                password = SHA256Hash.CalcuteHash(entity.password),
+                password = HelperService.CalcuteSHA256Hash(entity.password),
                 name = entity.name,
                 location = entity.location,
                 email = entity.email,
                 phone = entity.phone,
                 role = "user",
                 birthday = entity.birthday,
-                createAt = Hepler.CurrentTime(),
-                updateAt = Hepler.CurrentTime(),
+                createAt = HelperService.CurrentTime(),
+                updateAt = HelperService.CurrentTime(),
                 status = "enable"
             };
             mCollection.InsertOne(newUser);
@@ -111,15 +112,15 @@ namespace MongoDatabase.Models
             User newUser = new User()
             {
                 username = entity.username,
-                password = SHA256Hash.CalcuteHash(entity.password),
+                password = HelperService.CalcuteSHA256Hash(entity.password),
                 name = entity.name,
                 location = entity.location,
                 email = entity.email,
                 phone = entity.phone,
                 role = "user",
                 birthday = entity.birthday,
-                createAt = Hepler.CurrentTime(),
-                updateAt = Hepler.CurrentTime(),
+                createAt = HelperService.CurrentTime(),
+                updateAt = HelperService.CurrentTime(),
                 status = "enable"
             };
             await mCollection.InsertOneAsync(newUser);
@@ -278,7 +279,7 @@ namespace MongoDatabase.Models
 
         public Result UpdateUser(string username, UpdateUserInfo updateUser)
         {
-            UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.updateAt, Hepler.CurrentTime());
+            UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.updateAt, HelperService.CurrentTime());
             if (updateUser.username != null)
             {
                 User checkUser = mCollection.Find(x => x.username == updateUser.username).ToList().FirstOrDefault();
@@ -295,7 +296,7 @@ namespace MongoDatabase.Models
             if (updateUser.phone != null) updateBuilder = updateBuilder.Set(x => x.phone, updateUser.phone);
             if (updateUser.password != null)
             {
-                string newPassword = SHA256Hash.CalcuteHash(updateUser.password);
+                string newPassword = HelperService.CalcuteSHA256Hash(updateUser.password);
                 updateBuilder = updateBuilder.Set(x => x.password, newPassword);
             }
             User user = mCollection.FindOneAndUpdate(x => x.username == username, updateBuilder);
@@ -317,7 +318,7 @@ namespace MongoDatabase.Models
 
         public async Task<Result> UpdateUserAsync(string username, UpdateUserInfo updateUser)
         {
-            UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.updateAt, Hepler.CurrentTime());
+            UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.updateAt, HelperService.CurrentTime());
             if (updateUser.username != null)
             {
                 User checkUser = mCollection.Find(x => x.username == updateUser.username).ToList().FirstOrDefault();
@@ -334,7 +335,7 @@ namespace MongoDatabase.Models
             if (updateUser.phone != null) updateBuilder = updateBuilder.Set(x => x.phone, updateUser.phone);
             if (updateUser.password != null)
             {
-                string newPassword = SHA256Hash.CalcuteHash(updateUser.password);
+                string newPassword = HelperService.CalcuteSHA256Hash(updateUser.password);
                 updateBuilder = updateBuilder.Set(x => x.password, newPassword);
             }
             User user = await mCollection.FindOneAndUpdateAsync(x => x.username == username, updateBuilder);
@@ -356,7 +357,7 @@ namespace MongoDatabase.Models
 
         public Result UpdateRole(string userId, UpdateRoleUserInfo updateRoleUser)
         {
-            UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.updateAt, Hepler.CurrentTime());
+            UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.updateAt, HelperService.CurrentTime());
             if (updateRoleUser.role != null) updateBuilder.Set(x => x.role, updateRoleUser.role);
             if (updateRoleUser.status != null)
             {
@@ -387,7 +388,7 @@ namespace MongoDatabase.Models
 
         public async Task<Result> UpdateRoleAsync(string userId, UpdateRoleUserInfo updateRoleUser)
         {
-            UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.updateAt, Hepler.CurrentTime());
+            UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.updateAt, HelperService.CurrentTime());
             if (updateRoleUser.role != null) updateBuilder.Set(x => x.role, updateRoleUser.role);
             if (updateRoleUser.status != null)
             {

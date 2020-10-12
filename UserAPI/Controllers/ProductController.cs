@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MongoDatabase.Entities;
-using MongoDatabase.Models;
+using UserAPI.Models.MongoModel;
+using UserAPI.Services.MongoService;
 using System;
 using System.Threading.Tasks;
+using UserAPI.Models.CommonModel;
+using UserAPI.Services;
 
 namespace UserAPI.Controllers
 {
@@ -10,11 +12,11 @@ namespace UserAPI.Controllers
     [Produces("application/json")]
     public class ProductController : ControllerBase
     {
-        private ProductModel productModel;
+        private ProductService productModel;
 
         public ProductController()
         {
-            productModel = new ProductModel();
+            productModel = new ProductService();
         }
 
         /// <summary>create new product</summary>
@@ -61,7 +63,7 @@ namespace UserAPI.Controllers
                 Result result;
                 if (fields != null)
                 {
-                    string[] fieldList = Support.SplipFields(fields);
+                    string[] fieldList = HelperService.SplipFields(fields);
                     result = await productModel.GetProductByIdAsync(productId, fieldList);
                 }
                 else result = await productModel.GetProductByIdAsync(productId);
@@ -92,7 +94,7 @@ namespace UserAPI.Controllers
                 Result result;
                 if (fields != null)
                 {
-                    string[] fieldList = Support.SplipFields(fields);
+                    string[] fieldList = HelperService.SplipFields(fields);
                     result = await productModel.GetListProductAsync(pageSize, pageIndex, fieldList);
                 }
                 else result = await productModel.GetListProductAsync(pageSize, pageIndex);

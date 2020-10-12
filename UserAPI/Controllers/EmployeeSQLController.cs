@@ -2,9 +2,10 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using MongoDatabase.Entities;
-using UserAPI.Models.SQLServer;
-using UserAPI.Services.DatabaseService;
+using UserAPI.Models.CommonModel;
+using UserAPI.Models.SQLServerModel;
+using UserAPI.Services;
+using UserAPI.Services.SQLServerService;
 
 namespace UserAPI.Controllers
 {
@@ -59,7 +60,7 @@ namespace UserAPI.Controllers
                 Result result;
                 if (fields != null)
                 {
-                    string[] fieldList = Support.SplipFields(fields);
+                    string[] fieldList = HelperService.SplipFields(fields);
                     result = await employeeService.GetEmployeeByUsernameAsync(username, fieldList);
                 }
                 else result = await employeeService.GetEmployeeByUsernameAsync(username);
@@ -90,7 +91,7 @@ namespace UserAPI.Controllers
                 Result result;
                 if(fields != null)
                 {
-                    string[] fieldList = Support.SplipFields(fields);
+                    string[] fieldList = HelperService.SplipFields(fields);
                     result = await employeeService.GetListEmployeesAsync(pageSize, pageIndex, fieldList);
                 }
                 else result = await employeeService.GetListEmployeesAsync(pageSize, pageIndex);

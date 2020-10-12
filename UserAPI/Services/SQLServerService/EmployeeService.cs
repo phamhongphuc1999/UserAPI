@@ -1,13 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using MongoDatabase;
-using MongoDatabase.Entities;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using UserAPI.Models.SQLServer;
+using UserAPI.Models.CommonModel;
+using UserAPI.Models.SQLServerModel;
 
-namespace UserAPI.Services.DatabaseService
+namespace UserAPI.Services.SQLServerService
 {
     public class EmployeeService : BaseService
     {
@@ -247,7 +246,7 @@ namespace UserAPI.Services.DatabaseService
             }
             if (updateEmployee.Password != null)
             {
-                string newPassword = SHA256Hash.CalcuteHash(updateEmployee.Password);
+                string newPassword = HelperService.CalcuteSHA256Hash(updateEmployee.Password);
                 employee.Password = newPassword;
             }
             if (updateEmployee.Name != null) employee.Name = updateEmployee.Name;
@@ -291,7 +290,7 @@ namespace UserAPI.Services.DatabaseService
             }
             if (updateEmployee.Password != null)
             {
-                string newPassword = SHA256Hash.CalcuteHash(updateEmployee.Password);
+                string newPassword = HelperService.CalcuteSHA256Hash(updateEmployee.Password);
                 employee.Password = newPassword;
             }
             if (updateEmployee.Name != null) employee.Name = updateEmployee.Name;

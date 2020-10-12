@@ -1,4 +1,4 @@
-﻿namespace MongoDatabase.Entities
+﻿namespace UserAPI.Models.CommonModel
 {
     public class Result
     {

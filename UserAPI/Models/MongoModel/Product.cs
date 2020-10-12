@@ -2,7 +2,7 @@
 using MongoDB.Bson.Serialization.Attributes;
 using System.ComponentModel.DataAnnotations;
 
-namespace MongoDatabase.Entities
+namespace UserAPI.Models.MongoModel
 {
     public class Product
     {

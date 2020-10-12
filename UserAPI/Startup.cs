@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
-using UserAPI.Models.SQLServer;
+using UserAPI.Models.SQLServerModel;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;

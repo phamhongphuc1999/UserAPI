@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using UserAPI.Models.SQLServer;
+using UserAPI.Models.SQLServerModel;
 
-namespace UserAPI.Services.DatabaseService
+namespace UserAPI.Services.SQLServerService
 {
     public class BaseService
     {

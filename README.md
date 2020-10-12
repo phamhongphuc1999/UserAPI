@@ -3,9 +3,8 @@
     trình biên dịch sử sụng: Visual Studio 2019
 
 ### cấu trúc chương trình
-##### chương trình có hai project
-- MongoDatabase: class core, có chức năng tương tác với mongodb
-- UserAPI: ASP.NET API Core, tạo API tương tác với mongodb và SQL Server
+##### chương trình có một project
+- UserAPI: ASP.NET API Core, tạo API tương tác với mongodb và SQL Server(thông qua các namespace Services và Models)
 ### lưu ý setup chương trình
 ###### cài đặt thư viện gọi lệnh: make install
 ###### setup service swagger
@@ -18,16 +17,13 @@ thêm đoạn code dưới đây vào file <project>.csproj để enabled XML Co
 thông tin chi tiết ở [đây](https://docs.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-3.1&tabs=visual-studio)
     
 ### chạy chương trình
-###### chạy bằng .NET CLI trên visual studio 2019
-    để chạy chương trình gọi lệnh: make run
-    để chạy chương trình với profile UserAPI gọi lệnh: make runuser
-    để chạy chương trình với profile Docker gọi lệnh: make rundocker
-###### chạy bằng docker
-    để chạy chương trình, gọi lệnh: docker-compose up
+###### chạy bằng .NET CLI trên visual studio 2019(cd /UserAPI)
+    cài đặt các thư viện cần thiết, gọi lệnh: make install
+    chạy chương trình, gọi lệnh: make run
+    chạy chương trình với profile UserAPI, gọi lệnh: make runuser
 
 ### những lưu ý
     chắc chắn máy tính đã cài make
-    muốn biết chương trình có những profile nào đọc trrong file: launchSettings.json
 
 ### phát triển trong tương lai
 - chạy swagger bằng một custom swagger.json
