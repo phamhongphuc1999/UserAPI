@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace UserAPI.Models.SQLServer
+namespace UserAPI.Models.SQLServerModel
 {
     public class SQLData: DbContext
     {

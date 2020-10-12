@@ -1,14 +1,14 @@
 ﻿using MongoDB.Driver;
 
-namespace MongoDatabase.Models
+namespace UserAPI.Services.MongoService
 {
-    public class BaseModel<T>
+    public class BaseService<T>
     {
         protected MongoClient client;
         protected IMongoDatabase mDatabase;
         protected IMongoCollection<T> mCollection;
 
-        public BaseModel()
+        public BaseService()
         {
             client = new MongoClient(Config.MONGO_SCRIPT);
             mDatabase = client.GetDatabase("User");

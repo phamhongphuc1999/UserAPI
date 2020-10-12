@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace UserAPI.Services.DatabaseService
+namespace UserAPI.Services.SQLServerService
 {
     public static class Config
     {

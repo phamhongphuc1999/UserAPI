@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MongoDatabase
+namespace UserAPI
 {
     public sealed class IncludeArray: ValidationAttribute
     {
