@@ -1,5 +1,5 @@
-﻿using UserAPI.Services.MongoService;
-using System;
+﻿using System;
+using UserAPI.Services.MongoService;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;

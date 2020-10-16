@@ -16,13 +16,10 @@ namespace UserAPI
         public IConfiguration Configuration { get; }
         private readonly IWebHostEnvironment _env;
 
-        public Startup(IWebHostEnvironment env)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
+            Configuration = configuration;
             _env = env;
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-            Configuration = builder.Build();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -43,6 +40,7 @@ namespace UserAPI
             services.AddControllers();
             services.AddHttpContextAccessor();
             services.AddMvcCore();
+
             services.Configure<JWTConfig>(Configuration.GetSection("JWT"));
             if (_env.IsDevelopment()) services.Configure<DevelopmentConfig>(Configuration.GetSection("Develop"));
             else if (_env.IsProduction()) services.Configure<ProductionConfig>(Configuration.GetSection("Product"));
