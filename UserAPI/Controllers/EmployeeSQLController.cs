@@ -1,4 +1,9 @@
-﻿using System;
+﻿// Copyright (c) Microsoft. All Rights Reserved.
+// License under the Apache License, Version 2.0.
+// API with mongodb, SQL server database and more.
+// Owner: Pham Hong Phuc
+
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;

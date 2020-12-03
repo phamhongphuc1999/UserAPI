@@ -1,4 +1,9 @@
-﻿using UserAPI.Models.MongoModel;
+﻿// Copyright (c) Microsoft. All Rights Reserved.
+// License under the Apache License, Version 2.0.
+// API with mongodb, SQL server database and more.
+// Owner: Pham Hong Phuc
+
+using UserAPI.Models.MongoModel;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -10,9 +15,9 @@ namespace UserAPI.Services.MongoService
 {
     public class UserService : BaseService<User>
     {
-        public UserService() : base()
+        public UserService(string database, string collection) : base(database)
         {
-            mCollection = mDatabase.GetCollection<User>("user_list");
+            mCollection = mDatabase.GetCollection<User>(collection);
         }
 
         public Result Login(string username, string password)

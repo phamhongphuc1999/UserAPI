@@ -1,4 +1,9 @@
-﻿using MongoDB.Driver;
+﻿// Copyright (c) Microsoft. All Rights Reserved.
+// License under the Apache License, Version 2.0.
+// API with mongodb, SQL server database and more.
+// Owner: Pham Hong Phuc
+
+using MongoDB.Driver;
 using UserAPI.Models.MongoModel;
 using System;
 using System.Collections.Generic;
@@ -10,11 +15,16 @@ namespace UserAPI.Services.MongoService
 {
     public class ProductService : BaseService<Product>
     {
-        public ProductService() : base()
+        public ProductService(string database, string collection) : base(database)
         {
-            mCollection = mDatabase.GetCollection<Product>("product_list");
+            mCollection = mDatabase.GetCollection<Product>(collection);
         }
 
+        /// <summary>
+        /// Insert new product in database
+        /// </summary>
+        /// <param name="entity">The instance representing new product</param>
+        /// <returns>return Result with status 200 if true, else return Result with status 400</returns>
         public Result InsertProduct(NewProductInfo entity)
         {
             Product product = mCollection.Find(x => x.name == entity.name).ToList().FirstOrDefault();
@@ -43,6 +53,11 @@ namespace UserAPI.Services.MongoService
             };
         }
 
+        /// <summary>
+        /// Async insert new product in database
+        /// </summary>
+        /// <param name="entity">The instance representing new product</param>
+        /// <returns>return Result with status 200 if true, else return Result with status 400</returns>
         public async Task<Result> InsertProductAsync(NewProductInfo entity)
         {
             Product product = mCollection.Find(x => x.name == entity.name).ToList().FirstOrDefault();
@@ -71,6 +86,12 @@ namespace UserAPI.Services.MongoService
             };
         }
 
+        /// <summary>
+        /// Get product base on product's id
+        /// </summary>
+        /// <param name="productId">the product's id</param>
+        /// <param name="fields">The specified fields that product contain you want to get</param>
+        /// <returns>the Result contain product information if true, else Result with status 400</returns>
         public Result GetProductById(string productId, string[] fields = null)
         {
             List<Product> result = mCollection.Find(x => x._id == productId).ToList();

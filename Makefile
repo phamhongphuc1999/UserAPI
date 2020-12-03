@@ -12,11 +12,5 @@ install:
 run:
 	dotnet run --launch-profile UserAPI --project ./UserAPI
 
-runuser:
-	dotnet run --launch-profile UserAPI --project ./UserAPI
-
-runiss:
-	dotnet run --launch-profile IISExpress --project ./UserAPI
-
-rundocker:
-	dotnet run --launch-profile Docker --project ./UserAPI
+runl:
+	dotnet run --launch-profile ${launch} --profile ./UserAPI

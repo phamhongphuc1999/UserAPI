@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿// Copyright (c) Microsoft. All Rights Reserved.
+// License under the Apache License, Version 2.0.
+// API with mongodb, SQL server database and more.
+// Owner: Pham Hong Phuc
+
+using Microsoft.AspNetCore.Mvc;
 using UserAPI.Models.MongoModel;
 using UserAPI.Services.MongoService;
 using System;
@@ -16,7 +21,7 @@ namespace UserAPI.Controllers
 
         public ProductController()
         {
-            productModel = new ProductService();
+            productModel = new ProductService("Test", "Product");
         }
 
         /// <summary>create new product</summary>
