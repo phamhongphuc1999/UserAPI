@@ -7,6 +7,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace UserAPI.Models.MongoModel
 {
@@ -20,6 +21,16 @@ namespace UserAPI.Models.MongoModel
 
         public MongoDBRef walletId { get; set; }
 
+        public double amount { get; set; }
+
+        public DateTime date { get; set; }
+
+        public string note { get; set; }
+    }
+
+    public class NewTransactionInfo
+    {
+        [Range(0, double.MaxValue, ErrorMessage = "Please enter amount")]
         public double amount { get; set; }
 
         public DateTime date { get; set; }

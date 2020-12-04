@@ -6,6 +6,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
+using System.ComponentModel.DataAnnotations;
 
 namespace UserAPI.Models.MongoModel
 {
@@ -21,6 +22,16 @@ namespace UserAPI.Models.MongoModel
 
         public string name { get; set; }
 
+        public double amount { get; set; }
+    }
+
+    public class NewWalletInfo
+    {
+        [Required(ErrorMessage = "the username is required", AllowEmptyStrings = false)]
+        [StringLength(200)]
+        public string name { get; set; }
+
+        [Range(0, double.MaxValue, ErrorMessage = "Please enter amount")]
         public double amount { get; set; }
     }
 }
