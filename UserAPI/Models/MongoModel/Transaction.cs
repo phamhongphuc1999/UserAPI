@@ -6,6 +6,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
+using System;
 
 namespace UserAPI.Models.MongoModel
 {
@@ -21,7 +22,7 @@ namespace UserAPI.Models.MongoModel
 
         public double amount { get; set; }
 
-        public BsonDateTime date { get; set; }
+        public DateTime date { get; set; }
 
         public string note { get; set; }
     }

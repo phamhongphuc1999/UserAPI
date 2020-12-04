@@ -3,6 +3,7 @@
 // API with mongodb, SQL server database and more.
 // Owner: Pham Hong Phuc
 
+using System;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.ComponentModel.DataAnnotations;
@@ -21,13 +22,12 @@ namespace UserAPI.Models.MongoModel
 
         public string email { get; set; }
 
-        public BsonDateTime createAt { get; set; }
+        public DateTime createAt { get; set; }
 
-        public BsonDateTime updateAt { get; set; }
+        public DateTime updateAt { get; set; }
 
-        public BsonDateTime lastLogin { get; set; }
+        public DateTime lastLogin { get; set; }
 
-        [BsonRepresentation(BsonType.Boolean)]
         public bool status { get; set; }
     }
 

@@ -90,9 +90,9 @@ namespace UserAPI.Services.MongoService
                 username = entity.username,
                 password = HelperService.CalcuteSHA256Hash(entity.password),
                 email = entity.email,
-                createAt = BsonDateTime.Create(DateTime.Now),
-                updateAt = BsonDateTime.Create(DateTime.Now),
-                lastLogin = BsonDateTime.Create(DateTime.Now),
+                createAt = DateTime.Now,
+                updateAt = DateTime.Now,
+                lastLogin = DateTime.Now,
                 status = true
             };
             mCollection.InsertOne(newUser);
@@ -116,9 +116,9 @@ namespace UserAPI.Services.MongoService
                 username = entity.username,
                 password = HelperService.CalcuteSHA256Hash(entity.password),
                 email = entity.email,
-                createAt = BsonDateTime.Create(DateTime.Now),
-                updateAt = BsonDateTime.Create(DateTime.Now),
-                lastLogin = BsonDateTime.Create(DateTime.Now),
+                createAt = DateTime.Now,
+                updateAt = DateTime.Now,
+                lastLogin = DateTime.Now,
                 status = true
             };
             await mCollection.InsertOneAsync(newUser);

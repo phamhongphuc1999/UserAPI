@@ -11,11 +11,6 @@ namespace UserAPI.Services
 {
     public class HelperService
     {
-        public static string CurrentTime()
-        {
-            return DateTime.Now.ToString("G");
-        }
-
         public static string CalcuteSHA256Hash(string rawData)
         {
             SHA256 sha256 = SHA256.Create();
