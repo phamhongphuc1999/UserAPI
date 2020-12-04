@@ -44,7 +44,7 @@ namespace UserAPI.Services.MongoService
             return new Result
             {
                 status = 200,
-                data = user.role
+                data = ""
             };
         }
 
@@ -72,7 +72,7 @@ namespace UserAPI.Services.MongoService
             return new Result
             {
                 status = 200,
-                data = user.role
+                data = ""
             };
         }
 
@@ -88,12 +88,7 @@ namespace UserAPI.Services.MongoService
             {
                 username = entity.username,
                 password = HelperService.CalcuteSHA256Hash(entity.password),
-                name = entity.name,
-                location = entity.location,
                 email = entity.email,
-                phone = entity.phone,
-                role = "user",
-                birthday = entity.birthday,
                 createAt = HelperService.CurrentTime(),
                 updateAt = HelperService.CurrentTime(),
                 status = "enable"
@@ -118,12 +113,7 @@ namespace UserAPI.Services.MongoService
             {
                 username = entity.username,
                 password = HelperService.CalcuteSHA256Hash(entity.password),
-                name = entity.name,
-                location = entity.location,
                 email = entity.email,
-                phone = entity.phone,
-                role = "user",
-                birthday = entity.birthday,
                 createAt = HelperService.CurrentTime(),
                 updateAt = HelperService.CurrentTime(),
                 status = "enable"
@@ -188,7 +178,7 @@ namespace UserAPI.Services.MongoService
 
         public Result GetListUser(int pageSize = 0, int pageIndex = 0, string[] fields = null)
         {
-            List<User> userList = mCollection.Find(x => x.name != String.Empty).ToList();
+            List<User> userList = mCollection.Find(x => x.username != String.Empty).ToList();
             int totalResult = userList.Count;
             if (pageSize == 0) pageSize = totalResult;
             if (pageIndex == 0) pageIndex = 1;
@@ -236,7 +226,7 @@ namespace UserAPI.Services.MongoService
 
         public async Task<Result> GetListUserAsync(int pageSize = 0, int pageIndex = 0, string[] fields = null)
         {
-            List<User> userList = await mCollection.Find(x => x.name != String.Empty).ToListAsync();
+            List<User> userList = await mCollection.Find(x => x.username != String.Empty).ToListAsync();
             int totalResult = userList.Count;
             if (pageSize == 0) pageSize = totalResult;
             if (pageIndex == 0) pageIndex = 1;
@@ -295,10 +285,6 @@ namespace UserAPI.Services.MongoService
                 };
                 updateBuilder = updateBuilder.Set(x => x.username, updateUser.username);
             }
-            if (updateUser.name != null) updateBuilder = updateBuilder.Set(x => x.name, updateUser.name);
-            if (updateUser.location != null) updateBuilder = updateBuilder.Set(x => x.location, updateUser.location);
-            if (updateUser.birthday != null) updateBuilder = updateBuilder.Set(x => x.birthday, updateUser.birthday);
-            if (updateUser.phone != null) updateBuilder = updateBuilder.Set(x => x.phone, updateUser.phone);
             if (updateUser.password != null)
             {
                 string newPassword = HelperService.CalcuteSHA256Hash(updateUser.password);
@@ -334,10 +320,6 @@ namespace UserAPI.Services.MongoService
                 };
                 updateBuilder = updateBuilder.Set(x => x.username, updateUser.username);
             }
-            if (updateUser.name != null) updateBuilder = updateBuilder.Set(x => x.name, updateUser.name);
-            if (updateUser.location != null) updateBuilder = updateBuilder.Set(x => x.location, updateUser.location);
-            if (updateUser.birthday != null) updateBuilder = updateBuilder.Set(x => x.birthday, updateUser.birthday);
-            if (updateUser.phone != null) updateBuilder = updateBuilder.Set(x => x.phone, updateUser.phone);
             if (updateUser.password != null)
             {
                 string newPassword = HelperService.CalcuteSHA256Hash(updateUser.password);
@@ -357,68 +339,6 @@ namespace UserAPI.Services.MongoService
             {
                 status = 400,
                 data = $"do not update user with username: {username}"
-            };
-        }
-
-        public Result UpdateRole(string userId, UpdateRoleUserInfo updateRoleUser)
-        {
-            UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.updateAt, HelperService.CurrentTime());
-            if (updateRoleUser.role != null) updateBuilder.Set(x => x.role, updateRoleUser.role);
-            if (updateRoleUser.status != null)
-            {
-                if (Config.userStatus.ContainsKey(updateRoleUser.status))
-                    updateBuilder.Set(x => x.status, updateRoleUser.status);
-                else return new Result
-                {
-                    status = 422,
-                    data = $"Invalied value status: {updateRoleUser.status}"
-                };
-            }
-            User user = mCollection.FindOneAndUpdate(x => x._id == userId, updateBuilder);
-            if (user != null)
-            {
-                user = mCollection.Find(x => x._id == user._id).FirstOrDefault();
-                return new Result
-                {
-                    status = 200,
-                    data = user
-                };
-            }
-            else return new Result
-            {
-                status = 400,
-                data = $"do not update role user with id: {userId}"
-            };
-        }
-
-        public async Task<Result> UpdateRoleAsync(string userId, UpdateRoleUserInfo updateRoleUser)
-        {
-            UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.updateAt, HelperService.CurrentTime());
-            if (updateRoleUser.role != null) updateBuilder.Set(x => x.role, updateRoleUser.role);
-            if (updateRoleUser.status != null)
-            {
-                if (Config.userStatus.ContainsKey(updateRoleUser.status))
-                    updateBuilder.Set(x => x.status, updateRoleUser.status);
-                else return new Result
-                {
-                    status = 422,
-                    data = $"Invalied value status: {updateRoleUser.status}"
-                };
-            }
-            User user = await mCollection.FindOneAndUpdateAsync(x => x._id == userId, updateBuilder);
-            if (user != null)
-            {
-                user = mCollection.Find(x => x._id == user._id).FirstOrDefault();
-                return new Result
-                {
-                    status = 200,
-                    data = user
-                };
-            }
-            else return new Result
-            {
-                status = 400,
-                data = $"do not update role user with id: {userId}"
             };
         }
 

@@ -81,12 +81,10 @@ namespace UserAPI
                 {
                     IAuthService authService = new JWTService(secretKey);
                     List<Claim> claims = authService.GetTokenClaims(token).ToList();
-                    string role = claims.Find(x => x.Type == "Role").Value;
                     string username = claims.Find(x => x.Type == ClaimTypes.Name).Value;
                     string password = claims.Find(x => x.Type == "Password").Value;
                     httpContext.Request.Headers.Add("username", username);
                     httpContext.Request.Headers.Add("password", password);
-                    httpContext.Request.Headers.Add("role", role);
                     await _next(httpContext);
                     HelperMiddleware.LoggerHandler(httpContext, _logger, mainUrl);
                 }

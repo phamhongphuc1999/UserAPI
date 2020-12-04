@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using UserAPI.Models.CommonModel;
 using UserAPI.Services;
 
-namespace UserAPI.Controllers
+namespace UserAPI.Controllers.MongoControllers
 {
     [ApiController]
     [Produces("application/json")]
@@ -52,7 +52,7 @@ namespace UserAPI.Controllers
                 Result result = await userService.LoginAsync(info.username, info.password);
                 if (result.status != 200) return StatusCode(result.status, Responder.Fail(result.data));
                 node1:
-                IAuthContainerModel model = Helper.GetJWTContainerModel(info.username, info.password, result.data.ToString(), _jwtConfig);
+                IAuthContainerModel model = Helper.GetJWTContainerModel(info.username, info.password, _jwtConfig);
                 IAuthService authService = new JWTService(model.SecretKey);
                 string accessToken = authService.GenerateToken(model);
                 if (!authService.IsTokenValid(accessToken)) goto node1;
@@ -189,36 +189,6 @@ namespace UserAPI.Controllers
                 string password = Request.Headers["password"];
                 if (oldUsername != username || oldPassword != password) return StatusCode(401, Responder.Fail("wrong username or password"));
                 Result result = await userService.UpdateUserAsync(username, updateUser);
-                if (result.status == 200) return Ok(Responder.Success(result.data));
-                else return StatusCode(result.status, Responder.Fail(result.data));
-            }
-            catch (Exception error)
-            {
-                return BadRequest(Responder.Fail(error.Message));
-            }
-        }
-
-        /// <summary>update role of user</summary>
-        /// <remarks>update role of user</remarks>
-        /// <returns></returns>
-        /// <param name="userId">the id of user you want to update</param>
-        /// <param name="updateRoleUser">the info used to update role</param>
-        /// <response code="200">return infomation of user you updated</response>
-        /// <response code="400">if get mistake</response>
-        /// <response code="401">you not allow to update role</response>
-        /// <response code="422">Invalied argument</response>
-        [HttpPut("/admin/users/{userId}")]
-        [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
-        [ProducesResponseType(400, Type = typeof(ResponseFailType))]
-        [ProducesResponseType(401, Type = typeof(ResponseFailType))]
-        [ProducesResponseType(422, Type = typeof(ResponseFailType))]
-        public async Task<object> UpdateRole(string userId, [FromBody] UpdateRoleUserInfo updateRoleUser)
-        {
-            try
-            {
-                string role = Request.Headers["role"];
-                if (role != "admin") return StatusCode(401, Responder.Fail("You not allow to update role"));
-                Result result = await userService.UpdateRoleAsync(userId, updateRoleUser);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
             }
