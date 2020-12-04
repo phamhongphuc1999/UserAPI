@@ -3,6 +3,7 @@
 // API with mongodb, SQL server database and more.
 // Owner: Pham Hong Phuc
 
+using System;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.ComponentModel.DataAnnotations;
@@ -19,25 +20,15 @@ namespace UserAPI.Models.MongoModel
 
         public string password { internal get; set; }
 
-        public string name { get; set; }
-
-        public string location { get; set; }
-
         public string email { get; set; }
 
-        public string birthday { get; set; }
+        public DateTime createAt { get; set; }
 
-        public string phone { get; set; }
+        public DateTime updateAt { get; set; }
 
-        public string role { get; set; }
+        public DateTime lastLogin { get; set; }
 
-        public string createAt { get; set; }
-
-        public string updateAt { get; set; }
-
-        public string lastLogin { get; set; }
-
-        public string status { get; set; }
+        public bool status { get; set; }
     }
 
     public class NewUserInfo
@@ -51,21 +42,9 @@ namespace UserAPI.Models.MongoModel
         [StringLength(200)]
         public string password { get; set; }
 
-        [Required(ErrorMessage = "the name is required", AllowEmptyStrings = false)]
-        public string name { get; set; }
-
-        [Required(ErrorMessage = "the location is required")]
-        public string location { get; set; }
-
         [Required(ErrorMessage = "the email is required")]
         [EmailAddress]
         public string email { get; set; }
-
-        [Required(ErrorMessage = "the phone is required")]
-        [Phone]
-        public string phone { get; set; }
-
-        public string birthday { get; set; }
     }
 
     public class UpdateUserInfo
@@ -77,26 +56,8 @@ namespace UserAPI.Models.MongoModel
         [StringLength(200)]
         public string password { get; set; }
         
-        public string name { get; set; }
-        
-        public string location { get; set; }
-        
         [EmailAddress]
         public string email { get; set; }
-        
-        public string birthday { get; set; }
-        
-        [Phone]
-        public string phone { get; set; }
-    }
-
-    public class UpdateRoleUserInfo
-    {
-        [IncludeArray(true, CheckArray = new object[] { "admin", "user", "customer"}, ErrorMessage = "role is one of admin, user and customer")]
-        public string role { get; set; }
-        
-        [IncludeArray(true, CheckArray = new object[] { "enable", "disable"}, ErrorMessage = "status is enable or disable")]
-        public string status { get; set; }
     }
 
     public class UserLoginInfo

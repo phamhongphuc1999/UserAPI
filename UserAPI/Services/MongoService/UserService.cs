@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UserAPI.Models.CommonModel;
+using MongoDB.Bson;
 
 namespace UserAPI.Services.MongoService
 {
@@ -34,17 +35,17 @@ namespace UserAPI.Services.MongoService
                 status = 401,
                 data = "username or password wrong"
             };
-            if (user.status == "disable") return new Result
+            if (!user.status) return new Result
             {
                 status = 403,
                 data = "This account is enable to login"
             };
-            UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.lastLogin, HelperService.CurrentTime());
+            UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.lastLogin, BsonDateTime.Create(DateTime.Now));
             mCollection.FindOneAndUpdate(x => x.username == username, updateBuilder);
             return new Result
             {
                 status = 200,
-                data = user.role
+                data = ""
             };
         }
 
@@ -62,17 +63,17 @@ namespace UserAPI.Services.MongoService
                 status = 401,
                 data = "username or password wrong"
             };
-            if (user.status == "disable") return new Result
+            if (!user.status) return new Result
             {
                 status = 403,
                 data = "This account is enable to login"
             };
-            UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.lastLogin, HelperService.CurrentTime());
+            UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.lastLogin, BsonDateTime.Create(DateTime.Now));
             await mCollection.FindOneAndUpdateAsync(x => x.username == username, updateBuilder);
             return new Result
             {
                 status = 200,
-                data = user.role
+                data = ""
             };
         }
 
@@ -88,15 +89,11 @@ namespace UserAPI.Services.MongoService
             {
                 username = entity.username,
                 password = HelperService.CalcuteSHA256Hash(entity.password),
-                name = entity.name,
-                location = entity.location,
                 email = entity.email,
-                phone = entity.phone,
-                role = "user",
-                birthday = entity.birthday,
-                createAt = HelperService.CurrentTime(),
-                updateAt = HelperService.CurrentTime(),
-                status = "enable"
+                createAt = DateTime.Now,
+                updateAt = DateTime.Now,
+                lastLogin = DateTime.Now,
+                status = true
             };
             mCollection.InsertOne(newUser);
             return new Result
@@ -118,15 +115,11 @@ namespace UserAPI.Services.MongoService
             {
                 username = entity.username,
                 password = HelperService.CalcuteSHA256Hash(entity.password),
-                name = entity.name,
-                location = entity.location,
                 email = entity.email,
-                phone = entity.phone,
-                role = "user",
-                birthday = entity.birthday,
-                createAt = HelperService.CurrentTime(),
-                updateAt = HelperService.CurrentTime(),
-                status = "enable"
+                createAt = DateTime.Now,
+                updateAt = DateTime.Now,
+                lastLogin = DateTime.Now,
+                status = true
             };
             await mCollection.InsertOneAsync(newUser);
             return new Result
@@ -152,7 +145,7 @@ namespace UserAPI.Services.MongoService
             };
             Dictionary<string, object> data = new Dictionary<string, object>();
             foreach (string field in fields)
-                if (Config.userFields.ContainsKey(field))
+                if (Config.USER_FIELDS.Contains(field))
                     data.Add(field, result.GetType().GetProperty(field).GetValue(result));
             return new Result
             {
@@ -177,7 +170,7 @@ namespace UserAPI.Services.MongoService
             };
             Dictionary<string, object> data = new Dictionary<string, object>();
             foreach (string field in fields)
-                if (Config.userFields.ContainsKey(field))
+                if (Config.USER_FIELDS.Contains(field))
                     data.Add(field, result.GetType().GetProperty(field).GetValue(result));
             return new Result
             {
@@ -188,7 +181,7 @@ namespace UserAPI.Services.MongoService
 
         public Result GetListUser(int pageSize = 0, int pageIndex = 0, string[] fields = null)
         {
-            List<User> userList = mCollection.Find(x => x.name != String.Empty).ToList();
+            List<User> userList = mCollection.Find(x => x.username != String.Empty).ToList();
             int totalResult = userList.Count;
             if (pageSize == 0) pageSize = totalResult;
             if (pageIndex == 0) pageIndex = 1;
@@ -236,7 +229,7 @@ namespace UserAPI.Services.MongoService
 
         public async Task<Result> GetListUserAsync(int pageSize = 0, int pageIndex = 0, string[] fields = null)
         {
-            List<User> userList = await mCollection.Find(x => x.name != String.Empty).ToListAsync();
+            List<User> userList = await mCollection.Find(x => x.username != String.Empty).ToListAsync();
             int totalResult = userList.Count;
             if (pageSize == 0) pageSize = totalResult;
             if (pageIndex == 0) pageIndex = 1;
@@ -284,7 +277,7 @@ namespace UserAPI.Services.MongoService
 
         public Result UpdateUser(string username, UpdateUserInfo updateUser)
         {
-            UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.updateAt, HelperService.CurrentTime());
+            UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.updateAt, BsonDateTime.Create(DateTime.Now));
             if (updateUser.username != null)
             {
                 User checkUser = mCollection.Find(x => x.username == updateUser.username).ToList().FirstOrDefault();
@@ -295,10 +288,6 @@ namespace UserAPI.Services.MongoService
                 };
                 updateBuilder = updateBuilder.Set(x => x.username, updateUser.username);
             }
-            if (updateUser.name != null) updateBuilder = updateBuilder.Set(x => x.name, updateUser.name);
-            if (updateUser.location != null) updateBuilder = updateBuilder.Set(x => x.location, updateUser.location);
-            if (updateUser.birthday != null) updateBuilder = updateBuilder.Set(x => x.birthday, updateUser.birthday);
-            if (updateUser.phone != null) updateBuilder = updateBuilder.Set(x => x.phone, updateUser.phone);
             if (updateUser.password != null)
             {
                 string newPassword = HelperService.CalcuteSHA256Hash(updateUser.password);
@@ -323,7 +312,7 @@ namespace UserAPI.Services.MongoService
 
         public async Task<Result> UpdateUserAsync(string username, UpdateUserInfo updateUser)
         {
-            UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.updateAt, HelperService.CurrentTime());
+            UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.updateAt, BsonDateTime.Create(DateTime.Now));
             if (updateUser.username != null)
             {
                 User checkUser = mCollection.Find(x => x.username == updateUser.username).ToList().FirstOrDefault();
@@ -334,10 +323,6 @@ namespace UserAPI.Services.MongoService
                 };
                 updateBuilder = updateBuilder.Set(x => x.username, updateUser.username);
             }
-            if (updateUser.name != null) updateBuilder = updateBuilder.Set(x => x.name, updateUser.name);
-            if (updateUser.location != null) updateBuilder = updateBuilder.Set(x => x.location, updateUser.location);
-            if (updateUser.birthday != null) updateBuilder = updateBuilder.Set(x => x.birthday, updateUser.birthday);
-            if (updateUser.phone != null) updateBuilder = updateBuilder.Set(x => x.phone, updateUser.phone);
             if (updateUser.password != null)
             {
                 string newPassword = HelperService.CalcuteSHA256Hash(updateUser.password);
@@ -357,68 +342,6 @@ namespace UserAPI.Services.MongoService
             {
                 status = 400,
                 data = $"do not update user with username: {username}"
-            };
-        }
-
-        public Result UpdateRole(string userId, UpdateRoleUserInfo updateRoleUser)
-        {
-            UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.updateAt, HelperService.CurrentTime());
-            if (updateRoleUser.role != null) updateBuilder.Set(x => x.role, updateRoleUser.role);
-            if (updateRoleUser.status != null)
-            {
-                if (Config.userStatus.ContainsKey(updateRoleUser.status))
-                    updateBuilder.Set(x => x.status, updateRoleUser.status);
-                else return new Result
-                {
-                    status = 422,
-                    data = $"Invalied value status: {updateRoleUser.status}"
-                };
-            }
-            User user = mCollection.FindOneAndUpdate(x => x._id == userId, updateBuilder);
-            if (user != null)
-            {
-                user = mCollection.Find(x => x._id == user._id).FirstOrDefault();
-                return new Result
-                {
-                    status = 200,
-                    data = user
-                };
-            }
-            else return new Result
-            {
-                status = 400,
-                data = $"do not update role user with id: {userId}"
-            };
-        }
-
-        public async Task<Result> UpdateRoleAsync(string userId, UpdateRoleUserInfo updateRoleUser)
-        {
-            UpdateDefinition<User> updateBuilder = Builders<User>.Update.Set(x => x.updateAt, HelperService.CurrentTime());
-            if (updateRoleUser.role != null) updateBuilder.Set(x => x.role, updateRoleUser.role);
-            if (updateRoleUser.status != null)
-            {
-                if (Config.userStatus.ContainsKey(updateRoleUser.status))
-                    updateBuilder.Set(x => x.status, updateRoleUser.status);
-                else return new Result
-                {
-                    status = 422,
-                    data = $"Invalied value status: {updateRoleUser.status}"
-                };
-            }
-            User user = await mCollection.FindOneAndUpdateAsync(x => x._id == userId, updateBuilder);
-            if (user != null)
-            {
-                user = mCollection.Find(x => x._id == user._id).FirstOrDefault();
-                return new Result
-                {
-                    status = 200,
-                    data = user
-                };
-            }
-            else return new Result
-            {
-                status = 400,
-                data = $"do not update role user with id: {userId}"
             };
         }
 
