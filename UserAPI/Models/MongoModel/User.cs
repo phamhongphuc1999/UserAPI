@@ -21,13 +21,14 @@ namespace UserAPI.Models.MongoModel
 
         public string email { get; set; }
 
-        public string createAt { get; set; }
+        public BsonDateTime createAt { get; set; }
 
-        public string updateAt { get; set; }
+        public BsonDateTime updateAt { get; set; }
 
-        public string lastLogin { get; set; }
+        public BsonDateTime lastLogin { get; set; }
 
-        public string status { get; set; }
+        [BsonRepresentation(BsonType.Boolean)]
+        public bool status { get; set; }
     }
 
     public class NewUserInfo

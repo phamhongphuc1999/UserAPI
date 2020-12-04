@@ -28,7 +28,7 @@ namespace UserAPI.Controllers.MongoControllers
         public UserController(IOptions<JWTConfig> jwtConfig)
         {
             _jwtConfig = jwtConfig;
-            userService = new UserService("Test", "User");
+            userService = new UserService("MoneyLover", "User");
         }
 
         /// <summary>login</summary>
@@ -129,7 +129,7 @@ namespace UserAPI.Controllers.MongoControllers
                     result = await userService.GetUserByIdAsync(userId, fieldList);
                 }
                 else result = await userService.GetUserByIdAsync(userId);
-                if(result.status == 200) return Ok(Responder.Success(result.data));
+                if (result.status == 200) return Ok(Responder.Success(result.data));
                 return StatusCode(result.status, Responder.Fail(result.data));
             }
             catch (Exception error)
@@ -154,7 +154,7 @@ namespace UserAPI.Controllers.MongoControllers
             try
             {
                 Result result;
-                if(fields != null)
+                if (fields != null)
                 {
                     string[] fieldList = HelperService.SplipFields(fields);
                     result = await userService.GetListUserAsync(pageSize, pageIndex, fieldList);
@@ -180,7 +180,7 @@ namespace UserAPI.Controllers.MongoControllers
         [HttpPut("/users")]
         [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
         [ProducesResponseType(400, Type = typeof(ResponseFailType))]
-        public async Task<object> UpdateUser([FromBody] UpdateUserInfo updateUser, 
+        public async Task<object> UpdateUser([FromBody] UpdateUserInfo updateUser,
             [FromQuery][Required] string oldUsername, [FromQuery][Required] string oldPassword)
         {
             try
@@ -214,7 +214,7 @@ namespace UserAPI.Controllers.MongoControllers
             try
             {
                 string role = Request.Headers["role"];
-                if(role != "admin")
+                if (role != "admin")
                 {
                     string username = Request.Headers["username"];
                     Result temp = await userService.GetUserByIdAsync(userId, new string[] { "username" });

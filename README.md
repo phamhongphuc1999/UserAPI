@@ -32,6 +32,7 @@ thông tin chi tiết ở [đây](https://docs.microsoft.com/en-us/aspnet/core/t
 - https://docs.mongodb.com/drivers/csharp
 - https://github.com/mongodb/mongo-csharp-driver
 - https://www.mongodb.com/blog/post/quick-start-csharp-and-mongodb--update-operation#:~:text=Set(%22class_id%22%2C%20483,no%20documents%20will%20be%20updated.
+- https://stackoverflow.com/questions/14877073/mongodb-best-practice-for-referencing
 ###### logger
 - https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging/?view=aspnetcore-3.1
 ###### config file
