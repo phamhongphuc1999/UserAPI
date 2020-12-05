@@ -4,17 +4,20 @@
 // Owner: Pham Hong Phuc
 
 using System;
-using UserAPI.Services;
+using UserAPI.Services.MongoService;
 using System.Threading.Tasks;
-using UserAPI.Models.JWTModel;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using UserAPI.Models.MongoModel;
+using UserAPI.Models.JWTModel;
+using UserAPI.Services.JWTService;
+using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using UserAPI.Models.CommonModel;
-using UserAPI.Services.JWTService;
-using UserAPI.Services.MongoService;
-using Microsoft.Extensions.Options;
-using System.ComponentModel.DataAnnotations;
+using UserAPI.Services;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
+using System.Linq;
 
 namespace UserAPI.Controllers.MongoControllers
 {
@@ -24,10 +27,12 @@ namespace UserAPI.Controllers.MongoControllers
     public class UserController : ControllerBase
     {
         private readonly IOptions<JWTConfig> _jwtConfig;
+        private readonly ILogger<UserController> _logger;
         private UserService userService;
 
-        public UserController(IOptions<JWTConfig> jwtConfig)
+        public UserController(IOptions<JWTConfig> jwtConfig, ILogger<UserController> _logger)
         {
+            this._logger = _logger;
             _jwtConfig = jwtConfig;
             userService = new UserService("MoneyLover", "User");
         }
@@ -48,8 +53,10 @@ namespace UserAPI.Controllers.MongoControllers
         {
             try
             {
-                string token = Request.Headers["token"];
-                if (token != "null") return Ok(Responder.Success("Already logined"));
+                StringValues token;
+                Request.Headers.TryGetValue("token", out token);
+                string _token = token.FirstOrDefault();
+                if (_token != null && _token != "") return Ok(Responder.Success("Already logined"));
                 Result result = await userService.LoginAsync(info.username, info.password);
                 if (result.status != 200) return StatusCode(result.status, Responder.Fail(result.data));
                 node1:
@@ -76,8 +83,10 @@ namespace UserAPI.Controllers.MongoControllers
         {
             try
             {
-                string token = Request.Headers["token"];
-                if (token == "null") return Ok(Responder.Success("Already logouted"));
+                StringValues token;
+                Request.Headers.TryGetValue("token", out token);
+                string _token = token.FirstOrDefault();
+                if (_token == null || _token == "") return Ok(Responder.Success("Already logout"));
                 return Ok(Responder.Success(new { access_token = "null" }));
             }
             catch (Exception error)
@@ -117,6 +126,7 @@ namespace UserAPI.Controllers.MongoControllers
         /// <response code="200">return infomation of user with specified fields</response>
         /// <response code="400">if get mistake</response>
         [HttpGet("/users/{userId}")]
+        [CustomAuthorization]
         [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
         [ProducesResponseType(400, Type = typeof(ResponseFailType))]
         public async Task<object> GetUserById(string userId, [FromQuery] string fields)
@@ -148,6 +158,7 @@ namespace UserAPI.Controllers.MongoControllers
         /// <response code="200">return infomation of list user with pagination</response>
         /// <response code="400">if get mistake</response>
         [HttpGet("/users")]
+        [CustomAuthorization]
         [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
         [ProducesResponseType(400, Type = typeof(ResponseFailType))]
         public async Task<object> GetListUser([FromQuery] int pageSize, [FromQuery] int pageIndex, [FromQuery] string fields)
@@ -179,6 +190,7 @@ namespace UserAPI.Controllers.MongoControllers
         /// <response code="200">return infomation of user you updated</response>
         /// <response code="400">if get mistake</response>
         [HttpPut("/users")]
+        [CustomAuthorization]
         [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
         [ProducesResponseType(400, Type = typeof(ResponseFailType))]
         public async Task<object> UpdateUser([FromBody] UpdateUserInfo updateUser,
@@ -207,6 +219,7 @@ namespace UserAPI.Controllers.MongoControllers
         /// <response code="400">if get mistake</response>
         /// <response code="401">You not allow to action</response>
         [HttpDelete("/users/{userId}")]
+        [CustomAuthorization]
         [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
         [ProducesResponseType(400, Type = typeof(ResponseFailType))]
         [ProducesResponseType(401, Type = typeof(ResponseFailType))]
