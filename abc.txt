@@ -1,0 +1,4 @@
+IAuthService authService = new JWTService(secretKey);
+                    List<Claim> claims = authService.GetTokenClaims(token).ToList();
+                    string username = claims.Find(x => x.Type == ClaimTypes.Name).Value;
+                    string password = claims.Find(x => x.Type == "Password").Value;

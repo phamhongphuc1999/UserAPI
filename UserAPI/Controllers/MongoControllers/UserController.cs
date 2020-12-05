@@ -16,6 +16,8 @@ using System.Collections.Generic;
 using UserAPI.Models.CommonModel;
 using UserAPI.Services;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
+using System.Linq;
 
 namespace UserAPI.Controllers.MongoControllers
 {
@@ -51,8 +53,10 @@ namespace UserAPI.Controllers.MongoControllers
         {
             try
             {
-                string token = Request.Headers["token"];
-                if (token != "null") return Ok(Responder.Success("Already logined"));
+                StringValues token;
+                Request.Headers.TryGetValue("token", out token);
+                string _token = token.FirstOrDefault();
+                if (_token != null && _token != "") return Ok(Responder.Success("Already logined"));
                 Result result = await userService.LoginAsync(info.username, info.password);
                 if (result.status != 200) return StatusCode(result.status, Responder.Fail(result.data));
                 node1:
@@ -60,9 +64,7 @@ namespace UserAPI.Controllers.MongoControllers
                 IAuthService authService = new JWTService(model.SecretKey);
                 string accessToken = authService.GenerateToken(model);
                 if (!authService.IsTokenValid(accessToken)) goto node1;
-                var x = (string)HttpContext.Request.Headers["abc"];
-                _logger.LogWarning(x);
-                return Ok(Responder.Success(new { access_token = accessToken, abc = x }));
+                return Ok(Responder.Success(new { access_token = accessToken }));
             }
             catch (Exception error)
             {
@@ -81,8 +83,10 @@ namespace UserAPI.Controllers.MongoControllers
         {
             try
             {
-                string token = Request.Headers["token"];
-                if (token == "null") return Ok(Responder.Success("Already logouted"));
+                StringValues token;
+                Request.Headers.TryGetValue("token", out token);
+                string _token = token.FirstOrDefault();
+                if (_token == null || _token == "") return Ok(Responder.Success("Already logout"));
                 return Ok(Responder.Success(new { access_token = "null" }));
             }
             catch (Exception error)
@@ -122,6 +126,7 @@ namespace UserAPI.Controllers.MongoControllers
         /// <response code="200">return infomation of user with specified fields</response>
         /// <response code="400">if get mistake</response>
         [HttpGet("/users/{userId}")]
+        [CustomAuthorization]
         [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
         [ProducesResponseType(400, Type = typeof(ResponseFailType))]
         public async Task<object> GetUserById(string userId, [FromQuery] string fields)
@@ -153,6 +158,7 @@ namespace UserAPI.Controllers.MongoControllers
         /// <response code="200">return infomation of list user with pagination</response>
         /// <response code="400">if get mistake</response>
         [HttpGet("/users")]
+        [CustomAuthorization]
         [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
         [ProducesResponseType(400, Type = typeof(ResponseFailType))]
         public async Task<object> GetListUser([FromQuery] int pageSize, [FromQuery] int pageIndex, [FromQuery] string fields)
@@ -184,6 +190,7 @@ namespace UserAPI.Controllers.MongoControllers
         /// <response code="200">return infomation of user you updated</response>
         /// <response code="400">if get mistake</response>
         [HttpPut("/users")]
+        [CustomAuthorization]
         [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
         [ProducesResponseType(400, Type = typeof(ResponseFailType))]
         public async Task<object> UpdateUser([FromBody] UpdateUserInfo updateUser,
@@ -212,6 +219,7 @@ namespace UserAPI.Controllers.MongoControllers
         /// <response code="400">if get mistake</response>
         /// <response code="401">You not allow to action</response>
         [HttpDelete("/users/{userId}")]
+        [CustomAuthorization]
         [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
         [ProducesResponseType(400, Type = typeof(ResponseFailType))]
         [ProducesResponseType(401, Type = typeof(ResponseFailType))]

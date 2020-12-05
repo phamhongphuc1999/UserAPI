@@ -41,7 +41,7 @@ namespace UserAPI
             //config cors service
             services.AddCors(options =>
             {
-                options.AddPolicy("MyPolicy",
+                options.AddPolicy("MyCorsPolicy",
                     builder =>
                     {
                         builder.WithOrigins("http://localhost:3000")
@@ -79,20 +79,18 @@ namespace UserAPI
             app.UseRouting();
             app.UseAuthorization();
 
-            app.UseCors("MyPolicy");
+            app.UseCors("MyCorsPolicy");
             app.Use(async (context, next) =>
             {
                 context.Response.Headers["Access-Control-Allow-Origin"] = "*";
                 await next.Invoke();
             });
 
-            app.UseRouter(Routes.BuildRouter(app));
-
             //check authorization
             string secretKey = Configuration.GetSection("JWT").GetValue<string>("SecretKey");
             string mainUrl = Configuration.GetValue<string>("Develop:ApplicationUrl");
 
-            app.UseMiddleware<AuthorizedMiddleware>(secretKey, mainUrl);
+            app.UseMiddleware<LoggerMiddleware>(mainUrl);
 
             app.UseEndpoints(endpoints =>
             {
