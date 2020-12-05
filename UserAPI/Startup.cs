@@ -86,6 +86,8 @@ namespace UserAPI
                 await next.Invoke();
             });
 
+            app.UseRouter(Routes.BuildRouter(app));
+
             //check authorization
             string secretKey = Configuration.GetSection("JWT").GetValue<string>("SecretKey");
             string mainUrl = Configuration.GetValue<string>("Develop:ApplicationUrl");

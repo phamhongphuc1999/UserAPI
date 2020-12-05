@@ -15,6 +15,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using UserAPI.Models.CommonModel;
 using UserAPI.Services;
+using Microsoft.Extensions.Logging;
 
 namespace UserAPI.Controllers.MongoControllers
 {
@@ -24,10 +25,12 @@ namespace UserAPI.Controllers.MongoControllers
     public class UserController : ControllerBase
     {
         private readonly IOptions<JWTConfig> _jwtConfig;
+        private readonly ILogger<UserController> _logger;
         private UserService userService;
 
-        public UserController(IOptions<JWTConfig> jwtConfig)
+        public UserController(IOptions<JWTConfig> jwtConfig, ILogger<UserController> _logger)
         {
+            this._logger = _logger;
             _jwtConfig = jwtConfig;
             userService = new UserService("MoneyLover", "User");
         }
@@ -57,7 +60,9 @@ namespace UserAPI.Controllers.MongoControllers
                 IAuthService authService = new JWTService(model.SecretKey);
                 string accessToken = authService.GenerateToken(model);
                 if (!authService.IsTokenValid(accessToken)) goto node1;
-                return Ok(Responder.Success(new { access_token = accessToken }));
+                var x = (string)HttpContext.Request.Headers["abc"];
+                _logger.LogWarning(x);
+                return Ok(Responder.Success(new { access_token = accessToken, abc = x }));
             }
             catch (Exception error)
             {
