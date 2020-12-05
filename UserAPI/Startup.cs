@@ -30,12 +30,23 @@ namespace UserAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //add swagger service
+            //config swagger service
             services.AddSwaggerGen(c =>
             {
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
+            });
+
+            //config cors service
+            services.AddCors(options =>
+            {
+                options.AddPolicy("MyPolicy",
+                    builder =>
+                    {
+                        builder.WithOrigins("http://localhost:3000")
+                            .AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+                    });
             });
 
             //connect SQL Server
@@ -57,6 +68,7 @@ namespace UserAPI
             if (_env.IsDevelopment()) app.UseDeveloperExceptionPage();
             else if (_env.IsProduction()) app.UseExceptionHandler();
 
+            //swagger
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
@@ -66,6 +78,13 @@ namespace UserAPI
 
             app.UseRouting();
             app.UseAuthorization();
+
+            app.UseCors("MyPolicy");
+            app.Use(async (context, next) =>
+            {
+                context.Response.Headers["Access-Control-Allow-Origin"] = "*";
+                await next.Invoke();
+            });
 
             //check authorization
             string secretKey = Configuration.GetSection("JWT").GetValue<string>("SecretKey");

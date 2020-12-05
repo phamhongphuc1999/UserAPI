@@ -18,6 +18,7 @@ namespace UserAPI
         public static void LoggerHandler(HttpContext httpContext, ILogger _logger, string mainUrl)
         {
             int statusCode = httpContext.Response.StatusCode;
+            _logger.LogInformation(httpContext.Request.Body.ToString());
             if (statusCode == 200) _logger.LogInformation("{0}: {1}{2} => {3}",
                     httpContext.Request.Method,
                     mainUrl,

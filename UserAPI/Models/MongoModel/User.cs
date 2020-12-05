@@ -42,7 +42,6 @@ namespace UserAPI.Models.MongoModel
         [StringLength(200)]
         public string password { get; set; }
 
-        [Required(ErrorMessage = "the email is required")]
         [EmailAddress]
         public string email { get; set; }
     }

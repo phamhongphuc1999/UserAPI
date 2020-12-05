@@ -20,6 +20,7 @@ namespace UserAPI.Controllers.MongoControllers
 {
     [ApiController]
     [Produces("application/json")]
+    [Consumes("application/json")]
     public class UserController : ControllerBase
     {
         private readonly IOptions<JWTConfig> _jwtConfig;
@@ -38,7 +39,7 @@ namespace UserAPI.Controllers.MongoControllers
         /// <response code="400">Bad Request</response>
         /// <response code="401">username or password is wrong</response>
         /// <response code="403">This account is enable to login</response>
-        [HttpGet("/login")]
+        [HttpPost("/login")]
         [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
         [ProducesResponseType(400, Type = typeof(ResponseFailType))]
         [ProducesResponseType(401, Type = typeof(ResponseFailType))]
@@ -69,7 +70,7 @@ namespace UserAPI.Controllers.MongoControllers
         /// <remarks>logout</remarks>
         /// <returns></returns>
         /// <response code="200">reset access token</response>
-        [HttpGet("/logout")]
+        [HttpPost("/logout")]
         [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
         public async Task<object> Logout()
         {
