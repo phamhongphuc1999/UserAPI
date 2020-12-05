@@ -4,17 +4,17 @@
 // Owner: Pham Hong Phuc
 
 using System;
-using UserAPI.Services.MongoService;
+using UserAPI.Services;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using UserAPI.Models.MongoModel;
 using UserAPI.Models.JWTModel;
-using UserAPI.Services.JWTService;
-using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc;
+using UserAPI.Models.MongoModel;
 using System.Collections.Generic;
 using UserAPI.Models.CommonModel;
-using UserAPI.Services;
+using UserAPI.Services.JWTService;
+using UserAPI.Services.MongoService;
+using Microsoft.Extensions.Options;
+using System.ComponentModel.DataAnnotations;
 
 namespace UserAPI.Controllers.MongoControllers
 {
