@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿// Copyright (c) Microsoft. All Rights Reserved.
+// License under the Apache License, Version 2.0.
+// API with mongodb, SQL server database and more.
+// Owner: Pham Hong Phuc
+
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 using UserAPI.Models.CommonModel;
@@ -25,6 +30,7 @@ namespace UserAPI.Controllers.MongoControllers
         /// <param name="expenseId"></param>
         /// <returns></returns>
         [HttpPost("/transactions/{walletId}")]
+        [CustomAuthorization]
         public async Task<object> CreateNewTransaction(string walletId, [FromQuery] string expenseId, [FromBody] NewTransactionInfo newTransaction)
         {
             try
@@ -46,6 +52,7 @@ namespace UserAPI.Controllers.MongoControllers
         /// <param name="transactionId"></param>
         /// <returns></returns>
         [HttpGet("/transactions/{transactionId}")]
+        [CustomAuthorization]
         public async Task<object> GetTransactionById(string transactionId)
         {
             try
@@ -55,6 +62,26 @@ namespace UserAPI.Controllers.MongoControllers
                 return Ok(Responder.Success(result.data));
             }
             catch(Exception error)
+            {
+                return BadRequest(Responder.Fail(error.Message));
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="walletId"></param>
+        /// <returns></returns>
+        [HttpGet("/transactions/{walletId}")]
+        [CustomAuthorization]
+        public async Task<object> GetTransactionsByWallet(string walletId)
+        {
+            try
+            {
+                Result result = await transactionService.GetTransactionsByWalletAsync(walletId);
+                return Ok(Responder.Success(result.data));
+            }
+            catch (Exception error)
             {
                 return BadRequest(Responder.Fail(error.Message));
             }

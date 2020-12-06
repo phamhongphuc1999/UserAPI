@@ -19,7 +19,7 @@ namespace UserAPI.Services.MongoService
         public TransactionService(string database, string collection): base(database)
         {
             mCollection = mDatabase.GetCollection<Transaction>(collection);
-            walletService = new WalletService("moneyLover", "Wallet");
+            walletService = new WalletService("MoneyLover", "Wallet");
         }
 
         public Result InsertTransaction(string walletId, string expenseId, NewTransactionInfo newTransaction)
@@ -94,14 +94,24 @@ namespace UserAPI.Services.MongoService
             };
         }
 
-        //public Result GetTransactionByWallet(string walletId)
-        //{
+        public Result GetTransactionsByWallet(string walletId)
+        {
+            List<Transaction> transactions = mCollection.Find(x => x.walletId.Id == BsonValue.Create(walletId)).ToList();
+            return new Result
+            {
+                status = 200,
+                data = transactions
+            };
+        }
 
-        //}
-
-        //public async Task<Result> GetTransactionByWalletAsync(string walletId)
-        //{
-
-        //}
+        public async Task<Result> GetTransactionsByWalletAsync(string walletId)
+        {
+            List<Transaction> transactions = await mCollection.Find(x => x.walletId.Id == BsonValue.Create(walletId)).ToListAsync();
+            return new Result
+            {
+                status = 200,
+                data = transactions
+            };
+        }
     }
 }

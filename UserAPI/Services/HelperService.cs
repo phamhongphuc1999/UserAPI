@@ -11,6 +11,11 @@ namespace UserAPI.Services
 {
     public class HelperService
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rawData"></param>
+        /// <returns></returns>
         public static string CalcuteSHA256Hash(string rawData)
         {
             SHA256 sha256 = SHA256.Create();
@@ -21,12 +26,29 @@ namespace UserAPI.Services
             return builder.ToString();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fields"></param>
+        /// <param name="separator"></param>
+        /// <returns></returns>
         public static string[] SplipFields(string fields, char separator = ',')
         {
             string result = "";
             foreach (char item in fields)
                 if (item != ' ') result += item;
             return result.Split(separator);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="time"></param>
+        /// <returns></returns>
+        public static DateTime ConvertStringToTime(string time)
+        {
+            return DateTime.ParseExact(time , "yyyy-MM-dd HH:mm:ss",
+                                       System.Globalization.CultureInfo.InvariantCulture);
         }
     }
 }

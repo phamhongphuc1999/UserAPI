@@ -179,6 +179,37 @@ namespace UserAPI.Services.MongoService
             };
         }
 
+        public Result GetUserByUserName(string username)
+        {
+            User user = mCollection.Find(x => x.username == username).ToList().FirstOrDefault();
+            if (user == null) return new Result
+            {
+                status = 400,
+                data = $"user with username: ${username} do not exist"
+            };
+            return new Result
+            {
+                status = 200,
+                data = user
+            };
+        }
+
+        public async Task<Result> GetUserByUserNameAsync(string username)
+        {
+            List<User> users = await mCollection.Find(x => x.username == username).ToListAsync();
+            User user = users.FirstOrDefault();
+            if (user == null) return new Result
+            {
+                status = 400,
+                data = $"user with username: ${username} do not exist"
+            };
+            return new Result
+            {
+                status = 200,
+                data = user
+            };
+        }
+
         public Result GetListUser(int pageSize = 0, int pageIndex = 0, string[] fields = null)
         {
             List<User> userList = mCollection.Find(x => x.username != String.Empty).ToList();
@@ -201,7 +232,7 @@ namespace UserAPI.Services.MongoService
                 }
             };
             List<User> tempList = userList.GetRange(index, pageSize);
-            IEnumerable<Dictionary<string, object>> productFilterList = tempList.Select(e =>
+            IEnumerable<Dictionary<string, object>> userFilterList = tempList.Select(e =>
             {
                 Dictionary<string, object> result = new Dictionary<string, object>();
                 foreach (string field in fields)
@@ -216,7 +247,7 @@ namespace UserAPI.Services.MongoService
                 status = 200,
                 data = new
                 {
-                    user_list = productFilterList,
+                    user_list = userFilterList,
                     pagination = new
                     {
                         totalResult = totalResult,
@@ -249,7 +280,7 @@ namespace UserAPI.Services.MongoService
                 } 
             };
             List<User> tempList = userList.GetRange(index, pageSize);
-            IEnumerable<Dictionary<string, object>> productFilterList = tempList.Select(e =>
+            IEnumerable<Dictionary<string, object>> userFilterList = tempList.Select(e =>
             {
                 Dictionary<string, object> result = new Dictionary<string, object>();
                 foreach (string field in fields)
@@ -264,7 +295,7 @@ namespace UserAPI.Services.MongoService
                 status = 200,
                 data = new
                 {
-                    user_list = productFilterList,
+                    user_list = userFilterList,
                     pagination = new
                     {
                         totalResult = totalResult,

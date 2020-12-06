@@ -4,10 +4,15 @@
 // Owner: Pham Hong Phuc
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using UserAPI.Models.CommonModel;
 using UserAPI.Models.MongoModel;
+using UserAPI.Services.JWTService;
 using UserAPI.Services.MongoService;
 
 namespace UserAPI.Controllers.MongoControllers
@@ -17,25 +22,29 @@ namespace UserAPI.Controllers.MongoControllers
     public class WalletController : ControllerBase
     {
         private WalletService walletService;
+        private IOptions<JWTConfig> _jwtConfig;
+        private IAuthService authService;
 
-        public WalletController()
+        public WalletController(IOptions<JWTConfig> jwtConfig)
         {
             walletService = new WalletService("MoneyLover", "Wallet");
+            _jwtConfig = jwtConfig;
+            authService = new JWTService(_jwtConfig.Value.SecretKey);
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="currencyId"></param>
         /// <param name="newWallet"></param>
         /// <returns></returns>
         [HttpPost("/wallets/{userId}")]
-        public async Task<object> CreateNewWallet(string userId, [FromQuery] string currencyId, [FromBody] NewWalletInfo newWallet)
+        [CustomAuthorization]
+        public async Task<object> CreateNewWallet(string userId, [FromBody] NewWalletInfo newWallet)
         {
             try
             {
-                Result result = await walletService.InsertWalletAsync(userId, currencyId, newWallet);
+                Result result = await walletService.InsertWalletAsync(userId, newWallet);
                 if (result.status != 200) return StatusCode(result.status, Responder.Fail(result.data));
                 return Ok(Responder.Success("success"));
             }
@@ -46,7 +55,8 @@ namespace UserAPI.Controllers.MongoControllers
         }
 
         [HttpGet("/wallets/{walletId}")]
-        public async Task<object> GetwalletById(string walletId)
+        [CustomAuthorization]
+        public async Task<object> GetWalletById(string walletId)
         {
             try
             {
@@ -55,6 +65,25 @@ namespace UserAPI.Controllers.MongoControllers
                 return Ok(Responder.Fail(result.data));
             }
             catch(Exception error)
+            {
+                return BadRequest(Responder.Fail(error.Message));
+            }
+        }
+
+        [HttpGet("/wallets/all")]
+        [CustomAuthorization]
+        public async Task<object> GetWalletByUser()
+        {
+            try
+            {
+                string token = HttpContext.Request.Headers["token"];
+                List<Claim> claims = authService.GetTokenClaims(token).ToList();
+                string username = claims.Find(x => x.Type == ClaimTypes.Name).Value;
+                Result result = await walletService.GetWalletsByUserAsync(username);
+                if (result.status != 200) return StatusCode(result.status, Responder.Fail(result.data));
+                return Ok(Responder.Success(result.data));
+            }
+            catch (Exception error)
             {
                 return BadRequest(Responder.Fail(error.Message));
             }

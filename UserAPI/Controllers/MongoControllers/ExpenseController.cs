@@ -15,26 +15,20 @@ namespace UserAPI.Controllers.MongoControllers
     [Produces("application/json")]
     [Consumes("application/json")]
     [ApiController]
-    public class CurrencyController : ControllerBase
+    public class ExpenseController : ControllerBase
     {
-        private CurrencyService currencyService;
-
-        public CurrencyController()
+        private ExpenseService expenseService;
+        public ExpenseController()
         {
-            currencyService = new CurrencyService("MoneyLover", "Currency");
+            expenseService = new ExpenseService("MoneyLover", "Expense");
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="newCurrency"></param>
-        /// <returns></returns>
-        [HttpPost("/currencies")]
-        public async Task<object> CreateNewCurrency([FromBody] NewCurrencyInfo newCurrency)
+        [HttpPost("/expenses/{categoryId}")]
+        public async Task<object> CreateNewExpense(string cateforyId, [FromBody] NewExpenseInfo newExpense)
         {
             try
             {
-                Result result = await currencyService.InsertCurrencyAsync(newCurrency.iconId, newCurrency.name);
+                Result result = await expenseService.InsertExpenseAsync(cateforyId, newExpense);
                 if (result.status != 200) return StatusCode(result.status, Responder.Fail(result.data));
                 return Ok(Responder.Success(result.data));
             }

@@ -6,6 +6,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
+using System.ComponentModel.DataAnnotations;
 
 namespace UserAPI.Models.MongoModel
 {
@@ -15,12 +16,32 @@ namespace UserAPI.Models.MongoModel
         [BsonRepresentation(BsonType.ObjectId)]
         public string _id { get; set; }
 
-        public MongoDBRef expenseId { get; set; }
+        public MongoDBRef walletId { get; set; }
+
+        public MongoDBRef categoryId { get; set; }
 
         public double amount { get; set; }
 
         public BsonDateTime dateFrom { get; set; }
 
         public BsonDateTime dateTo { get; set; }
+    }
+
+    public class NewBudgetInfo
+    {
+        [Required(ErrorMessage = "walletId is reuiqred")]
+        public MongoDBRef walletId { get; set; }
+
+        [Required(ErrorMessage = "expenseId is required")]
+        public string categoryId { get; set; }
+
+        [Range(0, double.MaxValue, ErrorMessage = "Please enter amount")]
+        public double amount { get; set; }
+
+        [Required(ErrorMessage = "dateFrom is required")]
+        public string dateFrom { get; set; }
+
+        [Required(ErrorMessage = "dateTo is required")]
+        public string dateTo { get; set; }
     }
 }

@@ -39,7 +39,6 @@ namespace UserAPI
                         {
                             filterContext.HttpContext.Response.Headers.Add("authToken", authToken);
                             filterContext.HttpContext.Response.Headers.Add("AuthStatus", "NotAuthorized");
-
                             filterContext.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                             filterContext.HttpContext.Response.HttpContext.Features.Get<IHttpResponseFeature>().ReasonPhrase = "Not Authorized";
                             filterContext.Result = new JsonResult("NotAuthorized")

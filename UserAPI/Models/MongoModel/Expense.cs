@@ -6,6 +6,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
+using System.ComponentModel.DataAnnotations;
 
 namespace UserAPI.Models.MongoModel
 {
@@ -19,6 +20,15 @@ namespace UserAPI.Models.MongoModel
 
         public MongoDBRef iconId { get; set; }
 
+        public string name { get; set; }
+    }
+
+    public class NewExpenseInfo
+    {
+        [Required(ErrorMessage = "iconId is reequired")]
+        public string iconId { get; set; }
+
+        [Required(ErrorMessage = "name is reequired")]
         public string name { get; set; }
     }
 }

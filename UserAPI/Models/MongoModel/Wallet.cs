@@ -29,14 +29,11 @@ namespace UserAPI.Models.MongoModel
 
     public class NewWalletInfo
     {
-        [Required(ErrorMessage = "userId is required")]
-        public MongoDBRef userId { get; set; }
-
         [Required(ErrorMessage = "currencyId is required")]
-        public MongoDBRef currencyId { get; set; }
+        public string currencyId { get; set; }
 
         [Required(ErrorMessage = "iconId is required")]
-        public MongoDBRef iconId { get; set; }
+        public string iconId { get; set; }
 
         [Required(ErrorMessage = "the username is required", AllowEmptyStrings = false)]
         [StringLength(200)]

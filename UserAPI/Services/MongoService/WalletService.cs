@@ -23,14 +23,15 @@ namespace UserAPI.Services.MongoService
             userService = new UserService("MoneyLover", "User");
         }
 
-        public Result InsertWallet(string userId, string currencyId, NewWalletInfo newWallet)
+        public Result InsertWallet(string userId, NewWalletInfo newWallet)
         {
             Result result = userService.GetUserById(userId);
             if (result.status != 200) return result;
             Wallet wallet = new Wallet()
             {
                 userId = new MongoDBRef("User", ObjectId.Parse(userId)),
-                currencyId = new MongoDBRef("Currency", ObjectId.Parse(currencyId)),
+                currencyId = new MongoDBRef("Currency", ObjectId.Parse(newWallet.currencyId)),
+                iconId = new MongoDBRef("Icon", ObjectId.Parse(newWallet.iconId)),
                 name = newWallet.name,
                 amount = newWallet.amount
             };
@@ -42,14 +43,15 @@ namespace UserAPI.Services.MongoService
             };
         }
 
-        public async Task<Result> InsertWalletAsync(string userId, string currencyId, NewWalletInfo newWallet)
+        public async Task<Result> InsertWalletAsync(string userId, NewWalletInfo newWallet)
         {
             Result result = await userService.GetUserByIdAsync(userId);
             if (result.status != 200) return result;
             Wallet wallet = new Wallet()
             {
                 userId = new MongoDBRef("User", ObjectId.Parse(userId)),
-                currencyId = new MongoDBRef("Currency", ObjectId.Parse(currencyId)),
+                currencyId = new MongoDBRef("Currency", ObjectId.Parse(newWallet.currencyId)),
+                iconId = new MongoDBRef("Icon", ObjectId.Parse(newWallet.iconId)),
                 name = newWallet.name,
                 amount = newWallet.amount
             };
@@ -90,6 +92,32 @@ namespace UserAPI.Services.MongoService
             {
                 status = 200,
                 data = wallet
+            };
+        }
+
+        public Result GetWalletsByUser(string username)
+        {
+            Result result = userService.GetUserByUserName(username);
+            if (result.status != 200) return result;
+            User user = (User)result.data;
+            List<Wallet> wallets = mCollection.Find(x => x.userId.Id == BsonValue.Create(user._id)).ToList();
+            return new Result
+            {
+                status = 200,
+                data = wallets
+            };
+        }
+
+        public async Task<Result> GetWalletsByUserAsync(string username)
+        {
+            Result result = userService.GetUserByUserName(username);
+            if (result.status != 200) return result;
+            User user = (User)result.data;
+            List<Wallet> wallets = await mCollection.Find(x => x.userId.Id == BsonValue.Create(user._id)).ToListAsync();
+            return new Result
+            {
+                status = 200,
+                data = wallets
             };
         }
     }
