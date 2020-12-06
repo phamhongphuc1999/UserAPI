@@ -36,16 +36,18 @@ namespace UserAPI.Controllers.MongoControllers
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="userId"></param>
         /// <param name="newWallet"></param>
         /// <returns></returns>
-        [HttpPost("/wallets/{userId}")]
+        [HttpPost("/wallets")]
         [CustomAuthorization]
-        public async Task<object> CreateNewWallet(string userId, [FromBody] NewWalletInfo newWallet)
+        public async Task<object> CreateNewWallet([FromBody] NewWalletInfo newWallet)
         {
             try
             {
-                Result result = await walletService.InsertWalletAsync(userId, newWallet);
+                string token = HttpContext.Request.Headers["token"];
+                List<Claim> claims = authService.GetTokenClaims(token).ToList();
+                string username = claims.Find(x => x.Type == ClaimTypes.Name).Value;
+                Result result = await walletService.InsertWalletAsync(username, newWallet);
                 if (result.status != 200) return StatusCode(result.status, Responder.Fail(result.data));
                 return Ok(Responder.Success("success"));
             }

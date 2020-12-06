@@ -23,13 +23,14 @@ namespace UserAPI.Services.MongoService
             userService = new UserService("MoneyLover", "User");
         }
 
-        public Result InsertWallet(string userId, NewWalletInfo newWallet)
+        public Result InsertWallet(string username, NewWalletInfo newWallet)
         {
-            Result result = userService.GetUserById(userId);
+            Result result = userService.GetUserByUserName(username);
             if (result.status != 200) return result;
+            User user = (User)result.data;
             Wallet wallet = new Wallet()
             {
-                userId = new MongoDBRef("User", ObjectId.Parse(userId)),
+                userId = new MongoDBRef("User", ObjectId.Parse(user._id)),
                 currencyId = new MongoDBRef("Currency", ObjectId.Parse(newWallet.currencyId)),
                 iconId = new MongoDBRef("Icon", ObjectId.Parse(newWallet.iconId)),
                 name = newWallet.name,
@@ -43,13 +44,14 @@ namespace UserAPI.Services.MongoService
             };
         }
 
-        public async Task<Result> InsertWalletAsync(string userId, NewWalletInfo newWallet)
+        public async Task<Result> InsertWalletAsync(string username, NewWalletInfo newWallet)
         {
-            Result result = await userService.GetUserByIdAsync(userId);
+            Result result = await userService.GetUserByUserNameAsync(username);
             if (result.status != 200) return result;
+            User user = (User)result.data;
             Wallet wallet = new Wallet()
             {
-                userId = new MongoDBRef("User", ObjectId.Parse(userId)),
+                userId = new MongoDBRef("User", ObjectId.Parse(user._id)),
                 currencyId = new MongoDBRef("Currency", ObjectId.Parse(newWallet.currencyId)),
                 iconId = new MongoDBRef("Icon", ObjectId.Parse(newWallet.iconId)),
                 name = newWallet.name,

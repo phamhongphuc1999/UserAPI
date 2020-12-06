@@ -3,6 +3,7 @@
 // API with mongodb, SQL server database and more.
 // Owner: Pham Hong Phuc
 
+using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,7 +64,7 @@ namespace UserAPI.Services.MongoService
             };
             mCollection.InsertOne(new Currency
             {
-                iconId = new MongoDBRef("Icon", iconId),
+                iconId = new MongoDBRef("Icon", ObjectId.Parse(iconId)),
                 name = name
             });
             return new Result

@@ -7,6 +7,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using UserAPI.Models.CommonModel;
+using UserAPI.Models.MongoModel;
 using UserAPI.Services.MongoService;
 
 namespace UserAPI.Controllers.MongoControllers
@@ -23,13 +24,12 @@ namespace UserAPI.Controllers.MongoControllers
             categoryService = new CategoryService("MoneyLover", "Category");
         }
 
-        [HttpGet("/categories")]
-        [CustomAuthorization]
-        public async Task<object> CreateNewCategory([FromQuery] string name)
+        [HttpPost("/categories")]
+        public async Task<object> CreateNewCategory([FromBody] NewCategoryInfo newCategory)
         {
             try
             {
-                Result result = await categoryService.InsertCategoryAsync(name);
+                Result result = await categoryService.InsertCategoryAsync(newCategory);
                 if (result.status != 200) return StatusCode(result.status, Responder.Fail(result.data));
                 return Ok(Responder.Success("success"));
             }

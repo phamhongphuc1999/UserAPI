@@ -5,6 +5,8 @@
 
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Driver;
+using System.ComponentModel.DataAnnotations;
 
 namespace UserAPI.Models.MongoModel
 {
@@ -14,6 +16,17 @@ namespace UserAPI.Models.MongoModel
         [BsonRepresentation(BsonType.ObjectId)]
         public string _id { get; set; }
 
+        public MongoDBRef iconId { get; set; }
+
+        public string name { get; set; }
+    }
+
+    public class NewCategoryInfo
+    {
+        [Required(ErrorMessage = "iconId is required")]
+        public string iconId { get; set; }
+
+        [Required(ErrorMessage = "name is required")]
         public string name { get; set; }
     }
 }

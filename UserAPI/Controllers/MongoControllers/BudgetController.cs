@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using UserAPI.Models.CommonModel;
 using UserAPI.Models.MongoModel;
+using UserAPI.Services;
 using UserAPI.Services.MongoService;
 
 namespace UserAPI.Controllers.MongoControllers
@@ -33,6 +34,43 @@ namespace UserAPI.Controllers.MongoControllers
                 Result result = await budgetService.InsertBudgetAsync(walletId, newBudget);
                 if (result.status != 200) return StatusCode(result.status, Responder.Fail(result.data));
                 return Ok(Responder.Success("success"));
+            }
+            catch (Exception error)
+            {
+                return BadRequest(Responder.Fail(error.Message));
+            }
+        }
+
+        [HttpGet("/budgets/{budgetId}")]
+        [CustomAuthorization]
+        public async Task<object> GetBudgetById(string budgetId)
+        {
+            try
+            {
+                Result result = await budgetService.GetBudgetByIdAsync(budgetId);
+                if (result.status != 200) return StatusCode(result.status, Responder.Fail(result.data));
+                return Ok(Responder.Success(result.data));
+            }
+            catch (Exception error)
+            {
+                return BadRequest(Responder.Fail(error.Message));
+            }
+        }
+
+        [HttpGet("/budgets/{walletId}")]
+        [CustomAuthorization]
+        public async Task<object> GetBudgetsByWallet(string walletId, [FromQuery] string categories)
+        {
+            try
+            {
+                Result result;
+                if (categories != null)
+                {
+                    string[] categoriesList = HelperService.SplipFields(categories);
+                    result = await budgetService.GetBudgetsByWalletAsync(walletId, categoriesList);
+                }
+                else result = await budgetService.GetBudgetsByWalletAsync(walletId);
+                return Ok(Responder.Success(result.data));
             }
             catch (Exception error)
             {

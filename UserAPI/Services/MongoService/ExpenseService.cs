@@ -61,5 +61,56 @@ namespace UserAPI.Services.MongoService
                 data = ""
             };
         }
+
+        public Result GetExpenseById(string expenseId)
+        {
+            Expense expense = mCollection.Find(x => x._id == expenseId).ToList().FirstOrDefault();
+            if (expense == null) return new Result
+            {
+                status = 400,
+                data = $"The expense with id: ${expenseId} do not exist"
+            };
+            return new Result
+            {
+                status = 200,
+                data = expense
+            };
+        }
+
+        public async Task<Result> GetExpenseByIdAsync(string expenseId)
+        {
+            List<Expense> expenses = await mCollection.Find(x => x._id == expenseId).ToListAsync();
+            Expense expense = expenses.FirstOrDefault();
+            if (expense == null) return new Result
+            {
+                status = 400,
+                data = $"The expense with id: ${expenseId} do not exist"
+            };
+            return new Result
+            {
+                status = 200,
+                data = expense
+            };
+        }
+
+        public Result GetExpensesByCategory(string categoryId)
+        {
+            List<Expense> expenses = mCollection.Find(x => x.categoryId.Id == BsonValue.Create(categoryId)).ToList();
+            return new Result
+            {
+                status = 200,
+                data = expenses
+            };
+        }
+
+        public async Task<Result> GetExpensesByCategoryAsync(string categoryId)
+        {
+            List<Expense> expenses = await mCollection.Find(x => x.categoryId.Id == BsonValue.Create(categoryId)).ToListAsync();
+            return new Result
+            {
+                status = 200,
+                data = expenses
+            };
+        }
     }
 }
