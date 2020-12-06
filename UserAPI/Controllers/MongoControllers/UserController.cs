@@ -18,6 +18,7 @@ using UserAPI.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using System.Linq;
+using System.Security.Claims;
 
 namespace UserAPI.Controllers.MongoControllers
 {
@@ -28,6 +29,7 @@ namespace UserAPI.Controllers.MongoControllers
     {
         private readonly IOptions<JWTConfig> _jwtConfig;
         private readonly ILogger<UserController> _logger;
+        private IAuthService authService;
         private UserService userService;
 
         public UserController(IOptions<JWTConfig> jwtConfig, ILogger<UserController> _logger)
@@ -35,6 +37,7 @@ namespace UserAPI.Controllers.MongoControllers
             this._logger = _logger;
             _jwtConfig = jwtConfig;
             userService = new UserService("MoneyLover", "User");
+            authService = new JWTService(_jwtConfig.Value.SecretKey);
         }
 
         /// <summary>login</summary>
@@ -149,6 +152,25 @@ namespace UserAPI.Controllers.MongoControllers
             }
         }
 
+        [HttpGet("/users/current-user")]
+        [CustomAuthorization]
+        public async Task<object> GetCurrentUser()
+        {
+            try
+            {
+                string token = HttpContext.Request.Headers["token"];
+                List<Claim> claims = authService.GetTokenClaims(token).ToList();
+                string username = claims.Find(x => x.Type == ClaimTypes.Name).Value;
+                Result result = await userService.GetUserByUserNameAsync(username);
+                if (result.status == 200) return Ok(Responder.Success(result.data));
+                else return StatusCode(result.status, Responder.Fail(result.data));
+            }
+            catch (Exception error)
+            {
+                return BadRequest(Responder.Fail(error.Message));
+            }
+        }
+
         /// <summary>get list users</summary>
         /// <remarks>get list users</remarks>
         /// <param name="pageIndex">the page index you want to get</param>
@@ -198,8 +220,10 @@ namespace UserAPI.Controllers.MongoControllers
         {
             try
             {
-                string username = Request.Headers["username"];
-                string password = Request.Headers["password"];
+                string token = HttpContext.Request.Headers["token"];
+                List<Claim> claims = authService.GetTokenClaims(token).ToList();
+                string username = claims.Find(x => x.Type == ClaimTypes.Name).Value;
+                string password = claims.Find(x => x.Type == "Password").Value;
                 if (oldUsername != username || oldPassword != password) return StatusCode(401, Responder.Fail("wrong username or password"));
                 Result result = await userService.UpdateUserAsync(username, updateUser);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
@@ -214,28 +238,22 @@ namespace UserAPI.Controllers.MongoControllers
         /// <summary>delete user</summary>
         /// <remarks>delete user</remarks>
         /// <returns></returns>
-        /// <param name="userId">the id of user you want to delete</param>
         /// <response code="200">return infomation of user you deleted</response>
         /// <response code="400">if get mistake</response>
         /// <response code="401">You not allow to action</response>
-        [HttpDelete("/users/{userId}")]
+        [HttpDelete("/users")]
         [CustomAuthorization]
         [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
         [ProducesResponseType(400, Type = typeof(ResponseFailType))]
         [ProducesResponseType(401, Type = typeof(ResponseFailType))]
-        public async Task<object> DeleteUser(string userId)
+        public async Task<object> DeleteUser()
         {
             try
             {
-                string role = Request.Headers["role"];
-                if (role != "admin")
-                {
-                    string username = Request.Headers["username"];
-                    Result temp = await userService.GetUserByIdAsync(userId, new string[] { "username" });
-                    Dictionary<string, string> data = (Dictionary<string, string>)temp.data;
-                    if (username != data["username"]) return StatusCode(401, Responder.Fail("You not allow to action"));
-                }
-                Result result = await userService.DeleteUserAsync(userId);
+                string token = HttpContext.Request.Headers["token"];
+                List<Claim> claims = authService.GetTokenClaims(token).ToList();
+                string username = claims.Find(x => x.Type == ClaimTypes.Name).Value;
+                Result result = await userService.DeleteUserAsync(username);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
             }

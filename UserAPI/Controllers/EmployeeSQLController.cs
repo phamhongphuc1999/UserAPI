@@ -14,8 +14,9 @@ using UserAPI.Services.SQLServerService;
 
 namespace UserAPI.Controllers
 {
-    [ApiController]
     [Produces("application/json")]
+    [Consumes("application/json")]
+    [ApiController]
     public class EmployeeSQLController : ControllerBase
     {
         private EmployeeService employeeService;

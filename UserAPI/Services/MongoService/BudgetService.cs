@@ -30,7 +30,7 @@ namespace UserAPI.Services.MongoService
             {
                 amount = newBudget.amount,
                 walletId = new MongoDBRef("Wallet", ObjectId.Parse(wallet._id)),
-                categoryId = new MongoDBRef("Expense", ObjectId.Parse(newBudget.categoryId)),
+                categoryId = new MongoDBRef("Category", ObjectId.Parse(newBudget.categoryId)),
                 dateFrom = new BsonDateTime(HelperService.ConvertStringToTime(newBudget.dateFrom)),
                 dateTo = new BsonDateTime(HelperService.ConvertStringToTime(newBudget.dateTo))
             });
@@ -50,7 +50,7 @@ namespace UserAPI.Services.MongoService
             {
                 amount = newBudget.amount,
                 walletId = new MongoDBRef("Wallet", ObjectId.Parse(wallet._id)),
-                categoryId = new MongoDBRef("Expense", ObjectId.Parse(newBudget.categoryId)),
+                categoryId = new MongoDBRef("Category", ObjectId.Parse(newBudget.categoryId)),
                 dateFrom = new BsonDateTime(HelperService.ConvertStringToTime(newBudget.dateFrom)),
                 dateTo = new BsonDateTime(HelperService.ConvertStringToTime(newBudget.dateTo))
             });

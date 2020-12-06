@@ -376,9 +376,9 @@ namespace UserAPI.Services.MongoService
             };
         }
 
-        public Result DeleteUser(string userId)
+        public Result DeleteUser(string username)
         {
-            User user = mCollection.FindOneAndDelete(x => x._id == userId);
+            User user = mCollection.FindOneAndDelete(x => x.username == username);
             if (user != null) return new Result
             {
                 status = 200,
@@ -387,13 +387,13 @@ namespace UserAPI.Services.MongoService
             else return new Result
             {
                 status = 400,
-                data = $"do not delete user with id: {userId}"
+                data = $"do not delete user with id: {username}"
             };
         }
 
-        public async Task<Result> DeleteUserAsync(string userId)
+        public async Task<Result> DeleteUserAsync(string username)
         {
-            User user = await mCollection.FindOneAndDeleteAsync(x => x._id == userId);
+            User user = await mCollection.FindOneAndDeleteAsync(x => x.username == username);
             if (user != null) return new Result
             {
                 status = 200,
@@ -402,7 +402,7 @@ namespace UserAPI.Services.MongoService
             else return new Result
             {
                 status = 400,
-                data = $"do not delete user with id: {userId}"
+                data = $"do not delete user with id: {username}"
             };
         }
     }

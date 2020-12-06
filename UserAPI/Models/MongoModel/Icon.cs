@@ -5,6 +5,7 @@
 
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace UserAPI.Models.MongoModel
 {
@@ -14,6 +15,7 @@ namespace UserAPI.Models.MongoModel
         [BsonRepresentation(BsonType.ObjectId)]
         public string _id { get; set; }
 
+        [Url]
         public string url { get; set; }
     }
 }

@@ -17,8 +17,9 @@ using UserAPI.Services.MongoService;
 
 namespace UserAPI.Controllers.MongoControllers
 {
-    [ApiController]
     [Produces("application/json")]
+    [Consumes("application/json")]
+    [ApiController]
     public class WalletController : ControllerBase
     {
         private WalletService walletService;

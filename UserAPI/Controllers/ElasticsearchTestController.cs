@@ -13,8 +13,9 @@ using UserAPI.Services.ElasticsearchService;
 
 namespace UserAPI.Controllers
 {
-    [ApiController]
     [Produces("application/json")]
+    [Consumes("application/json")]
+    [ApiController]
     public class ElasticsearchTestController : ControllerBase
     {
         private BaseService elasService;

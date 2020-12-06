@@ -12,8 +12,9 @@ using UserAPI.Services.MongoService;
 
 namespace UserAPI.Controllers.MongoControllers
 {
-    [ApiController]
     [Produces("application/json")]
+    [Consumes("application/json")]
+    [ApiController]
     public class TransactionController : ControllerBase
     {
         private TransactionService transactionService;
@@ -27,17 +28,16 @@ namespace UserAPI.Controllers.MongoControllers
         /// <remarks>create new transaction</remarks>
         /// <param name="newTransaction">The instance representing new transaction</param>
         /// <param name="walletId"></param>
-        /// <param name="expenseId"></param>
         /// <returns></returns>
         [HttpPost("/transactions/{walletId}")]
         [CustomAuthorization]
-        public async Task<object> CreateNewTransaction(string walletId, [FromQuery] string expenseId, [FromBody] NewTransactionInfo newTransaction)
+        public async Task<object> CreateNewTransaction(string walletId, [FromBody] NewTransactionInfo newTransaction)
         {
             try
             {
                 bool check = (newTransaction.amount <= 0) && (newTransaction.date == null);
                 if (!check) return StatusCode(401, Responder.Fail("Fill complete"));
-                Result result = await transactionService.InsertTransactionAsync(walletId, expenseId, newTransaction);
+                Result result = await transactionService.InsertTransactionAsync(walletId, newTransaction);
                 return StatusCode(result.status, Responder.Success("success"));
             }
             catch(Exception error)

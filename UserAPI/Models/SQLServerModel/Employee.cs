@@ -30,7 +30,7 @@ namespace UserAPI.Models.SQLServerModel
         public DateTime? Birthday { get; set; }
 
         [StringLength(10)]
-        public string Sex { get; set; }
+        public string Gender { get; set; }
 
         [StringLength(50)]
         public string Phone { get; set; }
@@ -67,7 +67,7 @@ namespace UserAPI.Models.SQLServerModel
 
         [Required(ErrorMessage = "the sex is required")]
         [StringLength(10)]
-        public string Sex { get; set; }
+        public string Gender { get; set; }
 
         [Required(ErrorMessage = "the phone is required")]
         [StringLength(50)]

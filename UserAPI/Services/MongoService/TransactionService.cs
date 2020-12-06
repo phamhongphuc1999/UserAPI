@@ -22,14 +22,14 @@ namespace UserAPI.Services.MongoService
             walletService = new WalletService("MoneyLover", "Wallet");
         }
 
-        public Result InsertTransaction(string walletId, string expenseId, NewTransactionInfo newTransaction)
+        public Result InsertTransaction(string walletId, NewTransactionInfo newTransaction)
         {
             Result result = walletService.GetWalletById(walletId);
             if (result.status != 200) return result;
             Transaction transaction = new Transaction()
             {
                 walletId = new MongoDBRef("Wallet", ObjectId.Parse(walletId)),
-                expenseId = new MongoDBRef("Expense", ObjectId.Parse(expenseId)),
+                expenseId = new MongoDBRef("Expense", ObjectId.Parse(newTransaction.expenseId)),
                 amount = newTransaction.amount,
                 date = newTransaction.date,
                 note = newTransaction.note
@@ -42,14 +42,14 @@ namespace UserAPI.Services.MongoService
             };
         }
 
-        public async Task<Result> InsertTransactionAsync(string walletId, string expenseId, NewTransactionInfo newTransaction)
+        public async Task<Result> InsertTransactionAsync(string walletId, NewTransactionInfo newTransaction)
         {
             Result result = await walletService.GetWalletByIdAsync(walletId);
             if (result.status != 200) return result;
             Transaction transaction = new Transaction()
             {
                 walletId = new MongoDBRef("Wallet", ObjectId.Parse(walletId)),
-                expenseId = new MongoDBRef("Expense", ObjectId.Parse(expenseId)),
+                expenseId = new MongoDBRef("Expense", ObjectId.Parse(newTransaction.expenseId)),
                 amount = newTransaction.amount,
                 date = newTransaction.date,
                 note = newTransaction.note

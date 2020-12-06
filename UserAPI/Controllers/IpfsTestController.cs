@@ -11,11 +11,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace UserAPI.Controllers
 {
-    public class IpfsTestController : Controller
+    [Produces("application/json")]
+    [Consumes("application/json")]
+    [ApiController]
+    public class IpfsTestController : ControllerBase
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
+        
     }
 }

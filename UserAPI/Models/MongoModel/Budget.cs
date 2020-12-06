@@ -29,9 +29,6 @@ namespace UserAPI.Models.MongoModel
 
     public class NewBudgetInfo
     {
-        [Required(ErrorMessage = "walletId is reuiqred")]
-        public MongoDBRef walletId { get; set; }
-
         [Required(ErrorMessage = "expenseId is required")]
         public string categoryId { get; set; }
 

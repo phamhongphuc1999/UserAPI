@@ -30,6 +30,9 @@ namespace UserAPI.Models.MongoModel
 
     public class NewTransactionInfo
     {
+        [Required(ErrorMessage = "expenseId is required")]
+        public string expenseId { get; set; }
+
         [Range(0, double.MaxValue, ErrorMessage = "Please enter amount")]
         public double amount { get; set; }
 

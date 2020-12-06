@@ -4,10 +4,9 @@
 // Owner: Pham Hong Phuc
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using UserAPI.Models.CommonModel;
 using UserAPI.Services.MongoService;
 
 namespace UserAPI.Controllers.MongoControllers
@@ -22,6 +21,22 @@ namespace UserAPI.Controllers.MongoControllers
         public CategoryController()
         {
             categoryService = new CategoryService("MoneyLover", "Category");
+        }
+
+        [HttpGet("/categories")]
+        [CustomAuthorization]
+        public async Task<object> CreateNewCategory([FromQuery] string name)
+        {
+            try
+            {
+                Result result = await categoryService.InsertCategoryAsync(name);
+                if (result.status != 200) return StatusCode(result.status, Responder.Fail(result.data));
+                return Ok(Responder.Success("success"));
+            }
+            catch (Exception error)
+            {
+                return BadRequest(Responder.Fail(error.Message));
+            }
         }
     }
 }

@@ -9,18 +9,9 @@ namespace UserAPI.Services.SQLServerService
 {
     public static class Config
     {
-        public static Dictionary<string, string> employeeFields = new Dictionary<string, string>()
+        public static string[] EMPLOYEE_FIELDS = new string[]
         {
-            {"Username", "0" },
-            {"Password", "0" },
-            {"Name", "0" },
-            {"Image", "0" },
-            {"Birthday", "0" },
-            {"Sex", "0" },
-            {"Phone", "0" },
-            {"Address", "0" },
-            {"Position", "0" },
-            {"Node", "0" }
+            "Username", "Password", "Name", "Image", "Birthday", "Gender", "Phone", "Address", "Position", "Node"
         };
     }
 }

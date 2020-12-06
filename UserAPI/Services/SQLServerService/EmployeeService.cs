@@ -30,7 +30,7 @@ namespace UserAPI.Services.SQLServerService
                 Name = entity.Name,
                 Username = entity.Username,
                 Password = entity.Password,
-                Sex = entity.Sex,
+                Gender = entity.Gender,
                 Phone = entity.Phone,
                 Address = entity.Address,
                 Position = entity.Position,
@@ -65,7 +65,7 @@ namespace UserAPI.Services.SQLServerService
                 Name = entity.Name,
                 Username = entity.Username,
                 Password = entity.Password,
-                Sex = entity.Sex,
+                Gender = entity.Gender,
                 Phone = entity.Phone,
                 Address = entity.Address,
                 Position = entity.Position,
@@ -102,7 +102,7 @@ namespace UserAPI.Services.SQLServerService
             };
             List<(string, object)> data = new List<(string, object)>();
             foreach (string field in fields)
-                if (Config.employeeFields.ContainsKey(field))
+                if (Config.EMPLOYEE_FIELDS.Contains(field))
                     data.Add((field, employee.GetType().GetProperty(field).GetValue(employee)));
             return new Result
             {
@@ -126,7 +126,7 @@ namespace UserAPI.Services.SQLServerService
             };
             List<(string, object)> data = new List<(string, object)>();
             foreach (string field in fields)
-                if (Config.employeeFields.ContainsKey(field))
+                if (Config.EMPLOYEE_FIELDS.Contains(field))
                     data.Add((field, employee.GetType().GetProperty(field).GetValue(employee)));
             return new Result
             {
@@ -258,7 +258,7 @@ namespace UserAPI.Services.SQLServerService
             if (updateEmployee.Image != null) employee.Image = updateEmployee.Image;
             if (updateEmployee.Phone != null) employee.Phone = updateEmployee.Phone;
             if (updateEmployee.Position != null) employee.Position = updateEmployee.Position;
-            if (updateEmployee.Sex != null) employee.Sex = updateEmployee.Sex;
+            if (updateEmployee.Gender != null) employee.Gender = updateEmployee.Gender;
             if (updateEmployee.Birthday != null) employee.Birthday = updateEmployee.Birthday;
             if (updateEmployee.Node != null) employee.Node = updateEmployee.Node;
             int check = SqlData.SaveChanges();
@@ -302,7 +302,7 @@ namespace UserAPI.Services.SQLServerService
             if (updateEmployee.Image != null) employee.Image = updateEmployee.Image;
             if (updateEmployee.Phone != null) employee.Phone = updateEmployee.Phone;
             if (updateEmployee.Position != null) employee.Position = updateEmployee.Position;
-            if (updateEmployee.Sex != null) employee.Sex = updateEmployee.Sex;
+            if (updateEmployee.Gender != null) employee.Gender = updateEmployee.Gender;
             if (updateEmployee.Birthday != null) employee.Birthday = updateEmployee.Birthday;
             if (updateEmployee.Node != null) employee.Node = updateEmployee.Node;
             int check = await SqlData.SaveChangesAsync();
