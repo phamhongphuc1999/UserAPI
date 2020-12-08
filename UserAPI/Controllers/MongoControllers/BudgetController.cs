@@ -4,6 +4,7 @@
 // Owner: Pham Hong Phuc
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using UserAPI.Models.CommonModel;
@@ -59,7 +60,7 @@ namespace UserAPI.Controllers.MongoControllers
 
         [HttpGet("/budgets/{walletId}")]
         [CustomAuthorization]
-        public async Task<object> GetBudgetsByWallet(string walletId, [FromQuery] string categories)
+        public async Task<object> GetBudgetsByWallet(string walletId, [FromQuery][Required] string categories)
         {
             try
             {

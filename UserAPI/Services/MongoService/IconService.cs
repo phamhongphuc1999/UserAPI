@@ -25,13 +25,16 @@ namespace UserAPI.Services.MongoService
             if (icon != null) return new Result
             {
                 status = 200,
-                data = $"the ${url} exist"
+                data = $"the {url} exist"
             };
             mCollection.InsertOne(new Icon { url = url });
             return new Result
             {
                 status = 200,
-                data = ""
+                data = new
+                {
+                    url = url
+                }
             };
         }
 
@@ -42,13 +45,16 @@ namespace UserAPI.Services.MongoService
             if (icon != null) return new Result
             {
                 status = 200,
-                data = $"the ${url} exist"
+                data = $"the {url} exist"
             };
             mCollection.InsertOne(new Icon { url = url });
             return new Result
             {
                 status = 200,
-                data = ""
+                data = new
+                {
+                    url = url
+                }
             };
         }
 
@@ -58,7 +64,7 @@ namespace UserAPI.Services.MongoService
             if (icon == null) return new Result
             {
                 status = 400,
-                data = $"The icon with id: ${id} do not exist"
+                data = $"The icon with id: {id} do not exist"
             };
             return new Result
             {
@@ -69,12 +75,11 @@ namespace UserAPI.Services.MongoService
 
         public async Task<Result> GetIconByIdAsync(string id)
         {
-            List<Icon> result = await mCollection.Find(x => x._id == id).ToListAsync();
-            Icon icon = result.FirstOrDefault();
+            Icon icon = await mCollection.Find(x => x._id == id).FirstOrDefaultAsync();
             if (icon == null) return new Result
             {
                 status = 400,
-                data = $"The icon with id: ${id} do not exist"
+                data = $"The icon with id: {id} do not exist"
             };
             return new Result
             {

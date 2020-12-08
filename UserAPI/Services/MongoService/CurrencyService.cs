@@ -3,9 +3,7 @@
 // API with mongodb, SQL server database and more.
 // Owner: Pham Hong Phuc
 
-using MongoDB.Bson;
 using MongoDB.Driver;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UserAPI.Models.CommonModel;
@@ -19,7 +17,7 @@ namespace UserAPI.Services.MongoService
         public CurrencyService(string database, string collection): base(database)
         {
             mCollection = mDatabase.GetCollection<Currency>(collection);
-            iconService = new IconService("MoneyLover", "Icon");
+            iconService = new IconService(database, "Icon");
         }
 
         public Result InsertCurrency(string iconId, string name)
@@ -28,23 +26,24 @@ namespace UserAPI.Services.MongoService
             if (result.data == null) return new Result
             {
                 status = 400,
-                data = $"the iconId: ${iconId} do not exist"
+                data = $"the iconId: {iconId} do not exist"
             };
-            Currency check = mCollection.Find(x => x.name == name).ToList().FirstOrDefault();
-            if (check != null) return new Result
+            Currency currency = mCollection.Find(x => x.name == name).ToList().FirstOrDefault();
+            if (currency != null) return new Result
             {
                 status = 400,
-                data = $"the name: ${name} already exist"
+                data = $"the name: {name} already exist"
             };
             mCollection.InsertOne(new Currency
             {
-                iconId = new MongoDBRef("Icon", iconId),
+                iconId = iconId,
                 name = name
             });
+            currency = mCollection.Find(x => x.name == name).ToList().FirstOrDefault();
             return new Result
             {
                 status = 200,
-                data = ""
+                data = currency
             };
         }
 
@@ -54,23 +53,24 @@ namespace UserAPI.Services.MongoService
             if (result.data == null) return new Result
             {
                 status = 400,
-                data = $"the iconId: ${iconId} do not exist"
+                data = $"the iconId: {iconId} do not exist"
             };
-            List<Currency> check = await mCollection.Find(x => x.name == name).ToListAsync();
-            if (check.Count > 0) return new Result
+            Currency currency = await mCollection.Find(x => x.name == name).FirstOrDefaultAsync();
+            if (currency == null) return new Result
             {
                 status = 400,
-                data = $"the name: ${name} already exist"
+                data = $"the name: {name} already exist"
             };
             mCollection.InsertOne(new Currency
             {
-                iconId = new MongoDBRef("Icon", ObjectId.Parse(iconId)),
+                iconId = iconId,
                 name = name
             });
+            currency = await mCollection.Find(x => x.name == name).FirstOrDefaultAsync();
             return new Result
             {
                 status = 200,
-                data = ""
+                data = currency
             };
         }
     }

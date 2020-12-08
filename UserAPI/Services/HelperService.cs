@@ -50,5 +50,12 @@ namespace UserAPI.Services
             return DateTime.ParseExact(time , "yyyy-MM-dd HH:mm:ss",
                                        System.Globalization.CultureInfo.InvariantCulture);
         }
+
+        public static string ConvertDateToString(DateTime date)
+        {
+            string result = date.ToString("u");
+            int length = result.Length;
+            return result.Substring(0, length - 1);
+        }
     }
 }

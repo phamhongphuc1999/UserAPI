@@ -35,10 +35,8 @@ namespace UserAPI.Controllers.MongoControllers
         {
             try
             {
-                bool check = (newTransaction.amount <= 0) && (newTransaction.date == null);
-                if (!check) return StatusCode(401, Responder.Fail("Fill complete"));
                 Result result = await transactionService.InsertTransactionAsync(walletId, newTransaction);
-                return StatusCode(result.status, Responder.Success("success"));
+                return StatusCode(result.status, Responder.Success(result.data));
             }
             catch(Exception error)
             {

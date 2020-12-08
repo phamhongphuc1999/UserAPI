@@ -3,8 +3,8 @@
 // API with mongodb, SQL server database and more.
 // Owner: Pham Hong Phuc
 
-using MongoDB.Bson;
 using MongoDB.Driver;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,7 +19,7 @@ namespace UserAPI.Services.MongoService
         public TransactionService(string database, string collection): base(database)
         {
             mCollection = mDatabase.GetCollection<Transaction>(collection);
-            walletService = new WalletService("MoneyLover", "Wallet");
+            walletService = new WalletService(database, "Wallet");
         }
 
         public Result InsertTransaction(string walletId, NewTransactionInfo newTransaction)
@@ -28,17 +28,17 @@ namespace UserAPI.Services.MongoService
             if (result.status != 200) return result;
             Transaction transaction = new Transaction()
             {
-                walletId = new MongoDBRef("Wallet", ObjectId.Parse(walletId)),
-                expenseId = new MongoDBRef("Expense", ObjectId.Parse(newTransaction.expenseId)),
+                walletId = walletId,
+                categoryId = newTransaction.categoryId,
                 amount = newTransaction.amount,
-                date = newTransaction.date,
+                createAt = DateTime.Now,
                 note = newTransaction.note
             };
             mCollection.InsertOne(transaction);
             return new Result
             {
                 status = 200,
-                data = ""
+                data = transaction
             };
         }
 
@@ -48,24 +48,23 @@ namespace UserAPI.Services.MongoService
             if (result.status != 200) return result;
             Transaction transaction = new Transaction()
             {
-                walletId = new MongoDBRef("Wallet", ObjectId.Parse(walletId)),
-                expenseId = new MongoDBRef("Expense", ObjectId.Parse(newTransaction.expenseId)),
+                walletId = walletId,
+                categoryId = newTransaction.categoryId,
                 amount = newTransaction.amount,
-                date = newTransaction.date,
+                createAt = DateTime.Now,
                 note = newTransaction.note
             };
             await mCollection.InsertOneAsync(transaction);
             return new Result
             {
                 status = 200,
-                data = ""
+                data = transaction
             };
         }
 
         public Result GetTransactionById(string transactionId)
         {
-            List<Transaction> result = mCollection.Find(x => x._id == transactionId).ToList();
-            Transaction transaction = result.FirstOrDefault();
+            Transaction transaction = mCollection.Find(x => x._id == transactionId).FirstOrDefault();
             if (transaction == null) return new Result
             {
                 status = 400,
@@ -80,8 +79,7 @@ namespace UserAPI.Services.MongoService
 
         public async Task<Result> GetTransactionByIdAsync(string transactionId)
         {
-            List<Transaction> result = await mCollection.Find(x => x._id == transactionId).ToListAsync();
-            Transaction transaction = result.FirstOrDefault();
+            Transaction transaction = await mCollection.Find(x => x._id == transactionId).FirstOrDefaultAsync();
             if (transaction == null) return new Result
             {
                 status = 400,
@@ -96,7 +94,7 @@ namespace UserAPI.Services.MongoService
 
         public Result GetTransactionsByWallet(string walletId)
         {
-            List<Transaction> transactions = mCollection.Find(x => x.walletId.Id == BsonValue.Create(walletId)).ToList();
+            List<Transaction> transactions = mCollection.Find(x => x.walletId == walletId).ToList();
             return new Result
             {
                 status = 200,
@@ -106,7 +104,7 @@ namespace UserAPI.Services.MongoService
 
         public async Task<Result> GetTransactionsByWalletAsync(string walletId)
         {
-            List<Transaction> transactions = await mCollection.Find(x => x.walletId.Id == BsonValue.Create(walletId)).ToListAsync();
+            List<Transaction> transactions = await mCollection.Find(x => x.walletId == walletId).ToListAsync();
             return new Result
             {
                 status = 200,

@@ -3,7 +3,6 @@
 // API with mongodb, SQL server database and more.
 // Owner: Pham Hong Phuc
 
-using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +19,7 @@ namespace UserAPI.Services.MongoService
         public WalletService(string database, string collection): base(database)
         {
             mCollection = mDatabase.GetCollection<Wallet>(collection);
-            userService = new UserService("MoneyLover", "User");
+            userService = new UserService(database, "User");
         }
 
         public Result InsertWallet(string username, NewWalletInfo newWallet)
@@ -28,19 +27,26 @@ namespace UserAPI.Services.MongoService
             Result result = userService.GetUserByUserName(username);
             if (result.status != 200) return result;
             User user = (User)result.data;
+            Wallet check = mCollection.Find(x => x.name == newWallet.name).FirstOrDefault();
+            if (check != null) return new Result
+            {
+                status = 400,
+                data = $"The name: {newWallet.name} already exist"
+            };
             Wallet wallet = new Wallet()
             {
-                userId = new MongoDBRef("User", ObjectId.Parse(user._id)),
-                currencyId = new MongoDBRef("Currency", ObjectId.Parse(newWallet.currencyId)),
-                iconId = new MongoDBRef("Icon", ObjectId.Parse(newWallet.iconId)),
+                userId = user._id,
+                currencyId = newWallet.currencyId,
+                iconId = newWallet.iconId,
                 name = newWallet.name,
                 amount = newWallet.amount
             };
             mCollection.InsertOne(wallet);
+            wallet = mCollection.Find(x => x.name == newWallet.name).FirstOrDefault();
             return new Result
             {
                 status = 200,
-                data = ""
+                data = wallet
             };
         }
 
@@ -49,26 +55,32 @@ namespace UserAPI.Services.MongoService
             Result result = await userService.GetUserByUserNameAsync(username);
             if (result.status != 200) return result;
             User user = (User)result.data;
+            Wallet check = await mCollection.Find(x => x.name == newWallet.name).FirstOrDefaultAsync();
+            if (check != null) return new Result
+            {
+                status = 400,
+                data = $"The name: {newWallet.name} already exist"
+            };
             Wallet wallet = new Wallet()
             {
-                userId = new MongoDBRef("User", ObjectId.Parse(user._id)),
-                currencyId = new MongoDBRef("Currency", ObjectId.Parse(newWallet.currencyId)),
-                iconId = new MongoDBRef("Icon", ObjectId.Parse(newWallet.iconId)),
+                userId = user._id,
+                currencyId = newWallet.currencyId,
+                iconId = newWallet.iconId,
                 name = newWallet.name,
                 amount = newWallet.amount
             };
             await mCollection.InsertOneAsync(wallet);
+            wallet = mCollection.Find(x => x.name == newWallet.name).FirstOrDefault();
             return new Result
             {
                 status = 200,
-                data = ""
+                data = wallet
             };
         }
 
         public Result GetWalletById(string walletId)
         {
-            List<Wallet> wallets = mCollection.Find(x => x._id == walletId).ToList();
-            Wallet wallet = wallets.FirstOrDefault();
+            Wallet wallet = mCollection.Find(x => x._id == walletId).FirstOrDefault();
             if (wallet == null) return new Result
             {
                 status = 401,
@@ -83,8 +95,7 @@ namespace UserAPI.Services.MongoService
 
         public async Task<Result> GetWalletByIdAsync(string walletId)
         {
-            List<Wallet> wallets = await mCollection.Find(x => x._id == walletId).ToListAsync();
-            Wallet wallet = wallets.FirstOrDefault();
+            Wallet wallet = await mCollection.Find(x => x._id == walletId).FirstOrDefaultAsync();
             if (wallet == null) return new Result
             {
                 status = 401,
@@ -102,7 +113,7 @@ namespace UserAPI.Services.MongoService
             Result result = userService.GetUserByUserName(username);
             if (result.status != 200) return result;
             User user = (User)result.data;
-            List<Wallet> wallets = mCollection.Find(x => x.userId.Id == BsonValue.Create(user._id)).ToList();
+            List<Wallet> wallets = mCollection.Find(x => x.userId == user._id).ToList();
             return new Result
             {
                 status = 200,
@@ -115,7 +126,7 @@ namespace UserAPI.Services.MongoService
             Result result = userService.GetUserByUserName(username);
             if (result.status != 200) return result;
             User user = (User)result.data;
-            List<Wallet> wallets = await mCollection.Find(x => x.userId.Id == BsonValue.Create(user._id)).ToListAsync();
+            List<Wallet> wallets = await mCollection.Find(x => x.userId == user._id).ToListAsync();
             return new Result
             {
                 status = 200,

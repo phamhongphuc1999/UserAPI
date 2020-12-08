@@ -5,7 +5,7 @@
 
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Driver;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace UserAPI.Models.MongoModel
@@ -16,15 +16,15 @@ namespace UserAPI.Models.MongoModel
         [BsonRepresentation(BsonType.ObjectId)]
         public string _id { get; set; }
 
-        public MongoDBRef walletId { get; set; }
+        public string walletId { get; set; }
 
-        public MongoDBRef categoryId { get; set; }
+        public string categoryId { get; set; }
 
         public double amount { get; set; }
 
-        public BsonDateTime dateFrom { get; set; }
+        public DateTime dateFrom { get; set; }
 
-        public BsonDateTime dateTo { get; set; }
+        public DateTime dateTo { get; set; }
     }
 
     public class NewBudgetInfo

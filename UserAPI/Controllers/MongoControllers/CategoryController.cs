@@ -38,5 +38,20 @@ namespace UserAPI.Controllers.MongoControllers
                 return BadRequest(Responder.Fail(error.Message));
             }
         }
+
+        [HttpGet("/categories/{categoryId}")]
+        public async Task<object> GetCategoryById(string categoryId)
+        {
+            try
+            {
+                Result result = await categoryService.GetCategoryByIdAsync(categoryId);
+                if (result.status != 200) return StatusCode(result.status, Responder.Fail(result.data));
+                return Ok(Responder.Success(result.data));
+            }
+            catch (Exception error)
+            {
+                return BadRequest(Responder.Fail(error.Message));
+            }
+        }
     }
 }

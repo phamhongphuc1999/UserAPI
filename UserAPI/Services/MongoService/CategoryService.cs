@@ -3,7 +3,6 @@
 // API with mongodb, SQL server database and more.
 // Owner: Pham Hong Phuc
 
-using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,42 +21,42 @@ namespace UserAPI.Services.MongoService
 
         public Result InsertCategory(NewCategoryInfo newCategory)
         {
-            List<Category> categories = mCollection.Find(x => x.name == newCategory.name).ToList();
-            Category category = categories.FirstOrDefault();
+            Category category = mCollection.Find(x => x.name == newCategory.name).FirstOrDefault();
             if (category != null) return new Result
             {
                 status = 400,
-                data = $"The category with name: ${newCategory.name} already exist"
+                data = $"The category with name: {newCategory.name} already exist"
             };
             mCollection.InsertOne(new Category
             {
                 name = newCategory.name,
-                iconId = new MongoDBRef("Icon", ObjectId.Parse(newCategory.iconId))
+                iconId = newCategory.iconId
             });
+            category = mCollection.Find(x => x.name == newCategory.name).FirstOrDefault();
             return new Result
             {
                 status = 200,
-                data = ""
+                data = category
             };
         }
 
         public async Task<Result> InsertCategoryAsync(NewCategoryInfo newCategory)
         {
-            List<Category> categories = await mCollection.Find(x => x.name == newCategory.name).ToListAsync();
-            Category category = categories.FirstOrDefault();
+            Category category = await mCollection.Find(x => x.name == newCategory.name).FirstOrDefaultAsync();
             if (category != null) return new Result
             {
                 status = 400,
-                data = $"The category with name: ${newCategory.name} already exist"
+                data = $"The category with name: {newCategory.name} already exist"
             };
             mCollection.InsertOne(new Category { 
                 name = newCategory.name,
-                iconId = new MongoDBRef("Icon", ObjectId.Parse(newCategory.iconId))
+                iconId = newCategory.iconId
             });
+            category = await mCollection.Find(x => x.name == newCategory.name).FirstOrDefaultAsync();
             return new Result
             {
                 status = 200,
-                data = ""
+                data = category
             };
         }
 
@@ -67,7 +66,7 @@ namespace UserAPI.Services.MongoService
             if (category == null) return new Result
             {
                 status = 400,
-                data = $"the category with id: ${categoryId} do not exist"
+                data = $"the category with id: {categoryId} do not exist"
             };
             return new Result
             {
@@ -83,7 +82,7 @@ namespace UserAPI.Services.MongoService
             if (category == null) return new Result
             {
                 status = 400,
-                data = $"the category with id: ${categoryId} do not exist"
+                data = $"the category with id: {categoryId} do not exist"
             };
             return new Result
             {

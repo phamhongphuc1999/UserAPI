@@ -5,7 +5,6 @@
 
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Driver;
 using System.ComponentModel.DataAnnotations;
 
 namespace UserAPI.Models.MongoModel
@@ -16,11 +15,11 @@ namespace UserAPI.Models.MongoModel
         [BsonRepresentation(BsonType.ObjectId)]
         public string _id { get; set; }
 
-        public MongoDBRef userId { get; set; }
+        public string userId { get; set; }
 
-        public MongoDBRef currencyId { get; set; }
+        public string currencyId { get; set; }
 
-        public MongoDBRef iconId { get; set; }
+        public string iconId { get; set; }
 
         public string name { get; set; }
 

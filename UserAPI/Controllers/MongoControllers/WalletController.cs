@@ -4,6 +4,7 @@
 // Owner: Pham Hong Phuc
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -24,10 +25,12 @@ namespace UserAPI.Controllers.MongoControllers
     {
         private WalletService walletService;
         private IOptions<JWTConfig> _jwtConfig;
+        private ILogger<WalletController> logger;
         private IAuthService authService;
 
-        public WalletController(IOptions<JWTConfig> jwtConfig)
+        public WalletController(IOptions<JWTConfig> jwtConfig, ILogger<WalletController> logger)
         {
+            this.logger = logger;
             walletService = new WalletService("MoneyLover", "Wallet");
             _jwtConfig = jwtConfig;
             authService = new JWTService(_jwtConfig.Value.SecretKey);
@@ -73,6 +76,10 @@ namespace UserAPI.Controllers.MongoControllers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("/wallets/all")]
         [CustomAuthorization]
         public async Task<object> GetWalletByUser()
@@ -82,6 +89,7 @@ namespace UserAPI.Controllers.MongoControllers
                 string token = HttpContext.Request.Headers["token"];
                 List<Claim> claims = authService.GetTokenClaims(token).ToList();
                 string username = claims.Find(x => x.Type == ClaimTypes.Name).Value;
+                logger.LogWarning(username);
                 Result result = await walletService.GetWalletsByUserAsync(username);
                 if (result.status != 200) return StatusCode(result.status, Responder.Fail(result.data));
                 return Ok(Responder.Success(result.data));

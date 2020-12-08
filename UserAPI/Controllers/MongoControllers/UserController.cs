@@ -15,7 +15,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using UserAPI.Models.CommonModel;
 using UserAPI.Services;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using System.Linq;
 using System.Security.Claims;
@@ -28,13 +27,11 @@ namespace UserAPI.Controllers.MongoControllers
     public class UserController : ControllerBase
     {
         private readonly IOptions<JWTConfig> _jwtConfig;
-        private readonly ILogger<UserController> _logger;
         private IAuthService authService;
         private UserService userService;
 
-        public UserController(IOptions<JWTConfig> jwtConfig, ILogger<UserController> _logger)
+        public UserController(IOptions<JWTConfig> jwtConfig)
         {
-            this._logger = _logger;
             _jwtConfig = jwtConfig;
             userService = new UserService("MoneyLover", "User");
             authService = new JWTService(_jwtConfig.Value.SecretKey);
@@ -152,6 +149,10 @@ namespace UserAPI.Controllers.MongoControllers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("/users/current-user")]
         [CustomAuthorization]
         public async Task<object> GetCurrentUser()

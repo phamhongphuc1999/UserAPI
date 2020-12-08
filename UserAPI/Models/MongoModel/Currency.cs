@@ -1,6 +1,10 @@
-﻿using MongoDB.Bson;
+﻿// Copyright (c) Microsoft. All Rights Reserved.
+// License under the Apache License, Version 2.0.
+// API with mongodb, SQL server database and more.
+// Owner: Pham Hong Phuc
+
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Driver;
 using System.ComponentModel.DataAnnotations;
 
 namespace UserAPI.Models.MongoModel
@@ -13,15 +17,15 @@ namespace UserAPI.Models.MongoModel
 
         public string name { get; set; }
 
-        public MongoDBRef iconId { get; set; }
+        public string iconId { get; set; }
     }
 
     public class NewCurrencyInfo
     {
-        [Required(ErrorMessage = "name is required")]
+        [Required]
         public string name { get; set; }
 
-        [Required(ErrorMessage = "iconId is required")]
+        [Required]
         public string iconId { get; set; }
     }
 }

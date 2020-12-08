@@ -3,7 +3,6 @@
 // API with mongodb, SQL server database and more.
 // Owner: Pham Hong Phuc
 
-using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,21 +19,20 @@ namespace UserAPI.Services.MongoService
         public BudgetService(string database, string collection) : base(database)
         {
             mCollection = mDatabase.GetCollection<Budget>(collection);
-            walletService = new WalletService("MoneyLover", "Wallet");
+            walletService = new WalletService(database, "Wallet");
         }
 
         public Result InsertBudget(string walletId, NewBudgetInfo newBudget)
         {
             Result result = walletService.GetWalletById(walletId);
             if (result.status != 200) return result;
-            Wallet wallet = (Wallet)result.data;
             mCollection.InsertOne(new Budget
             {
                 amount = newBudget.amount,
-                walletId = new MongoDBRef("Wallet", ObjectId.Parse(wallet._id)),
-                categoryId = new MongoDBRef("Category", ObjectId.Parse(newBudget.categoryId)),
-                dateFrom = new BsonDateTime(HelperService.ConvertStringToTime(newBudget.dateFrom)),
-                dateTo = new BsonDateTime(HelperService.ConvertStringToTime(newBudget.dateTo))
+                walletId = walletId,
+                categoryId = newBudget.categoryId,
+                dateFrom = HelperService.ConvertStringToTime(newBudget.dateFrom),
+                dateTo = HelperService.ConvertStringToTime(newBudget.dateTo)
             });
             return new Result
             {
@@ -47,14 +45,13 @@ namespace UserAPI.Services.MongoService
         {
             Result result = await walletService.GetWalletByIdAsync(walletId);
             if (result.status != 200) return result;
-            Wallet wallet = (Wallet)result.data;
             mCollection.InsertOne(new Budget
             {
                 amount = newBudget.amount,
-                walletId = new MongoDBRef("Wallet", ObjectId.Parse(wallet._id)),
-                categoryId = new MongoDBRef("Category", ObjectId.Parse(newBudget.categoryId)),
-                dateFrom = new BsonDateTime(HelperService.ConvertStringToTime(newBudget.dateFrom)),
-                dateTo = new BsonDateTime(HelperService.ConvertStringToTime(newBudget.dateTo))
+                walletId = walletId,
+                categoryId = newBudget.categoryId,
+                dateFrom = HelperService.ConvertStringToTime(newBudget.dateFrom),
+                dateTo = HelperService.ConvertStringToTime(newBudget.dateTo)
             });
             return new Result
             {
@@ -69,7 +66,7 @@ namespace UserAPI.Services.MongoService
             if (budget == null) return new Result
             {
                 status = 400,
-                data = $"budget with id: ${budgetId} do not exist"
+                data = $"budget with id: {budgetId} do not exist"
             };
             return new Result
             {
@@ -85,7 +82,7 @@ namespace UserAPI.Services.MongoService
             if (budget == null) return new Result
             {
                 status = 400,
-                data = $"budget with id: ${budgetId} do not exist"
+                data = $"budget with id: {budgetId} do not exist"
             };
             return new Result
             {
@@ -100,10 +97,10 @@ namespace UserAPI.Services.MongoService
             if (categoryIdList != null)
             {
                 budgets = mCollection.Find(x =>
-                    x.walletId.Id == BsonValue.Create(walletId) && categoryIdList.Contains(x.categoryId.Id.AsString)
+                    x.walletId == walletId && categoryIdList.Contains(x.categoryId)
                  ).ToList();
             }
-            else budgets = mCollection.Find(x => x.walletId.Id == BsonValue.Create(walletId)).ToList();
+            else budgets = mCollection.Find(x => x.walletId == walletId).ToList();
             return new Result
             {
                 status = 200,
@@ -117,10 +114,10 @@ namespace UserAPI.Services.MongoService
             if (categoryIdList != null)
             {
                 budgets = await mCollection.Find(x =>
-                    x.walletId.Id == BsonValue.Create(walletId) && categoryIdList.Contains(x.categoryId.Id.AsString)
+                    x.walletId == walletId && categoryIdList.Contains(x.categoryId)
                  ).ToListAsync();
             }
-            else budgets = await mCollection.Find(x => x.walletId.Id == BsonValue.Create(walletId)).ToListAsync();
+            else budgets = await mCollection.Find(x => x.walletId == walletId).ToListAsync();
             return new Result
             {
                 status = 200,
