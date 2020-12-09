@@ -146,7 +146,7 @@ namespace UserAPI.Services.MongoService
             };
             Dictionary<string, object> data = new Dictionary<string, object>();
             foreach (string field in fields)
-                if (Config.USER_FIELDS.Contains(field))
+                if (_options.Value.UserFields.Contains(field))
                     data.Add(field, result.GetType().GetProperty(field).GetValue(result));
             return new Result
             {
@@ -171,7 +171,7 @@ namespace UserAPI.Services.MongoService
             };
             Dictionary<string, object> data = new Dictionary<string, object>();
             foreach (string field in fields)
-                if (Config.USER_FIELDS.Contains(field))
+                if (_options.Value.UserFields.Contains(field))
                     data.Add(field, result.GetType().GetProperty(field).GetValue(result));
             return new Result
             {

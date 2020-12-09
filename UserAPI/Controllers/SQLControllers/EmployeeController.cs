@@ -6,24 +6,24 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using UserAPI.Models.CommonModel;
 using UserAPI.Models.SQLServerModel;
 using UserAPI.Services;
 using UserAPI.Services.SQLServerService;
 
-namespace UserAPI.Controllers
+namespace UserAPI.Controllers.SQLControllers
 {
     [Produces("application/json")]
     [Consumes("application/json")]
     [ApiController]
-    public class EmployeeSQLController : ControllerBase
+    public class EmployeeController : ControllerBase
     {
         private EmployeeService employeeService;
 
-        public EmployeeSQLController(IConfiguration configuration)
+        public EmployeeController(IOptions<SQLSetting> options)
         {
-            employeeService = new EmployeeService(configuration);
+            employeeService = new EmployeeService(options);
         }
 
         /// <summary>Create New Employee</summary>

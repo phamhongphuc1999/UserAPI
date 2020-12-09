@@ -13,9 +13,11 @@ namespace UserAPI.Services.MongoService
         protected MongoClient client;
         protected IMongoDatabase mDatabase;
         protected IMongoCollection<T> mCollection;
+        protected readonly IOptions<MongoSetting> _options;
 
         public BaseService(IOptions<MongoSetting> options)
         {
+            this._options = options;
             client = new MongoClient(options.Value.Connect);
             mDatabase = client.GetDatabase(options.Value.Database);
         }

@@ -58,6 +58,7 @@ namespace UserAPI
             services.AddMvcCore();
 
             services.Configure<JWTConfig>(Configuration.GetSection("JWT"));
+            services.Configure<MongoSetting>(Configuration.GetSection("MongoSetting"));
             if (_env.IsDevelopment()) services.Configure<DevelopmentConfig>(Configuration.GetSection("Develop"));
             else if (_env.IsProduction()) services.Configure<ProductionConfig>(Configuration.GetSection("Product"));
         }
