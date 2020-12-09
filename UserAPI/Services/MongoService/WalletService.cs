@@ -4,6 +4,7 @@
 // Owner: Pham Hong Phuc
 
 using MongoDB.Driver;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -39,7 +40,9 @@ namespace UserAPI.Services.MongoService
                 currencyId = newWallet.currencyId,
                 iconId = newWallet.iconId,
                 name = newWallet.name,
-                amount = newWallet.amount
+                amount = newWallet.amount,
+                createAt = DateTime.Now,
+                updateAt = DateTime.Now
             };
             mCollection.InsertOne(wallet);
             wallet = mCollection.Find(x => x.name == newWallet.name).FirstOrDefault();
@@ -67,7 +70,9 @@ namespace UserAPI.Services.MongoService
                 currencyId = newWallet.currencyId,
                 iconId = newWallet.iconId,
                 name = newWallet.name,
-                amount = newWallet.amount
+                amount = newWallet.amount,
+                createAt = DateTime.Now,
+                updateAt = DateTime.Now
             };
             await mCollection.InsertOneAsync(wallet);
             wallet = mCollection.Find(x => x.name == newWallet.name).FirstOrDefault();
@@ -131,6 +136,44 @@ namespace UserAPI.Services.MongoService
             {
                 status = 200,
                 data = wallets
+            };
+        }
+
+        public Result UpdateWallet(string walletId, UpdateWalletInfo updateWallet)
+        {
+            UpdateDefinition<Wallet> builder = Builders<Wallet>.Update.Set(x => x.updateAt, DateTime.Now);
+            if (updateWallet.iconId != null) builder = builder.Set(x => x.iconId, updateWallet.iconId);
+            else if (updateWallet.name != null) builder = builder.Set(x => x.name, updateWallet.name);
+            else if (updateWallet.amount != default(double)) builder.Set(x => x.amount, updateWallet.amount);
+            Wallet wallet = mCollection.FindOneAndUpdate(x => x._id == walletId, builder);
+            if (wallet == null) return new Result
+            {
+                status = 400,
+                data = $"The wallet with id: {walletId} not found"
+            };
+            return new Result
+            {
+                status = 200,
+                data = wallet
+            };
+        }
+
+        public async Task<Result> UpdateWalletAsync(string walletId, UpdateWalletInfo updateWallet)
+        {
+            UpdateDefinition<Wallet> builder = Builders<Wallet>.Update.Set(x => x.updateAt, DateTime.Now);
+            if (updateWallet.iconId != null) builder = builder.Set(x => x.iconId, updateWallet.iconId);
+            else if (updateWallet.name != null) builder = builder.Set(x => x.name, updateWallet.name);
+            else if (updateWallet.amount != default(double)) builder.Set(x => x.amount, updateWallet.amount);
+            Wallet wallet = await mCollection.FindOneAndUpdateAsync(x => x._id == walletId, builder);
+            if (wallet == null) return new Result
+            {
+                status = 400,
+                data = $"The wallet with id: {walletId} not found"
+            };
+            return new Result
+            {
+                status = 200,
+                data = wallet
             };
         }
     }

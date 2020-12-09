@@ -16,16 +16,24 @@ namespace UserAPI.Services.MongoService
     public class TransactionService: BaseService<Transaction>
     {
         private WalletService walletService;
+        private CategoryService categoryService;
+
         public TransactionService(string database, string collection): base(database)
         {
             mCollection = mDatabase.GetCollection<Transaction>(collection);
             walletService = new WalletService(database, "Wallet");
+            categoryService = new CategoryService(database, "Category");
         }
 
         public Result InsertTransaction(string walletId, NewTransactionInfo newTransaction)
         {
             Result result = walletService.GetWalletById(walletId);
             if (result.status != 200) return result;
+            Wallet wallet = (Wallet)result.data;
+            result = categoryService.GetCategoryById(newTransaction.categoryId);
+            if (result.status != 200) return result;
+            Category category = (Category)result.data;
+            string type = category.typeCategory;
             Transaction transaction = new Transaction()
             {
                 walletId = walletId,
@@ -34,7 +42,21 @@ namespace UserAPI.Services.MongoService
                 createAt = DateTime.Now,
                 note = newTransaction.note
             };
-            mCollection.InsertOne(transaction);
+            if (type != "Income" && type != "Deat")
+            {
+                if (newTransaction.amount > wallet.amount) return new Result
+                {
+                    status = 400,
+                    data = $"Not enough money"
+                };
+                mCollection.InsertOne(transaction);
+                walletService.UpdateWallet(walletId, new UpdateWalletInfo { amount = wallet.amount - newTransaction.amount });
+            }
+            else
+            {
+                mCollection.InsertOne(transaction);
+                walletService.UpdateWallet(walletId, new UpdateWalletInfo { amount = wallet.amount + newTransaction.amount });
+            }
             return new Result
             {
                 status = 200,
@@ -46,6 +68,11 @@ namespace UserAPI.Services.MongoService
         {
             Result result = await walletService.GetWalletByIdAsync(walletId);
             if (result.status != 200) return result;
+            Wallet wallet = (Wallet)result.data;
+            result = await categoryService.GetCategoryByIdAsync(newTransaction.categoryId);
+            if (result.status != 200) return result;
+            Category category = (Category)result.data;
+            string type = category.typeCategory;
             Transaction transaction = new Transaction()
             {
                 walletId = walletId,
@@ -54,7 +81,21 @@ namespace UserAPI.Services.MongoService
                 createAt = DateTime.Now,
                 note = newTransaction.note
             };
-            await mCollection.InsertOneAsync(transaction);
+            if (type != "Income" && type != "Deat")
+            {
+                if (newTransaction.amount > wallet.amount) return new Result
+                {
+                    status = 400,
+                    data = $"Not enough money"
+                };
+                mCollection.InsertOne(transaction);
+                walletService.UpdateWallet(walletId, new UpdateWalletInfo { amount = wallet.amount - newTransaction.amount });
+            }
+            else
+            {
+                mCollection.InsertOne(transaction);
+                walletService.UpdateWallet(walletId, new UpdateWalletInfo { amount = wallet.amount + newTransaction.amount });
+            }
             return new Result
             {
                 status = 200,
