@@ -37,4 +37,15 @@ namespace UserAPI.Models.MongoModel
 
         public string note { get; set; }
     }
+
+    public class GetTransactionInfo
+    {
+        public string typeCategory { get; set; }
+
+        public string walletId { get; set; }
+
+        public string dateFrom { get; set; }
+
+        public string dateTo { get; set; }
+    }
 }

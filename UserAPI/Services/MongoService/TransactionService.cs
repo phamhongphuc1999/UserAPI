@@ -31,7 +31,7 @@ namespace UserAPI.Services.MongoService
             Result result = walletService.GetWalletById(walletId);
             if (result.status != 200) return result;
             Wallet wallet = (Wallet)result.data;
-            result = categoryService.GetCategoryById(newTransaction.categoryId);
+            result = categoryService.GetSingerCategoryById(newTransaction.categoryId);
             if (result.status != 200) return result;
             Category category = (Category)result.data;
             string type = category.typeCategory;
@@ -70,7 +70,7 @@ namespace UserAPI.Services.MongoService
             Result result = await walletService.GetWalletByIdAsync(walletId);
             if (result.status != 200) return result;
             Wallet wallet = (Wallet)result.data;
-            result = await categoryService.GetCategoryByIdAsync(newTransaction.categoryId);
+            result = await categoryService.GetSingerCategoryByIdAsync(newTransaction.categoryId);
             if (result.status != 200) return result;
             Category category = (Category)result.data;
             string type = category.typeCategory;
@@ -134,23 +134,150 @@ namespace UserAPI.Services.MongoService
             };
         }
 
-        public Result GetTransactionsByWallet(string walletId)
+        public Result GetListTransactions(GetTransactionInfo transactionInfo, string username)
         {
-            List<Transaction> transactions = mCollection.Find(x => x.walletId == walletId).ToList();
+            Result result = walletService.GetWalletsByUser(username);
+            if (result.status != 200) return result;
+            Wallet specifiedWallet = null;
+            if (transactionInfo.walletId != null)
+            {
+                Result check = walletService.GetWalletById(transactionInfo.walletId);
+                if (check.status != 200) return check;
+                specifiedWallet = (Wallet)check.data;
+            }
+            List<Transaction> transactions = new List<Transaction>();
+            List<Wallet> walletList = (List<Wallet>)result.data;
+            if (specifiedWallet != null)
+            {
+                bool a = false;
+                foreach (Wallet item in walletList)
+                    if (item._id == specifiedWallet._id)
+                    {
+                        a = true;
+                        transactions = mCollection.Find(x => x.walletId == specifiedWallet._id).ToList();
+                        break;
+                    }
+                if (!a) return new Result
+                {
+                    status = 400,
+                    data = $"the wallet with id: {specifiedWallet._id} not found"
+                };
+            }
+            else
+            {
+                walletList.ForEach(x =>
+                {
+                    List<Transaction> list = mCollection.Find(transaction => transaction.walletId == x._id).ToList();
+                    transactions.AddRange(list);
+                });
+            }
+            if (transactionInfo.typeCategory != null)
+            {
+                transactions = transactions.Where(x =>
+                {
+                    Result tempT = categoryService.GetSingerCategoryById(x.categoryId);
+                    Category category = (Category)(tempT.data);
+                    return category.typeCategory == transactionInfo.typeCategory;
+                }).ToList();
+            }
+            if (transactionInfo.dateFrom != null)
+            {
+                DateTime dateFrom = HelperService.ConvertStringToTime(transactionInfo.dateFrom);
+                transactions = transactions.Where(x => x.createAt.CompareTo(dateFrom) >= 0).ToList();
+            }
+            else if (transactionInfo.dateTo != null)
+            {
+                DateTime dateTo = HelperService.ConvertStringToTime(transactionInfo.dateTo);
+                transactions = transactions.Where(x => x.createAt.CompareTo(dateTo) <= 0).ToList();
+            }
+            transactions = transactions.OrderByDescending(x => x.createAt).ToList();
+            IEnumerable<Dictionary<string, object>> transactionValues = transactions.Select(e =>
+            {
+                Dictionary<string, object> result = new Dictionary<string, object>();
+                object value = e.GetType().GetProperty("amount").GetValue(e);
+                result.Add("amount", value);
+                value = e.GetType().GetProperty("date").GetValue(e);
+                result.Add("date", value);
+                return result;
+            });
             return new Result
             {
                 status = 200,
-                data = transactions
+                data = transactionValues
             };
         }
 
-        public async Task<Result> GetTransactionsByWalletAsync(string walletId)
+        public async Task<Result> GetListTransactionsAsync(GetTransactionInfo transactionInfo, string username)
         {
-            List<Transaction> transactions = await mCollection.Find(x => x.walletId == walletId).ToListAsync();
+            Result result = await walletService.GetWalletsByUserAsync(username);
+            if (result.status != 200) return result;
+            Wallet specifiedWallet = null;
+            if (transactionInfo.walletId != null)
+            {
+                Result check = await walletService.GetWalletByIdAsync(transactionInfo.walletId);
+                if (check.status != 200) return check;
+                specifiedWallet = (Wallet)check.data;
+            }
+            List<Transaction> transactions = new List<Transaction>();
+            List<Wallet> walletList = (List<Wallet>)result.data;
+            if (specifiedWallet != null)
+            {
+                bool a = false;
+                foreach (Wallet item in walletList)
+                    if (item._id == specifiedWallet._id)
+                    {
+                        a = true;
+                        transactions = await mCollection.Find(x => x.walletId == specifiedWallet._id).ToListAsync();
+                        break;
+                    }
+                if (!a) return new Result
+                {
+                    status = 400,
+                    data = $"the wallet with id: {specifiedWallet._id} not found"
+                };
+            }
+            else
+            {
+                walletList.ForEach(x =>
+                {
+                    List<Transaction> list = mCollection.Find(transaction => transaction.walletId == x._id).ToList();
+                    transactions.AddRange(list);
+                });
+            }
+            if (transactionInfo.typeCategory != null)
+            {
+                transactions = transactions.Where(x =>
+                {
+                    Task<Result> tempT = categoryService.GetSingerCategoryByIdAsync(x.categoryId);
+                    tempT.Wait();
+                    Category category = (Category)(tempT.Result.data);
+                    return category.typeCategory == transactionInfo.typeCategory;
+                }).ToList();
+            }
+            if (transactionInfo.dateFrom != null)
+            {
+                DateTime dateFrom = HelperService.ConvertStringToTime(transactionInfo.dateFrom);
+                transactions = transactions.Where(x => x.createAt.CompareTo(dateFrom) >= 0).ToList();
+            }
+            else if (transactionInfo.dateTo != null)
+            {
+                DateTime dateTo = HelperService.ConvertStringToTime(transactionInfo.dateTo);
+                transactions = transactions.Where(x => x.createAt.CompareTo(dateTo) <= 0).ToList();
+            }
+            transactions = transactions.OrderByDescending(x => x.createAt).ToList();
+            IEnumerable<Dictionary<string, object>> transactionValues = transactions.Select(e =>
+            {
+                Dictionary<string, object> result = new Dictionary<string, object>();
+                object value = e.GetType().GetProperty("amount").GetValue(e);
+                result.Add("amount", value);
+                value = e.GetType().GetProperty("date").GetValue(e);
+                result.Add("date", value);
+                return result;
+            });
             return new Result
             {
                 status = 200,
-                data = transactions
+                data = transactionValues
             };
         }
     }

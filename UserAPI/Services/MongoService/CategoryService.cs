@@ -61,9 +61,9 @@ namespace UserAPI.Services.MongoService
             };
         }
 
-        public Result GetCategoryById(string categoryId)
+        public Result GetSingerCategoryById(string categoryId)
         {
-            Category category = mCollection.Find(x => x._id == categoryId).ToList().FirstOrDefault();
+            Category category = mCollection.Find(x => x._id == categoryId).FirstOrDefault();
             if (category == null) return new Result
             {
                 status = 400,
@@ -76,10 +76,9 @@ namespace UserAPI.Services.MongoService
             };
         }
 
-        public async Task<Result> GetCategoryByIdAsync(string categoryId)
+        public async Task<Result> GetSingerCategoryByIdAsync(string categoryId)
         {
-            List<Category> categorys = await mCollection.Find(x => x._id == categoryId).ToListAsync();
-            Category category = categorys.FirstOrDefault();
+            Category category = await mCollection.Find(x => x._id == categoryId).FirstOrDefaultAsync();
             if (category == null) return new Result
             {
                 status = 400,
@@ -89,6 +88,46 @@ namespace UserAPI.Services.MongoService
             {
                 status = 200,
                 data = category
+            };
+        }
+
+        public Result GetCategoryById(string categoryId)
+        {
+            Category category = mCollection.Find(x => x._id == categoryId).FirstOrDefault();
+            if (category == null) return new Result
+            {
+                status = 400,
+                data = $"the category with id: {categoryId} do not exist"
+            };
+            List<Category> categories = mCollection.Find(x => x.parentCategory == category._id).ToList();
+            return new Result
+            {
+                status = 200,
+                data = new
+                {
+                    category = category,
+                    childrent = categories
+                }
+            };
+        }
+
+        public async Task<Result> GetCategoryByIdAsync(string categoryId)
+        {
+            Category category = await mCollection.Find(x => x._id == categoryId).FirstOrDefaultAsync();
+            if (category == null) return new Result
+            {
+                status = 400,
+                data = $"the category with id: {categoryId} do not exist"
+            };
+            List<Category> categories = await mCollection.Find(x => x.parentCategory == category._id).ToListAsync();
+            return new Result
+            {
+                status = 200,
+                data = new
+                {
+                    category = category,
+                    childrent = categories
+                }
             };
         }
     }
