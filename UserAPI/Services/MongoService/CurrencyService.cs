@@ -3,6 +3,7 @@
 // API with mongodb, SQL server database and more.
 // Owner: Pham Hong Phuc
 
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,10 +15,10 @@ namespace UserAPI.Services.MongoService
     public class CurrencyService: BaseService<Currency>
     {
         private IconService iconService;
-        public CurrencyService(string database, string collection): base(database)
+        public CurrencyService(IOptions<MongoSetting> options, string collection): base(options)
         {
             mCollection = mDatabase.GetCollection<Currency>(collection);
-            iconService = new IconService(database, "Icon");
+            iconService = new IconService(options, "Icon");
         }
 
         public Result InsertCurrency(string iconId, string name)

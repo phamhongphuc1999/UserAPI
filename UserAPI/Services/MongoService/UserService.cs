@@ -11,12 +11,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using UserAPI.Models.CommonModel;
 using MongoDB.Bson;
+using Microsoft.Extensions.Options;
 
 namespace UserAPI.Services.MongoService
 {
     public class UserService : BaseService<User>
     {
-        public UserService(string database, string collection) : base(database)
+        public UserService(IOptions<MongoSetting> options, string collection) : base(options)
         {
             mCollection = mDatabase.GetCollection<User>(collection);
         }
@@ -145,7 +146,7 @@ namespace UserAPI.Services.MongoService
             };
             Dictionary<string, object> data = new Dictionary<string, object>();
             foreach (string field in fields)
-                if (Config.USER_FIELDS.Contains(field))
+                if (_options.Value.UserFields.Contains(field))
                     data.Add(field, result.GetType().GetProperty(field).GetValue(result));
             return new Result
             {
@@ -170,7 +171,7 @@ namespace UserAPI.Services.MongoService
             };
             Dictionary<string, object> data = new Dictionary<string, object>();
             foreach (string field in fields)
-                if (Config.USER_FIELDS.Contains(field))
+                if (_options.Value.UserFields.Contains(field))
                     data.Add(field, result.GetType().GetProperty(field).GetValue(result));
             return new Result
             {

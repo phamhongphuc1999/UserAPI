@@ -4,7 +4,7 @@
 // Owner: Pham Hong Phuc
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using UserAPI.Models.SQLServerModel;
 
 namespace UserAPI.Services.SQLServerService
@@ -13,11 +13,13 @@ namespace UserAPI.Services.SQLServerService
     {
         private SQLData sqlData;
         private DbContextOptionsBuilder<SQLData> option;
+        protected readonly IOptions<SQLSetting> setting;
 
-        public BaseService(IConfiguration configuration)
+        public BaseService(IOptions<SQLSetting> setting)
         {
+            this.setting = setting;
             option = new DbContextOptionsBuilder<SQLData>();
-            option.UseSqlServer(configuration.GetConnectionString("SQLServer"));
+            option.UseSqlServer(setting.Value.Connect);
             sqlData = new SQLData(option.Options);
         }
 

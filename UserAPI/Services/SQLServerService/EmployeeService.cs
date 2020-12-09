@@ -4,7 +4,7 @@
 // Owner: Pham Hong Phuc
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,7 +15,7 @@ namespace UserAPI.Services.SQLServerService
 {
     public class EmployeeService : BaseService
     {
-        public EmployeeService(IConfiguration configuration) : base(configuration) { }
+        public EmployeeService(IOptions<SQLSetting> setting) : base(setting) { }
 
         public Result InsertEmployee(InsertEmployeeInfo entity)
         {
@@ -102,7 +102,7 @@ namespace UserAPI.Services.SQLServerService
             };
             List<(string, object)> data = new List<(string, object)>();
             foreach (string field in fields)
-                if (Config.EMPLOYEE_FIELDS.Contains(field))
+                if (setting.Value.EmployeeFields.Contains(field))
                     data.Add((field, employee.GetType().GetProperty(field).GetValue(employee)));
             return new Result
             {
@@ -126,7 +126,7 @@ namespace UserAPI.Services.SQLServerService
             };
             List<(string, object)> data = new List<(string, object)>();
             foreach (string field in fields)
-                if (Config.EMPLOYEE_FIELDS.Contains(field))
+                if (setting.Value.EmployeeFields.Contains(field))
                     data.Add((field, employee.GetType().GetProperty(field).GetValue(employee)));
             return new Result
             {

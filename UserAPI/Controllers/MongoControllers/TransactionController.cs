@@ -4,6 +4,7 @@
 // Owner: Pham Hong Phuc
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
 using UserAPI.Models.CommonModel;
@@ -19,9 +20,9 @@ namespace UserAPI.Controllers.MongoControllers
     {
         private TransactionService transactionService;
 
-        public TransactionController()
+        public TransactionController(IOptions<MongoSetting> options)
         {
-            transactionService = new TransactionService("MoneyLover", "Transaction");
+            transactionService = new TransactionService(options, "Transaction");
         }
 
         /// <summary>Create new transaction</summary>

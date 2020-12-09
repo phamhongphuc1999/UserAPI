@@ -6,6 +6,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using UserAPI.Models.CommonModel;
 using UserAPI.Models.MongoModel;
 using UserAPI.Services.MongoService;
@@ -19,9 +20,9 @@ namespace UserAPI.Controllers.MongoControllers
     {
         private CurrencyService currencyService;
 
-        public CurrencyController()
+        public CurrencyController(IOptions<MongoSetting> options)
         {
-            currencyService = new CurrencyService("MoneyLover", "Currency");
+            currencyService = new CurrencyService(options, "Currency");
         }
 
         /// <summary>
