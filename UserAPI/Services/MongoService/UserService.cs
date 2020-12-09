@@ -11,12 +11,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using UserAPI.Models.CommonModel;
 using MongoDB.Bson;
+using Microsoft.Extensions.Options;
 
 namespace UserAPI.Services.MongoService
 {
     public class UserService : BaseService<User>
     {
-        public UserService(string database, string collection) : base(database)
+        public UserService(IOptions<MongoSetting> options, string collection) : base(options)
         {
             mCollection = mDatabase.GetCollection<User>(collection);
         }

@@ -3,6 +3,7 @@
 // API with mongodb, SQL server database and more.
 // Owner: Pham Hong Phuc
 
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
 namespace UserAPI.Services.MongoService
@@ -13,10 +14,10 @@ namespace UserAPI.Services.MongoService
         protected IMongoDatabase mDatabase;
         protected IMongoCollection<T> mCollection;
 
-        public BaseService(string database)
+        public BaseService(IOptions<MongoSetting> options)
         {
-            client = new MongoClient(Config.MONGO_SCRIPT);
-            mDatabase = client.GetDatabase(database);
+            client = new MongoClient(options.Value.Connect);
+            mDatabase = client.GetDatabase(options.Value.Database);
         }
     }
 }

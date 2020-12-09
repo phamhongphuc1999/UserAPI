@@ -11,6 +11,12 @@ namespace UserAPI
         public string SecretKey { get; set; }
     }
 
+    public class MongoSetting
+    {
+        public string Connect { get; set; }
+        public string Database { get; set; }
+    }
+
     public class DevelopmentConfig
     {
         public string ApplicationUrl { get; set; }

@@ -13,10 +13,10 @@ namespace UserAPITest.MongoServicesTest
     {
         private UserService userService;
 
-        [SetUp]
-        public void Setup()
-        {
-            userService = new UserService("MoneyLover", "User");
-        }
+        //[SetUp]
+        //public void Setup()
+        //{
+        //    userService = new UserService("MoneyLover", "User");
+        //}
     }
 }

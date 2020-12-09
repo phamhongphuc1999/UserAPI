@@ -30,10 +30,10 @@ namespace UserAPI.Controllers.MongoControllers
         private IAuthService authService;
         private UserService userService;
 
-        public UserController(IOptions<JWTConfig> jwtConfig)
+        public UserController(IOptions<JWTConfig> jwtConfig, IOptions<MongoSetting> mongoConfig)
         {
             _jwtConfig = jwtConfig;
-            userService = new UserService("MoneyLover", "User");
+            userService = new UserService(mongoConfig, "User");
             authService = new JWTService(_jwtConfig.Value.SecretKey);
         }
 

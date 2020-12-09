@@ -4,6 +4,7 @@
 // Owner: Pham Hong Phuc
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
 using UserAPI.Models.CommonModel;
@@ -17,9 +18,9 @@ namespace UserAPI.Controllers.MongoControllers
     public class IconController : ControllerBase
     {
         private IconService iconService;
-        public IconController()
+        public IconController(IOptions<MongoSetting> options)
         {
-            iconService = new IconService("MoneyLover", "Icon");
+            iconService = new IconService(options, "Icon");
         }
 
         /// <summary>

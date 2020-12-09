@@ -7,6 +7,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using UserAPI.Models.CommonModel;
 using UserAPI.Models.MongoModel;
 using UserAPI.Services;
@@ -21,9 +22,9 @@ namespace UserAPI.Controllers.MongoControllers
     {
         private BudgetService budgetService;
 
-        public BudgetController()
+        public BudgetController(IOptions<MongoSetting> options)
         {
-            budgetService = new BudgetService("MoneyLover", "Budget");
+            budgetService = new BudgetService(options, "Budget");
         }
 
         [HttpPost("/budgets/{walletId}")]

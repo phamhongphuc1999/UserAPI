@@ -3,6 +3,7 @@
 // API with mongodb, SQL server database and more.
 // Owner: Pham Hong Phuc
 
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace UserAPI.Services.MongoService
 {
     public class CategoryService: BaseService<Category>
     {
-        public CategoryService(string database, string collection): base(database)
+        public CategoryService(IOptions<MongoSetting> options, string collection): base(options)
         {
             mCollection = mDatabase.GetCollection<Category>(collection);
         }
