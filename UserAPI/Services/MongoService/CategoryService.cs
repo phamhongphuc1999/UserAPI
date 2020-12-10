@@ -130,5 +130,45 @@ namespace UserAPI.Services.MongoService
                 }
             };
         }
+
+        public Result GetListCategories()
+        {
+            List<Category> categories = mCollection.Find(x => x.parentCategory == null).ToList();
+            List<object> list = new List<object>();
+            foreach (Category category in categories)
+            {
+                List<Category> childrent = mCollection.Find(x => x.parentCategory == category._id).ToList();
+                list.Add(new
+                {
+                    category = category,
+                    childrent = childrent
+                });
+            }
+            return new Result
+            {
+                status = 200,
+                data = list
+            };
+        }
+
+        public async Task<Result> GetListCategoriesAsync()
+        {
+            List<Category> categories = await mCollection.Find(x => x.parentCategory == null).ToListAsync();
+            List<object> list = new List<object>();
+            foreach (Category category in categories)
+            {
+                List<Category> childrent = await mCollection.Find(x => x.parentCategory == category._id).ToListAsync();
+                list.Add(new
+                {
+                    category = category,
+                    childrent = childrent
+                });
+            }
+            return new Result
+            {
+                status = 200,
+                data = list
+            };
+        }
     }
 }
