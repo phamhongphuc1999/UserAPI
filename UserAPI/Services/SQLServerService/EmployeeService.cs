@@ -4,22 +4,20 @@
 // Owner: Pham Hong Phuc
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UserAPI.Models.CommonModel;
 using UserAPI.Models.SQLServerModel;
+using static UserAPI.Program;
 
 namespace UserAPI.Services.SQLServerService
 {
-    public class EmployeeService : BaseService
+    public class EmployeeService
     {
-        public EmployeeService(IOptions<SQLSetting> setting) : base(setting) { }
-
         public Result InsertEmployee(InsertEmployeeInfo entity)
         {
-            Employee employee = SqlData.Employees.SingleOrDefault(x => x.Username == entity.Username);
+            Employee employee = sqlConnecter.SqlData.Employees.SingleOrDefault(x => x.Username == entity.Username);
             if (employee != null) return new Result
             {
                 status = 400,
@@ -38,8 +36,8 @@ namespace UserAPI.Services.SQLServerService
                 Birthday = entity.Birthday ?? null,
                 Node = entity.Node ?? null
             };
-            SqlData.Employees.Add(newEmployee);
-            int check = SqlData.SaveChanges();
+            sqlConnecter.SqlData.Employees.Add(newEmployee);
+            int check = sqlConnecter.SqlData.SaveChanges();
             if (check > 0) return new Result
             {
                 status = 200,
@@ -54,7 +52,7 @@ namespace UserAPI.Services.SQLServerService
 
         public async Task<Result> InsertEmployeeAsync(InsertEmployeeInfo entity)
         {
-            Employee employee = await SqlData.Employees.SingleOrDefaultAsync(x => x.Username == entity.Username);
+            Employee employee = await sqlConnecter.SqlData.Employees.SingleOrDefaultAsync(x => x.Username == entity.Username);
             if (employee != null) return new Result
             {
                 status = 400,
@@ -73,8 +71,8 @@ namespace UserAPI.Services.SQLServerService
                 Birthday = entity.Birthday ?? null,
                 Node = entity.Node ?? null
             };
-            await SqlData.Employees.AddAsync(newEmployee);
-            int check = await SqlData.SaveChangesAsync();
+            await sqlConnecter.SqlData.Employees.AddAsync(newEmployee);
+            int check = await sqlConnecter.SqlData.SaveChangesAsync();
             if (check > 0) return new Result
             {
                 status = 200,
@@ -89,7 +87,7 @@ namespace UserAPI.Services.SQLServerService
 
         public Result GetEmployeeByUsername(string username, string[] fields = null)
         {
-            Employee employee = SqlData.Employees.SingleOrDefault(x => x.Username == username);
+            Employee employee = sqlConnecter.SqlData.Employees.SingleOrDefault(x => x.Username == username);
             if (employee == null) return new Result
             {
                 status = 400,
@@ -102,7 +100,7 @@ namespace UserAPI.Services.SQLServerService
             };
             List<(string, object)> data = new List<(string, object)>();
             foreach (string field in fields)
-                if (setting.Value.EmployeeFields.Contains(field))
+                if (sqlConnecter.Setting.EmployeeFields.Contains(field))
                     data.Add((field, employee.GetType().GetProperty(field).GetValue(employee)));
             return new Result
             {
@@ -113,7 +111,7 @@ namespace UserAPI.Services.SQLServerService
 
         public async Task<Result> GetEmployeeByUsernameAsync(string username, string[] fields = null)
         {
-            Employee employee = await SqlData.Employees.SingleOrDefaultAsync(x => x.Username == username);
+            Employee employee = await sqlConnecter.SqlData.Employees.SingleOrDefaultAsync(x => x.Username == username);
             if (employee == null) return new Result
             {
                 status = 400,
@@ -126,7 +124,7 @@ namespace UserAPI.Services.SQLServerService
             };
             List<(string, object)> data = new List<(string, object)>();
             foreach (string field in fields)
-                if (setting.Value.EmployeeFields.Contains(field))
+                if (sqlConnecter.Setting.EmployeeFields.Contains(field))
                     data.Add((field, employee.GetType().GetProperty(field).GetValue(employee)));
             return new Result
             {
@@ -137,7 +135,7 @@ namespace UserAPI.Services.SQLServerService
 
         public Result GetListEmployees(int pageSize = 0, int pageIndex = 0, string[] fields = null)
         {
-            List<Employee> employeeList = SqlData.Employees.ToList();
+            List<Employee> employeeList = sqlConnecter.SqlData.Employees.ToList();
             int totalResult = employeeList.Count;
             if (pageSize == 0) pageSize = totalResult;
             if (pageIndex == 0) pageIndex = 1;
@@ -185,7 +183,7 @@ namespace UserAPI.Services.SQLServerService
 
         public async Task<Result> GetListEmployeesAsync(int pageSize = 0, int pageIndex = 0, string[] fields = null)
         {
-            List<Employee> employeeList = await SqlData.Employees.ToListAsync();
+            List<Employee> employeeList = await sqlConnecter.SqlData.Employees.ToListAsync();
             int totalResult = employeeList.Count;
             if (pageSize == 0) pageSize = totalResult;
             if (pageIndex == 0) pageIndex = 1;
@@ -233,7 +231,7 @@ namespace UserAPI.Services.SQLServerService
 
         public Result UpdateEmployee(int employeeId, InsertEmployeeInfo updateEmployee)
         {
-            Employee employee = SqlData.Employees.Find(employeeId);
+            Employee employee = sqlConnecter.SqlData.Employees.Find(employeeId);
             if (employee == null) return new Result
             {
                 status = 400,
@@ -241,7 +239,7 @@ namespace UserAPI.Services.SQLServerService
             };
             if (updateEmployee.Username != null)
             {
-                Employee checkEmployee = SqlData.Employees.SingleOrDefault(x => x.Username == updateEmployee.Username);
+                Employee checkEmployee = sqlConnecter.SqlData.Employees.SingleOrDefault(x => x.Username == updateEmployee.Username);
                 if (checkEmployee != null) return new Result
                 {
                     status = 400,
@@ -261,8 +259,8 @@ namespace UserAPI.Services.SQLServerService
             if (updateEmployee.Gender != null) employee.Gender = updateEmployee.Gender;
             if (updateEmployee.Birthday != null) employee.Birthday = updateEmployee.Birthday;
             if (updateEmployee.Node != null) employee.Node = updateEmployee.Node;
-            int check = SqlData.SaveChanges();
-            Employee result = SqlData.Employees.Find(employeeId);
+            int check = sqlConnecter.SqlData.SaveChanges();
+            Employee result = sqlConnecter.SqlData.Employees.Find(employeeId);
             if (check > 0) return new Result
             {
                 status = 200,
@@ -277,7 +275,7 @@ namespace UserAPI.Services.SQLServerService
 
         public async Task<Result> UpdateEmployeeAsync(int employeeId, InsertEmployeeInfo updateEmployee)
         {
-            Employee employee = await SqlData.Employees.FindAsync(employeeId);
+            Employee employee = await sqlConnecter.SqlData.Employees.FindAsync(employeeId);
             if (employee == null) return new Result
             {
                 status = 400,
@@ -285,7 +283,7 @@ namespace UserAPI.Services.SQLServerService
             };
             if (updateEmployee.Username != null)
             {
-                Employee checkEmployee = await SqlData.Employees.SingleOrDefaultAsync(x => x.Username == updateEmployee.Username);
+                Employee checkEmployee = await sqlConnecter.SqlData.Employees.SingleOrDefaultAsync(x => x.Username == updateEmployee.Username);
                 if (checkEmployee != null) return new Result
                 {
                     status = 400,
@@ -305,8 +303,8 @@ namespace UserAPI.Services.SQLServerService
             if (updateEmployee.Gender != null) employee.Gender = updateEmployee.Gender;
             if (updateEmployee.Birthday != null) employee.Birthday = updateEmployee.Birthday;
             if (updateEmployee.Node != null) employee.Node = updateEmployee.Node;
-            int check = await SqlData.SaveChangesAsync();
-            Employee result = await SqlData.Employees.FindAsync(employeeId);
+            int check = await sqlConnecter.SqlData.SaveChangesAsync();
+            Employee result = await sqlConnecter.SqlData.Employees.FindAsync(employeeId);
             if (check > 0) return new Result
             {
                 status = 200,
@@ -321,14 +319,14 @@ namespace UserAPI.Services.SQLServerService
 
         public Result DeleteEmployee(int employeeId)
         {
-            Employee employee = SqlData.Employees.Find(employeeId);
+            Employee employee = sqlConnecter.SqlData.Employees.Find(employeeId);
             if (employee == null) return new Result
             {
                 status = 400,
                 data = $"the employee with id: {employeeId} do not exist"
             };
-            SqlData.Remove(employee);
-            int check = SqlData.SaveChanges();
+            sqlConnecter.SqlData.Remove(employee);
+            int check = sqlConnecter.SqlData.SaveChanges();
             if (check > 0) return new Result
             {
                 status = 200,
@@ -343,14 +341,14 @@ namespace UserAPI.Services.SQLServerService
 
         public async Task<Result> DeleteEmployeeAsync(int employeeId)
         {
-            Employee employee = await SqlData.Employees.FindAsync(employeeId);
+            Employee employee = await sqlConnecter.SqlData.Employees.FindAsync(employeeId);
             if (employee == null) return new Result
             {
                 status = 400,
                 data = $"the employee with id: {employeeId} do not exist"
             };
-            SqlData.Remove(employee);
-            int check = await SqlData.SaveChangesAsync();
+            sqlConnecter.SqlData.Remove(employee);
+            int check = await sqlConnecter.SqlData.SaveChangesAsync();
             if (check > 0) return new Result
             {
                 status = 200,

@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using UserAPI.Models.CommonModel;
 using UserAPI.Models.MongoModel;
 using UserAPI.Services.JWTService;
-using UserAPI.Services.MongoService;
+using static UserAPI.Program;
 
 namespace UserAPI.Controllers.MongoControllers
 {
@@ -22,13 +22,11 @@ namespace UserAPI.Controllers.MongoControllers
     [ApiController]
     public class WalletController : ControllerBase
     {
-        private WalletService walletService;
         private IOptions<JWTConfig> _jwtConfig;
         private IAuthService authService;
 
-        public WalletController(IOptions<JWTConfig> jwtConfig, IOptions<MongoSetting> mongoConfig)
+        public WalletController(IOptions<JWTConfig> jwtConfig)
         {
-            walletService = new WalletService(mongoConfig, "Wallet");
             _jwtConfig = jwtConfig;
             authService = new JWTService(_jwtConfig.Value.SecretKey);
         }

@@ -3,24 +3,20 @@
 // API with mongodb, SQL server database and more.
 // Owner: Pham Hong Phuc
 
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UserAPI.Models.CommonModel;
 using UserAPI.Models.MongoModel;
+using static UserAPI.Program;
 
 namespace UserAPI.Services.MongoService
 {
-    public class BudgetService : BaseService<Budget>
+    public class BudgetService: BaseService<Budget>
     {
-        public WalletService walletService;
-
-        public BudgetService(IOptions<MongoSetting> options, string collection) : base(options)
+        public BudgetService(string collection): base(collection)
         {
-            mCollection = mDatabase.GetCollection<Budget>(collection);
-            walletService = new WalletService(options, "Wallet");
         }
 
         public Result InsertBudget(string walletId, NewBudgetInfo newBudget)

@@ -4,22 +4,23 @@
 // Owner: Pham Hong Phuc
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
 using UserAPI.Models.SQLServerModel;
 
 namespace UserAPI.Services.SQLServerService
 {
-    public class BaseService
+    public class SQLConnecter
     {
-        private SQLData sqlData;
-        private DbContextOptionsBuilder<SQLData> option;
-        protected readonly IOptions<SQLSetting> setting;
+        protected SQLData sqlData;
+        protected DbContextOptionsBuilder<SQLData> option;
+        protected SQLSetting sqlSetting;
 
-        public BaseService(IOptions<SQLSetting> setting)
+        public SQLConnecter(IConfigurationSection configuration)
         {
-            this.setting = setting;
+            sqlSetting = new SQLSetting();
+            configuration.Bind(sqlSetting);
             option = new DbContextOptionsBuilder<SQLData>();
-            option.UseSqlServer(setting.Value.Connect);
+            option.UseSqlServer(sqlSetting.Connect);
             sqlData = new SQLData(option.Options);
         }
 
@@ -31,6 +32,11 @@ namespace UserAPI.Services.SQLServerService
         public DbContextOptionsBuilder<SQLData> Option
         {
             get { return option; }
+        }
+
+        public SQLSetting Setting
+        {
+            get { return sqlSetting; }
         }
     }
 }

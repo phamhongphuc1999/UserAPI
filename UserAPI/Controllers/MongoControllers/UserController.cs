@@ -4,7 +4,6 @@
 // Owner: Pham Hong Phuc
 
 using System;
-using UserAPI.Services.MongoService;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -18,6 +17,7 @@ using UserAPI.Services;
 using Microsoft.Extensions.Primitives;
 using System.Linq;
 using System.Security.Claims;
+using static UserAPI.Program;
 
 namespace UserAPI.Controllers.MongoControllers
 {
@@ -28,12 +28,10 @@ namespace UserAPI.Controllers.MongoControllers
     {
         private readonly IOptions<JWTConfig> _jwtConfig;
         private IAuthService authService;
-        private UserService userService;
 
-        public UserController(IOptions<JWTConfig> jwtConfig, IOptions<MongoSetting> mongoConfig)
+        public UserController(IOptions<JWTConfig> jwtConfig)
         {
             _jwtConfig = jwtConfig;
-            userService = new UserService(mongoConfig, "User");
             authService = new JWTService(_jwtConfig.Value.SecretKey);
         }
 

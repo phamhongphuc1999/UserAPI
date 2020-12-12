@@ -4,11 +4,10 @@
 // Owner: Pham Hong Phuc
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
 using UserAPI.Models.CommonModel;
-using UserAPI.Services.MongoService;
+using static UserAPI.Program;
 
 namespace UserAPI.Controllers.MongoControllers
 {
@@ -17,12 +16,6 @@ namespace UserAPI.Controllers.MongoControllers
     [ApiController]
     public class IconController : ControllerBase
     {
-        private IconService iconService;
-        public IconController(IOptions<MongoSetting> options)
-        {
-            iconService = new IconService(options, "Icon");
-        }
-
         /// <summary>
         /// 
         /// </summary>
