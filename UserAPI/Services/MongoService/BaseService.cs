@@ -1,25 +1,15 @@
-﻿// Copyright (c) Microsoft. All Rights Reserved.
-// License under the Apache License, Version 2.0.
-// API with mongodb, SQL server database and more.
-// Owner: Pham Hong Phuc
-
-using Microsoft.Extensions.Options;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
+using static UserAPI.Program;
 
 namespace UserAPI.Services.MongoService
 {
     public class BaseService<T>
     {
-        protected MongoClient client;
-        protected IMongoDatabase mDatabase;
         protected IMongoCollection<T> mCollection;
-        protected readonly IOptions<MongoSetting> _options;
 
-        public BaseService(IOptions<MongoSetting> options)
+        public BaseService(string collection)
         {
-            this._options = options;
-            client = new MongoClient(options.Value.Connect);
-            mDatabase = client.GetDatabase(options.Value.Database);
+            mCollection = mongoConnecter.MDatabase.GetCollection<T>(collection);
         }
     }
 }

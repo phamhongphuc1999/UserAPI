@@ -6,11 +6,10 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using UserAPI.Models.CommonModel;
 using UserAPI.Models.SQLServerModel;
 using UserAPI.Services;
-using UserAPI.Services.SQLServerService;
+using static UserAPI.Program;
 
 namespace UserAPI.Controllers.SQLControllers
 {
@@ -19,13 +18,6 @@ namespace UserAPI.Controllers.SQLControllers
     [ApiController]
     public class EmployeeController : ControllerBase
     {
-        private EmployeeService employeeService;
-
-        public EmployeeController(IOptions<SQLSetting> options)
-        {
-            employeeService = new EmployeeService(options);
-        }
-
         /// <summary>Create New Employee</summary>
         /// <remarks>Create New Employee</remarks>
         /// <param name="newEmployee"></param>

@@ -3,7 +3,6 @@
 // API with mongodb, SQL server database and more.
 // Owner: Pham Hong Phuc
 
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +14,8 @@ namespace UserAPI.Services.MongoService
 {
     public class IconService: BaseService<Icon>
     {
-        public IconService(IOptions<MongoSetting> options, string collection): base(options)
+        public IconService(string collection): base(collection)
         {
-            mCollection = mDatabase.GetCollection<Icon>(collection);
         }
 
         public Result InsertIcon(string url)

@@ -6,10 +6,9 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using UserAPI.Models.CommonModel;
 using UserAPI.Models.MongoModel;
-using UserAPI.Services.MongoService;
+using static UserAPI.Program;
 
 namespace UserAPI.Controllers.MongoControllers
 {
@@ -18,13 +17,6 @@ namespace UserAPI.Controllers.MongoControllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private CategoryService categoryService;
-
-        public CategoryController(IOptions<MongoSetting> options)
-        {
-            categoryService = new CategoryService(options, "Category");
-        }
-
         [HttpPost("/categories")]
         public async Task<object> CreateNewCategory([FromBody] NewCategoryInfo newCategory)
         {

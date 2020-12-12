@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using UserAPI.Models.CommonModel;
 using UserAPI.Models.MongoModel;
 using UserAPI.Services.JWTService;
-using UserAPI.Services.MongoService;
+using static UserAPI.Program;
 
 namespace UserAPI.Controllers.MongoControllers
 {
@@ -22,13 +22,11 @@ namespace UserAPI.Controllers.MongoControllers
     [ApiController]
     public class TransactionController : ControllerBase
     {
-        private TransactionService transactionService;
         private readonly IOptions<JWTConfig> _jwtConfig;
         private IAuthService authService;
 
-        public TransactionController(IOptions<JWTConfig> jwtConfig, IOptions<MongoSetting> options)
+        public TransactionController(IOptions<JWTConfig> jwtConfig)
         {
-            transactionService = new TransactionService(options, "Transaction");
             _jwtConfig = jwtConfig;
             authService = new JWTService(_jwtConfig.Value.SecretKey);
         }
