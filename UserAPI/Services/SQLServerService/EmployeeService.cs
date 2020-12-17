@@ -249,7 +249,7 @@ namespace UserAPI.Services.SQLServerService
             }
             if (updateEmployee.Password != null)
             {
-                string newPassword = HelperService.CalcuteSHA256Hash(updateEmployee.Password);
+                string newPassword = Helper.CalcuteSHA256Hash(updateEmployee.Password);
                 employee.Password = newPassword;
             }
             if (updateEmployee.Name != null) employee.Name = updateEmployee.Name;
@@ -293,7 +293,7 @@ namespace UserAPI.Services.SQLServerService
             }
             if (updateEmployee.Password != null)
             {
-                string newPassword = HelperService.CalcuteSHA256Hash(updateEmployee.Password);
+                string newPassword = Helper.CalcuteSHA256Hash(updateEmployee.Password);
                 employee.Password = newPassword;
             }
             if (updateEmployee.Name != null) employee.Name = updateEmployee.Name;

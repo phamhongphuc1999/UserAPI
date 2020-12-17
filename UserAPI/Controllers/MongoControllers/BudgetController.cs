@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using UserAPI.Models.CommonModel;
 using UserAPI.Models.MongoModel;
-using UserAPI.Services;
 using static UserAPI.Program;
 
 namespace UserAPI.Controllers.MongoControllers
@@ -60,7 +59,7 @@ namespace UserAPI.Controllers.MongoControllers
                 Result result;
                 if (categories != null)
                 {
-                    string[] categoriesList = HelperService.SplipFields(categories);
+                    string[] categoriesList = Helper.SplipFields(categories);
                     result = await budgetService.GetBudgetsByWalletAsync(walletId, categoriesList);
                 }
                 else result = await budgetService.GetBudgetsByWalletAsync(walletId);

@@ -28,8 +28,8 @@ namespace UserAPI.Services.MongoService
                 amount = newBudget.amount,
                 walletId = walletId,
                 categoryId = newBudget.categoryId,
-                dateFrom = HelperService.ConvertStringToTime(newBudget.dateFrom),
-                dateTo = HelperService.ConvertStringToTime(newBudget.dateTo)
+                dateFrom = Helper.ConvertStringToTime(newBudget.dateFrom),
+                dateTo = Helper.ConvertStringToTime(newBudget.dateTo)
             });
             return new Result
             {
@@ -47,8 +47,8 @@ namespace UserAPI.Services.MongoService
                 amount = newBudget.amount,
                 walletId = walletId,
                 categoryId = newBudget.categoryId,
-                dateFrom = HelperService.ConvertStringToTime(newBudget.dateFrom),
-                dateTo = HelperService.ConvertStringToTime(newBudget.dateTo)
+                dateFrom = Helper.ConvertStringToTime(newBudget.dateFrom),
+                dateTo = Helper.ConvertStringToTime(newBudget.dateTo)
             });
             return new Result
             {

@@ -35,6 +35,7 @@ namespace UserAPI.Services.MongoService
                 categoryId = newTransaction.categoryId,
                 amount = newTransaction.amount,
                 createAt = DateTime.Now,
+                updateAt = DateTime.Now,
                 note = newTransaction.note
             };
             if (type != "Income" && type != "Deat")
@@ -74,6 +75,7 @@ namespace UserAPI.Services.MongoService
                 categoryId = newTransaction.categoryId,
                 amount = newTransaction.amount,
                 createAt = DateTime.Now,
+                updateAt = DateTime.Now,
                 note = newTransaction.note
             };
             if (type != "Income" && type != "Deat")
@@ -128,7 +130,7 @@ namespace UserAPI.Services.MongoService
             };
         }
 
-        public Result GetListTransactions(GetTransactionInfo transactionInfo, string username)
+        public Result GetListTransactions(GetTransactionInfo transactionInfo, string username, string[] fields)
         {
             Result result = walletService.GetWalletsByUser(username);
             if (result.status != 200) return result;
@@ -176,22 +178,21 @@ namespace UserAPI.Services.MongoService
             }
             if (transactionInfo.dateFrom != null)
             {
-                DateTime dateFrom = HelperService.ConvertStringToTime(transactionInfo.dateFrom);
+                DateTime dateFrom = Helper.ConvertStringToTime(transactionInfo.dateFrom);
                 transactions = transactions.Where(x => x.createAt.CompareTo(dateFrom) >= 0).ToList();
             }
-            else if (transactionInfo.dateTo != null)
+            if (transactionInfo.dateTo != null)
             {
-                DateTime dateTo = HelperService.ConvertStringToTime(transactionInfo.dateTo);
+                DateTime dateTo = Helper.ConvertStringToTime(transactionInfo.dateTo);
                 transactions = transactions.Where(x => x.createAt.CompareTo(dateTo) <= 0).ToList();
             }
             transactions = transactions.OrderByDescending(x => x.createAt).ToList();
             IEnumerable<Dictionary<string, object>> transactionValues = transactions.Select(e =>
             {
                 Dictionary<string, object> result = new Dictionary<string, object>();
-                object value = e.GetType().GetProperty("amount").GetValue(e);
-                result.Add("amount", value);
-                value = e.GetType().GetProperty("date").GetValue(e);
-                result.Add("date", value);
+                foreach (string item in fields)
+                    if (mongoConnecter.Setting.TransactionFields.Contains(item))
+                        result.Add(item, e.GetType().GetProperty(item).GetValue(e));
                 return result;
             });
             return new Result
@@ -201,7 +202,7 @@ namespace UserAPI.Services.MongoService
             };
         }
 
-        public async Task<Result> GetListTransactionsAsync(GetTransactionInfo transactionInfo, string username)
+        public async Task<Result> GetListTransactionsAsync(GetTransactionInfo transactionInfo, string username, string[] fields)
         {
             Result result = await walletService.GetWalletsByUserAsync(username);
             if (result.status != 200) return result;
@@ -250,28 +251,87 @@ namespace UserAPI.Services.MongoService
             }
             if (transactionInfo.dateFrom != null)
             {
-                DateTime dateFrom = HelperService.ConvertStringToTime(transactionInfo.dateFrom);
+                DateTime dateFrom = Helper.ConvertStringToTime(transactionInfo.dateFrom);
                 transactions = transactions.Where(x => x.createAt.CompareTo(dateFrom) >= 0).ToList();
             }
             else if (transactionInfo.dateTo != null)
             {
-                DateTime dateTo = HelperService.ConvertStringToTime(transactionInfo.dateTo);
+                DateTime dateTo = Helper.ConvertStringToTime(transactionInfo.dateTo);
                 transactions = transactions.Where(x => x.createAt.CompareTo(dateTo) <= 0).ToList();
             }
             transactions = transactions.OrderByDescending(x => x.createAt).ToList();
             IEnumerable<Dictionary<string, object>> transactionValues = transactions.Select(e =>
             {
                 Dictionary<string, object> result = new Dictionary<string, object>();
-                object value = e.GetType().GetProperty("amount").GetValue(e);
-                result.Add("amount", value);
-                value = e.GetType().GetProperty("date").GetValue(e);
-                result.Add("date", value);
+                foreach (string item in fields)
+                    if (mongoConnecter.Setting.TransactionFields.Contains(item))
+                        result.Add(item, e.GetType().GetProperty(item).GetValue(e));
                 return result;
             });
             return new Result
             {
                 status = 200,
                 data = transactionValues
+            };
+        }
+
+        public Result UpdateTransaction(UpdateTransactionInfo updateTransaction, string transactionId, string username)
+        {
+            Transaction transaction = mCollection.Find(x => x._id == transactionId).FirstOrDefault();
+            if (transaction == null) return new Result
+            {
+                status = 400,
+                data = $"The transaction with id: {transactionId} not found"
+            };
+            Result result = walletService.GetWalletById(transaction.walletId);
+            if (result.status != 200) return result;
+            Wallet wallet = (Wallet)result.data;
+            result = userService.GetUserById(wallet.userId);
+            if (result.status != 200) return new Result
+            {
+                status = 403,
+                data = "Forbidden"
+            };
+            UpdateDefinition<Transaction> builder = Builders<Transaction>.Update.Set(x => x.updateAt, DateTime.Now.Date);
+            if (updateTransaction.amount > 0) builder = builder.Set(x => x.amount, updateTransaction.amount);
+            if (updateTransaction.createAt != null) builder = builder.Set(x => x.createAt, Helper.ConvertStringToTime(updateTransaction.createAt));
+            if (updateTransaction.note != null) builder = builder.Set(x => x.note, updateTransaction.note);
+            mCollection.FindOneAndUpdate(x => x._id == transactionId, builder);
+            transaction = mCollection.Find(x => x._id == transactionId).FirstOrDefault();
+            return new Result
+            {
+                status = 200,
+                data = transaction
+            };
+        }
+
+        public async Task<Result> UpdateTransactionAsync(UpdateTransactionInfo updateTransaction, string transactionId, string username)
+        {
+            Transaction transaction = await mCollection.Find(x => x._id == transactionId).FirstOrDefaultAsync();
+            if (transaction == null) return new Result
+            {
+                status = 400,
+                data = $"The transaction with id: {transactionId} not found"
+            };
+            Result result = await walletService.GetWalletByIdAsync(transaction.walletId);
+            if (result.status != 200) return result;
+            Wallet wallet = (Wallet)result.data;
+            result = await userService.GetUserByIdAsync(wallet.userId);
+            if (result.status != 200) return new Result
+            {
+                status = 403,
+                data = "Forbidden"
+            };
+            UpdateDefinition<Transaction> builder = Builders<Transaction>.Update.Set(x => x.updateAt, DateTime.Now.Date);
+            if (updateTransaction.amount > 0) builder = builder.Set(x => x.amount, updateTransaction.amount);
+            if (updateTransaction.createAt != null) builder = builder.Set(x => x.createAt, Helper.ConvertStringToTime(updateTransaction.createAt));
+            if (updateTransaction.note != null) builder = builder.Set(x => x.note, updateTransaction.note);
+            mCollection.FindOneAndUpdate(x => x._id == transactionId, builder);
+            transaction = await mCollection.Find(x => x._id == transactionId).FirstOrDefaultAsync();
+            return new Result
+            {
+                status = 200,
+                data = transaction
             };
         }
     }

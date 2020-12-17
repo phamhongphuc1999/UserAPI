@@ -74,14 +74,43 @@ namespace UserAPI.Controllers.MongoControllers
 
         [HttpGet("/transactions")]
         [CustomAuthorization]
-        public async Task<object> GetTransactionsByWallet([FromBody] GetTransactionInfo transactionInfo)
+        public async Task<object> GetTransactionsByWallet([FromQuery] string fields, [FromBody] GetTransactionInfo transactionInfo)
         {
             try
             {
                 string token = HttpContext.Request.Headers["token"];
                 List<Claim> claims = authService.GetTokenClaims(token).ToList();
                 string username = claims.Find(x => x.Type == ClaimTypes.Name).Value;
-                Result result = await transactionService.GetListTransactionsAsync(transactionInfo, username);
+                Result result;
+                if(fields != null)
+                {
+                    string[] fArray = Helper.SplipFields(fields);
+                    result = await transactionService.GetListTransactionsAsync(transactionInfo, username, fArray);
+                }
+                else
+                {
+                    string[] fArray = Helper.SplipFields("amount,createAt");
+                    result = await transactionService.GetListTransactionsAsync(transactionInfo, username, fArray);
+                }
+                return Ok(Responder.Success(result.data));
+            }
+            catch (Exception error)
+            {
+                return BadRequest(Responder.Fail(error.Message));
+            }
+        }
+
+        [HttpPut("/transactions/{transactionId}")]
+        [CustomAuthorization]
+        public async Task<object> UpdateTransaction(string transactionId, [FromBody] UpdateTransactionInfo updateTransaction)
+        {
+            try
+            {
+                string token = HttpContext.Request.Headers["token"];
+                List<Claim> claims = authService.GetTokenClaims(token).ToList();
+                string username = claims.Find(x => x.Type == ClaimTypes.Name).Value;
+                Result result = await transactionService.UpdateTransactionAsync(updateTransaction, transactionId, username);
+                if (result.status != 200) return StatusCode(result.status, Responder.Fail(result.data));
                 return Ok(Responder.Success(result.data));
             }
             catch (Exception error)

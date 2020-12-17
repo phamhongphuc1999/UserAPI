@@ -58,7 +58,7 @@ namespace UserAPI.Controllers.SQLControllers
                 Result result;
                 if (fields != null)
                 {
-                    string[] fieldList = HelperService.SplipFields(fields);
+                    string[] fieldList = Helper.SplipFields(fields);
                     result = await employeeService.GetEmployeeByUsernameAsync(username, fieldList);
                 }
                 else result = await employeeService.GetEmployeeByUsernameAsync(username);
@@ -89,7 +89,7 @@ namespace UserAPI.Controllers.SQLControllers
                 Result result;
                 if(fields != null)
                 {
-                    string[] fieldList = HelperService.SplipFields(fields);
+                    string[] fieldList = Helper.SplipFields(fields);
                     result = await employeeService.GetListEmployeesAsync(pageSize, pageIndex, fieldList);
                 }
                 else result = await employeeService.GetListEmployeesAsync(pageSize, pageIndex);

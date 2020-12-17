@@ -24,6 +24,8 @@ namespace UserAPI.Models.MongoModel
 
         public DateTime createAt { get; set; }
 
+        public DateTime updateAt { get; set; }
+
         public string note { get; set; }
     }
 
@@ -34,6 +36,15 @@ namespace UserAPI.Models.MongoModel
 
         [Range(0, double.MaxValue, ErrorMessage = "Please enter amount")]
         public double amount { get; set; }
+
+        public string note { get; set; }
+    }
+
+    public class UpdateTransactionInfo
+    {
+        public double amount { get; set; }
+
+        public string createAt { get; set; }
 
         public string note { get; set; }
     }

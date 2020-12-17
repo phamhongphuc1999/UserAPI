@@ -58,7 +58,7 @@ namespace UserAPI.Controllers.MongoControllers
                 Result result = await userService.LoginAsync(info.username, info.password);
                 if (result.status != 200) return StatusCode(result.status, Responder.Fail(result.data));
                 node1:
-                IAuthContainerModel model = Helper.GetJWTContainerModel(info.username, info.password, _jwtConfig);
+                IAuthContainerModel model = Models.JWTModel.Helper.GetJWTContainerModel(info.username, info.password, _jwtConfig);
                 IAuthService authService = new JWTService(model.SecretKey);
                 string accessToken = authService.GenerateToken(model);
                 if (!authService.IsTokenValid(accessToken)) goto node1;
@@ -134,7 +134,7 @@ namespace UserAPI.Controllers.MongoControllers
                 Result result;
                 if (fields != null)
                 {
-                    string[] fieldList = HelperService.SplipFields(fields);
+                    string[] fieldList = Helper.SplipFields(fields);
                     result = await userService.GetUserByIdAsync(userId, fieldList);
                 }
                 else result = await userService.GetUserByIdAsync(userId);
@@ -189,7 +189,7 @@ namespace UserAPI.Controllers.MongoControllers
                 Result result;
                 if (fields != null)
                 {
-                    string[] fieldList = HelperService.SplipFields(fields);
+                    string[] fieldList = Helper.SplipFields(fields);
                     result = await userService.GetListUserAsync(pageSize, pageIndex, fieldList);
                 }
                 else result = await userService.GetListUserAsync(pageSize, pageIndex);

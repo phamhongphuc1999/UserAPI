@@ -29,7 +29,7 @@ namespace UserAPI.Services.MongoService
                 status = 401,
                 data = "username or password wrong"
             };
-            string rawPassword = HelperService.CalcuteSHA256Hash(password);
+            string rawPassword = Helper.CalcuteSHA256Hash(password);
             if (user.password != rawPassword) return new Result
             {
                 status = 401,
@@ -45,7 +45,11 @@ namespace UserAPI.Services.MongoService
             return new Result
             {
                 status = 200,
-                data = ""
+                data = new
+                {
+                    username = user.username,
+                    email = user.email
+                }
             };
         }
 
@@ -57,7 +61,7 @@ namespace UserAPI.Services.MongoService
                 status = 401,
                 data = "username or password wrong"
             };
-            string rawPassword = HelperService.CalcuteSHA256Hash(password);
+            string rawPassword = Helper.CalcuteSHA256Hash(password);
             if (user.password != rawPassword) return new Result
             {
                 status = 401,
@@ -73,7 +77,11 @@ namespace UserAPI.Services.MongoService
             return new Result
             {
                 status = 200,
-                data = ""
+                data = new
+                {
+                    username = user.username,
+                    email = user.email
+                }
             };
         }
 
@@ -88,7 +96,7 @@ namespace UserAPI.Services.MongoService
             User newUser = new User()
             {
                 username = entity.username,
-                password = HelperService.CalcuteSHA256Hash(entity.password),
+                password = Helper.CalcuteSHA256Hash(entity.password),
                 email = entity.email,
                 createAt = DateTime.Now,
                 updateAt = DateTime.Now,
@@ -114,7 +122,7 @@ namespace UserAPI.Services.MongoService
             User newUser = new User()
             {
                 username = entity.username,
-                password = HelperService.CalcuteSHA256Hash(entity.password),
+                password = Helper.CalcuteSHA256Hash(entity.password),
                 email = entity.email,
                 createAt = DateTime.Now,
                 updateAt = DateTime.Now,
@@ -321,7 +329,7 @@ namespace UserAPI.Services.MongoService
             }
             if (updateUser.password != null)
             {
-                string newPassword = HelperService.CalcuteSHA256Hash(updateUser.password);
+                string newPassword = Helper.CalcuteSHA256Hash(updateUser.password);
                 updateBuilder = updateBuilder.Set(x => x.password, newPassword);
             }
             User user = mCollection.FindOneAndUpdate(x => x.username == username, updateBuilder);
@@ -356,7 +364,7 @@ namespace UserAPI.Services.MongoService
             }
             if (updateUser.password != null)
             {
-                string newPassword = HelperService.CalcuteSHA256Hash(updateUser.password);
+                string newPassword = Helper.CalcuteSHA256Hash(updateUser.password);
                 updateBuilder = updateBuilder.Set(x => x.password, newPassword);
             }
             User user = await mCollection.FindOneAndUpdateAsync(x => x.username == username, updateBuilder);

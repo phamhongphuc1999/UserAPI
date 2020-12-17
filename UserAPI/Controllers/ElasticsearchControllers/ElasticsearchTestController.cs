@@ -11,7 +11,7 @@ using UserAPI.Models.CommonModel;
 using UserAPI.Models.ElasticsearchModel;
 using UserAPI.Services.ElasticsearchService;
 
-namespace UserAPI.Controllers
+namespace UserAPI.Controllers.ElasticsearchControllers
 {
     [Produces("application/json")]
     [Consumes("application/json")]

@@ -37,7 +37,7 @@ namespace UserAPI.Services.MongoService
                 currencyId = newWallet.currencyId,
                 iconId = newWallet.iconId,
                 name = newWallet.name,
-                amount = newWallet.amount,
+                amount = newWallet.initalBalance,
                 createAt = DateTime.Now,
                 updateAt = DateTime.Now
             };
@@ -67,7 +67,7 @@ namespace UserAPI.Services.MongoService
                 currencyId = newWallet.currencyId,
                 iconId = newWallet.iconId,
                 name = newWallet.name,
-                amount = newWallet.amount,
+                amount = newWallet.initalBalance,
                 createAt = DateTime.Now,
                 updateAt = DateTime.Now
             };

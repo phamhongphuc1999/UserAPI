@@ -3,13 +3,9 @@
 // API with mongodb, SQL server database and more.
 // Owner: Pham Hong Phuc
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace UserAPI.Controllers
+namespace UserAPI.Controllers.IpfsControllers
 {
     [Produces("application/json")]
     [Consumes("application/json")]

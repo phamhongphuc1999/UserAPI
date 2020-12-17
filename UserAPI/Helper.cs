@@ -7,9 +7,9 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace UserAPI.Services
+namespace UserAPI
 {
-    public class HelperService
+    public class Helper
     {
         /// <summary>
         /// 
@@ -44,18 +44,11 @@ namespace UserAPI.Services
         /// 
         /// </summary>
         /// <param name="time"></param>
+        /// <param name="format"></param>
         /// <returns></returns>
-        public static DateTime ConvertStringToTime(string time)
+        public static DateTime ConvertStringToTime(string time, string format = "yyyy-MM-dd HH:mm:ss")
         {
-            return DateTime.ParseExact(time , "yyyy-MM-dd HH:mm:ss",
-                                       System.Globalization.CultureInfo.InvariantCulture);
-        }
-
-        public static string ConvertDateToString(DateTime date)
-        {
-            string result = date.ToString("u");
-            int length = result.Length;
-            return result.Substring(0, length - 1);
+            return DateTime.ParseExact(time , format, System.Globalization.CultureInfo.InvariantCulture);
         }
     }
 }

@@ -16,6 +16,7 @@ namespace UserAPI
         public string Connect { get; set; }
         public string Database { get; set; }
         public string[] UserFields { get; set; }
+        public string[] TransactionFields { get; set; }
     }
 
     public class SQLSetting

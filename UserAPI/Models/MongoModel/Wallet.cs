@@ -44,7 +44,7 @@ namespace UserAPI.Models.MongoModel
         public string name { get; set; }
 
         [Range(0, double.MaxValue, ErrorMessage = "Please enter amount")]
-        public double amount { get; set; }
+        public double initalBalance { get; set; }
     }
 
     public class UpdateWalletInfo

@@ -25,6 +25,10 @@ namespace UserAPI.Models.MongoModel
         public DateTime dateFrom { get; set; }
 
         public DateTime dateTo { get; set; }
+
+        public DateTime createAt { get; set; }
+
+        public DateTime updateAt { get; set; }
     }
 
     public class NewBudgetInfo
