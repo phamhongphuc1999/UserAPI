@@ -42,7 +42,10 @@ namespace UserAPI.Controllers.MongoControllers
         {
             try
             {
-                Result result = await transactionService.InsertTransactionAsync(walletId, newTransaction);
+                string token = HttpContext.Request.Headers["token"];
+                List<Claim> claims = authService.GetTokenClaims(token).ToList();
+                string username = claims.Find(x => x.Type == ClaimTypes.Name).Value;
+                Result result = await transactionService.InsertTransactionAsync(walletId, username, newTransaction);
                 return StatusCode(result.status, Responder.Success(result.data));
             }
             catch(Exception error)

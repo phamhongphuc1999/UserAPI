@@ -14,9 +14,9 @@ using static UserAPI.Program;
 
 namespace UserAPI.Services.MongoService
 {
-    public class WalletService: BaseService<Wallet>
+    public class WalletService : BaseService<Wallet>
     {
-        public WalletService(string collection): base(collection)
+        public WalletService(string collection) : base(collection)
         {
         }
 
@@ -80,13 +80,21 @@ namespace UserAPI.Services.MongoService
             };
         }
 
-        public Result GetWalletById(string walletId)
+        public Result GetWalletById(string walletId, string username)
         {
             Wallet wallet = mCollection.Find(x => x._id == walletId).FirstOrDefault();
             if (wallet == null) return new Result
             {
                 status = 401,
                 data = $"The wallet with id: {walletId} do not exist"
+            };
+            Result result = userService.GetUserByUserName(username);
+            if (result.status != 200) return result;
+            User user = (User)result.data;
+            if (user._id != wallet.userId) return new Result
+            {
+                status = 403,
+                data = $"You do not have access to this wallet"
             };
             return new Result
             {
@@ -95,13 +103,21 @@ namespace UserAPI.Services.MongoService
             };
         }
 
-        public async Task<Result> GetWalletByIdAsync(string walletId)
+        public async Task<Result> GetWalletByIdAsync(string walletId, string username)
         {
             Wallet wallet = await mCollection.Find(x => x._id == walletId).FirstOrDefaultAsync();
             if (wallet == null) return new Result
             {
                 status = 401,
                 data = $"The wallet with id: {walletId} do not exist"
+            };
+            Result result = await userService.GetUserByUserNameAsync(username);
+            if (result.status != 200) return result;
+            User user = (User)result.data;
+            if (user._id != wallet.userId) return new Result
+            {
+                status = 403,
+                data = $"You do not have access to this wallet"
             };
             return new Result
             {
@@ -136,18 +152,27 @@ namespace UserAPI.Services.MongoService
             };
         }
 
-        public Result UpdateWallet(string walletId, UpdateWalletInfo updateWallet)
+        public Result UpdateWallet(string walletId, string username, UpdateWalletInfo updateWallet)
         {
+            Wallet wallet = mCollection.Find(x => x._id == walletId).FirstOrDefault();
+            if (wallet == null) return new Result
+            {
+                status = 401,
+                data = $"The wallet with id: {walletId} do not exist"
+            };
+            Result result = userService.GetUserByUserName(username);
+            if (result.status != 200) return result;
+            User user = (User)result.data;
+            if (user._id != wallet.userId) return new Result
+            {
+                status = 403,
+                data = $"You do not have access to this wallet"
+            };
             UpdateDefinition<Wallet> builder = Builders<Wallet>.Update.Set(x => x.updateAt, DateTime.Now);
             if (updateWallet.iconId != null) builder = builder.Set(x => x.iconId, updateWallet.iconId);
             else if (updateWallet.name != null) builder = builder.Set(x => x.name, updateWallet.name);
             else if (updateWallet.amount != default(double)) builder.Set(x => x.amount, updateWallet.amount);
-            Wallet wallet = mCollection.FindOneAndUpdate(x => x._id == walletId, builder);
-            if (wallet == null) return new Result
-            {
-                status = 400,
-                data = $"The wallet with id: {walletId} not found"
-            };
+            wallet = mCollection.FindOneAndUpdate(x => x._id == walletId, builder);
             return new Result
             {
                 status = 200,
@@ -155,18 +180,27 @@ namespace UserAPI.Services.MongoService
             };
         }
 
-        public async Task<Result> UpdateWalletAsync(string walletId, UpdateWalletInfo updateWallet)
+        public async Task<Result> UpdateWalletAsync(string walletId, string username, UpdateWalletInfo updateWallet)
         {
+            Wallet wallet = await mCollection.Find(x => x._id == walletId).FirstOrDefaultAsync();
+            if (wallet == null) return new Result
+            {
+                status = 401,
+                data = $"The wallet with id: {walletId} do not exist"
+            };
+            Result result = await userService.GetUserByUserNameAsync(username);
+            if (result.status != 200) return result;
+            User user = (User)result.data;
+            if (user._id != wallet.userId) return new Result
+            {
+                status = 403,
+                data = $"You do not have access to this wallet"
+            };
             UpdateDefinition<Wallet> builder = Builders<Wallet>.Update.Set(x => x.updateAt, DateTime.Now);
             if (updateWallet.iconId != null) builder = builder.Set(x => x.iconId, updateWallet.iconId);
             else if (updateWallet.name != null) builder = builder.Set(x => x.name, updateWallet.name);
             else if (updateWallet.amount != default(double)) builder.Set(x => x.amount, updateWallet.amount);
-            Wallet wallet = await mCollection.FindOneAndUpdateAsync(x => x._id == walletId, builder);
-            if (wallet == null) return new Result
-            {
-                status = 400,
-                data = $"The wallet with id: {walletId} not found"
-            };
+            wallet = await mCollection.FindOneAndUpdateAsync(x => x._id == walletId, builder);
             return new Result
             {
                 status = 200,

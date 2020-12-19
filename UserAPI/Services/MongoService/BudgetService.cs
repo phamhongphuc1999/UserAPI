@@ -19,41 +19,43 @@ namespace UserAPI.Services.MongoService
         {
         }
 
-        public Result InsertBudget(string walletId, NewBudgetInfo newBudget)
+        public Result InsertBudget(string walletId, string username, NewBudgetInfo newBudget)
         {
-            Result result = walletService.GetWalletById(walletId);
+            Result result = walletService.GetWalletById(walletId, username);
             if (result.status != 200) return result;
-            mCollection.InsertOne(new Budget
+            Budget budget = new Budget
             {
                 amount = newBudget.amount,
                 walletId = walletId,
                 categoryId = newBudget.categoryId,
                 dateFrom = Helper.ConvertStringToTime(newBudget.dateFrom),
                 dateTo = Helper.ConvertStringToTime(newBudget.dateTo)
-            });
+            };
+            mCollection.InsertOne(budget);
             return new Result
             {
                 status = 200,
-                data = ""
+                data = budget
             };
         }
 
-        public async Task<Result> InsertBudgetAsync(string walletId, NewBudgetInfo newBudget)
+        public async Task<Result> InsertBudgetAsync(string walletId, string username, NewBudgetInfo newBudget)
         {
-            Result result = await walletService.GetWalletByIdAsync(walletId);
+            Result result = await walletService.GetWalletByIdAsync(walletId, username);
             if (result.status != 200) return result;
-            mCollection.InsertOne(new Budget
+            Budget budget = new Budget
             {
                 amount = newBudget.amount,
                 walletId = walletId,
                 categoryId = newBudget.categoryId,
                 dateFrom = Helper.ConvertStringToTime(newBudget.dateFrom),
                 dateTo = Helper.ConvertStringToTime(newBudget.dateTo)
-            });
+            };
+            mCollection.InsertOne(budget);
             return new Result
             {
                 status = 200,
-                data = ""
+                data = budget
             };
         }
 

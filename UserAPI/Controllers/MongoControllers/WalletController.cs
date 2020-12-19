@@ -61,7 +61,10 @@ namespace UserAPI.Controllers.MongoControllers
         {
             try
             {
-                Result result = await walletService.GetWalletByIdAsync(walletId);
+                string token = HttpContext.Request.Headers["token"];
+                List<Claim> claims = authService.GetTokenClaims(token).ToList();
+                string username = claims.Find(x => x.Type == ClaimTypes.Name).Value;
+                Result result = await walletService.GetWalletByIdAsync(walletId, username);
                 if (result.status != 200) return StatusCode(result.status, Responder.Fail(result.data));
                 return Ok(Responder.Fail(result.data));
             }
@@ -85,6 +88,25 @@ namespace UserAPI.Controllers.MongoControllers
                 List<Claim> claims = authService.GetTokenClaims(token).ToList();
                 string username = claims.Find(x => x.Type == ClaimTypes.Name).Value;
                 Result result = await walletService.GetWalletsByUserAsync(username);
+                if (result.status != 200) return StatusCode(result.status, Responder.Fail(result.data));
+                return Ok(Responder.Success(result.data));
+            }
+            catch (Exception error)
+            {
+                return BadRequest(Responder.Fail(error.Message));
+            }
+        }
+
+        [HttpPut("/wallets/{walletId}")]
+        [CustomAuthorization]
+        public async Task<object> UpdateWallet(string walletId, [FromBody] UpdateWalletInfo updateWallet)
+        {
+            try
+            {
+                string token = HttpContext.Request.Headers["token"];
+                List<Claim> claims = authService.GetTokenClaims(token).ToList();
+                string username = claims.Find(x => x.Type == ClaimTypes.Name).Value;
+                Result result = await walletService.UpdateWalletAsync(walletId, username, updateWallet);
                 if (result.status != 200) return StatusCode(result.status, Responder.Fail(result.data));
                 return Ok(Responder.Success(result.data));
             }

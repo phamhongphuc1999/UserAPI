@@ -20,9 +20,9 @@ namespace UserAPI.Services.MongoService
         {
         }
 
-        public Result InsertTransaction(string walletId, NewTransactionInfo newTransaction)
+        public Result InsertTransaction(string walletId, string username, NewTransactionInfo newTransaction)
         {
-            Result result = walletService.GetWalletById(walletId);
+            Result result = walletService.GetWalletById(walletId, username);
             if (result.status != 200) return result;
             Wallet wallet = (Wallet)result.data;
             result = categoryService.GetSingerCategoryById(newTransaction.categoryId);
@@ -46,12 +46,12 @@ namespace UserAPI.Services.MongoService
                     data = $"Not enough money"
                 };
                 mCollection.InsertOne(transaction);
-                walletService.UpdateWallet(walletId, new UpdateWalletInfo { amount = wallet.amount - newTransaction.amount });
+                walletService.UpdateWallet(walletId, username, new UpdateWalletInfo { amount = wallet.amount - newTransaction.amount });
             }
             else
             {
                 mCollection.InsertOne(transaction);
-                walletService.UpdateWallet(walletId, new UpdateWalletInfo { amount = wallet.amount + newTransaction.amount });
+                walletService.UpdateWallet(walletId, username, new UpdateWalletInfo { amount = wallet.amount + newTransaction.amount });
             }
             return new Result
             {
@@ -60,9 +60,9 @@ namespace UserAPI.Services.MongoService
             };
         }
 
-        public async Task<Result> InsertTransactionAsync(string walletId, NewTransactionInfo newTransaction)
+        public async Task<Result> InsertTransactionAsync(string walletId, string username, NewTransactionInfo newTransaction)
         {
-            Result result = await walletService.GetWalletByIdAsync(walletId);
+            Result result = await walletService.GetWalletByIdAsync(walletId, username);
             if (result.status != 200) return result;
             Wallet wallet = (Wallet)result.data;
             result = await categoryService.GetSingerCategoryByIdAsync(newTransaction.categoryId);
@@ -86,12 +86,12 @@ namespace UserAPI.Services.MongoService
                     data = $"Not enough money"
                 };
                 mCollection.InsertOne(transaction);
-                walletService.UpdateWallet(walletId, new UpdateWalletInfo { amount = wallet.amount - newTransaction.amount });
+                walletService.UpdateWallet(walletId, username, new UpdateWalletInfo { amount = wallet.amount - newTransaction.amount });
             }
             else
             {
                 mCollection.InsertOne(transaction);
-                walletService.UpdateWallet(walletId, new UpdateWalletInfo { amount = wallet.amount + newTransaction.amount });
+                walletService.UpdateWallet(walletId, username, new UpdateWalletInfo { amount = wallet.amount + newTransaction.amount });
             }
             return new Result
             {
@@ -137,7 +137,7 @@ namespace UserAPI.Services.MongoService
             Wallet specifiedWallet = null;
             if (transactionInfo.walletId != null)
             {
-                Result check = walletService.GetWalletById(transactionInfo.walletId);
+                Result check = walletService.GetWalletById(transactionInfo.walletId, username);
                 if (check.status != 200) return check;
                 specifiedWallet = (Wallet)check.data;
             }
@@ -209,7 +209,7 @@ namespace UserAPI.Services.MongoService
             Wallet specifiedWallet = null;
             if (transactionInfo.walletId != null)
             {
-                Result check = await walletService.GetWalletByIdAsync(transactionInfo.walletId);
+                Result check = await walletService.GetWalletByIdAsync(transactionInfo.walletId, username);
                 if (check.status != 200) return check;
                 specifiedWallet = (Wallet)check.data;
             }
@@ -283,7 +283,7 @@ namespace UserAPI.Services.MongoService
                 status = 400,
                 data = $"The transaction with id: {transactionId} not found"
             };
-            Result result = walletService.GetWalletById(transaction.walletId);
+            Result result = walletService.GetWalletById(transaction.walletId, username);
             if (result.status != 200) return result;
             Wallet wallet = (Wallet)result.data;
             result = userService.GetUserById(wallet.userId);
@@ -313,7 +313,7 @@ namespace UserAPI.Services.MongoService
                 status = 400,
                 data = $"The transaction with id: {transactionId} not found"
             };
-            Result result = await walletService.GetWalletByIdAsync(transaction.walletId);
+            Result result = await walletService.GetWalletByIdAsync(transaction.walletId, username);
             if (result.status != 200) return result;
             Wallet wallet = (Wallet)result.data;
             result = await userService.GetUserByIdAsync(wallet.userId);
