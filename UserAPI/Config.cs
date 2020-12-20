@@ -3,6 +3,8 @@
 // API with mongodb, SQL server database and more.
 // Owner: Pham Hong Phuc
 
+using System;
+
 namespace UserAPI
 {
     public class JWTConfig
@@ -23,6 +25,16 @@ namespace UserAPI
     {
         public string Connect { get; set; }
         public string[] EmployeeFields { get; set; }
+    }
+
+    public class IpfsSetting
+    {
+        
+    }
+
+    public class ElasticsearchSetting
+    {
+        public Uri[] Uris { get; set; }
     }
 
     public class DevelopmentConfig

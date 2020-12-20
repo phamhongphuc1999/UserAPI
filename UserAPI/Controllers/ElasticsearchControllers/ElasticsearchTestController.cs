@@ -4,12 +4,11 @@
 // Owner: Pham Hong Phuc
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Nest;
 using System;
 using UserAPI.Models.CommonModel;
 using UserAPI.Models.ElasticsearchModel;
-using UserAPI.Services.ElasticsearchService;
+using static UserAPI.Program;
 
 namespace UserAPI.Controllers.ElasticsearchControllers
 {
@@ -18,14 +17,6 @@ namespace UserAPI.Controllers.ElasticsearchControllers
     [ApiController]
     public class ElasticsearchTestController : ControllerBase
     {
-        private BaseService elasService;
-
-        public ElasticsearchTestController(IConfiguration configuration)
-        {
-            Uri[] uris = configuration.GetValue<Uri[]>("ElasticsearchSetting:Uris");
-            elasService = new BaseService(uris);
-        }
-
         /// <summary>Save data use database elasticsearch</summary>
         /// <param name="data">data that you want to save</param>
         /// <response code="200">return notice</response>
