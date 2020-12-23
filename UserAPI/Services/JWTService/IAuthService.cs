@@ -15,6 +15,5 @@ namespace UserAPI.Services.JWTService
         bool IsTokenValid(string token);
         string GenerateToken(IAuthContainerModel model);
         IEnumerable<Claim> GetTokenClaims(string token);
-
     }
 }

@@ -7,10 +7,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using UserAPI.Services.ElasticsearchService;
-using UserAPI.Services.IpfsService;
 using UserAPI.Services.MongoService;
 using UserAPI.Services.SQLServerService;
+using UserAPI.Services.DataConnecters;
+using ElasService = UserAPI.Services.ElasticsearchService.BaseService;
+using IpfsService = UserAPI.Services.IpfsService.BaseService;
 
 namespace UserAPI
 {
@@ -29,8 +30,8 @@ namespace UserAPI
         public static UserService userService { get; private set; }
         public static WalletService walletService { get; private set; }
         public static EmployeeService employeeService { get; private set; }
-        public static Services.IpfsService.BaseService ipfsService { get; private set; }
-        public static Services.ElasticsearchService.BaseService elasService { get; private set; }
+        public static IpfsService ipfsService { get; private set; }
+        public static ElasService elasService { get; private set; }
 
         public static void Main(string[] args)
         {
@@ -41,10 +42,10 @@ namespace UserAPI
             IConfigurationSection elasSetting = config.GetSection("ElasticsearchSetting");
 
             //Create new connections to database
-            mongoConnecter = new MongoConnecter(mongoSetting);
-            sqlConnecter = new SQLConnecter(sqlSetting);
-            IpfsConnecter = new IpfsConnecter(ipfsSetting);
-            elasConnecter = new ElasticsearchConnecter(elasSetting);
+            mongoConnecter = MongoConnecter.GetInstance(mongoSetting);
+            sqlConnecter = SQLConnecter.GetInstance(sqlSetting);
+            IpfsConnecter = IpfsConnecter.GetInstance(ipfsSetting);
+            elasConnecter = ElasticsearchConnecter.GetInstance(elasSetting);
 
             //Init mongo service
             budgetService = new BudgetService("Budget");
@@ -59,10 +60,10 @@ namespace UserAPI
             employeeService = new EmployeeService();
 
             //Init ipfs service
-            ipfsService = new Services.IpfsService.BaseService();
+            ipfsService = new IpfsService();
 
             //Init elasticsearch service
-            elasService = new Services.ElasticsearchService.BaseService();
+            elasService = new ElasService();
 
             IHostBuilder builder = CreateHostBuilder(args);
             builder.Build().Run();
