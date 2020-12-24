@@ -3,9 +3,6 @@
 // API with mongodb, SQL server database and more.
 // Owner: Pham Hong Phuc
 
-using System;
-using System.IO;
-using System.Reflection;
 using UserAPI.Models.SQLServerModel;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -33,8 +30,7 @@ namespace UserAPI
             //config swagger service
             services.AddSwaggerGen(c =>
             {
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                var xmlPath = "Properties/UserAPI.xml";
                 c.IncludeXmlComments(xmlPath);
             });
 

@@ -13,7 +13,6 @@ using UserAPI.Services.JWTService;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using UserAPI.Models.CommonModel;
-using UserAPI.Services;
 using Microsoft.Extensions.Primitives;
 using System.Linq;
 using System.Security.Claims;

@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using UserAPI.Models.CommonModel;
 using UserAPI.Models.SQLServerModel;
-using UserAPI.Services;
 using static UserAPI.Program;
 
 namespace UserAPI.Controllers.SQLControllers

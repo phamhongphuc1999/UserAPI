@@ -17,6 +17,11 @@ namespace UserAPI.Controllers.MongoControllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="newCategory"></param>
+        /// <returns></returns>
         [HttpPost("/categories")]
         public async Task<object> CreateNewCategory([FromBody] NewCategoryInfo newCategory)
         {
@@ -32,6 +37,11 @@ namespace UserAPI.Controllers.MongoControllers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="categoryId"></param>
+        /// <returns></returns>
         [HttpGet("/categories/{categoryId}")]
         public async Task<object> GetCategoryById(string categoryId)
         {
@@ -47,6 +57,10 @@ namespace UserAPI.Controllers.MongoControllers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("/categories")]
         public async Task<object> GetListCategories()
         {

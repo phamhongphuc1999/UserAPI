@@ -55,6 +55,11 @@ namespace UserAPI.Controllers.MongoControllers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="walletId"></param>
+        /// <returns></returns>
         [HttpGet("/wallets/{walletId}")]
         [CustomAuthorization]
         public async Task<object> GetWalletById(string walletId)
@@ -97,6 +102,12 @@ namespace UserAPI.Controllers.MongoControllers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="walletId"></param>
+        /// <param name="updateWallet"></param>
+        /// <returns></returns>
         [HttpPut("/wallets/{walletId}")]
         [CustomAuthorization]
         public async Task<object> UpdateWallet(string walletId, [FromBody] UpdateWalletInfo updateWallet)

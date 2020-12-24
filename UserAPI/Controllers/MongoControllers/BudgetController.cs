@@ -59,9 +59,9 @@ namespace UserAPI.Controllers.MongoControllers
         }
 
         /// <summary>
-        /// 
+        /// Get budget by id
         /// </summary>
-        /// <param name="budgetId"></param>
+        /// <param name="budgetId">the id of budget</param>
         /// <returns></returns>
         [HttpGet("/budgets/{budgetId}")]
         [CustomAuthorization]
@@ -80,10 +80,10 @@ namespace UserAPI.Controllers.MongoControllers
         }
 
         /// <summary>
-        /// 
+        /// get all budget in specified wallet
         /// </summary>
-        /// <param name="walletId"></param>
-        /// <param name="categories"></param>
+        /// <param name="walletId">The id of wallet</param>
+        /// <param name="categories">the budget category</param>
         /// <returns></returns>
         [HttpGet("/budgets/{walletId}")]
         [CustomAuthorization]
