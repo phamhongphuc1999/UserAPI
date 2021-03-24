@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using UserAPI.Models.SQLServerModel;
 
-namespace UserAPI.Services.DataConnecters
+namespace UserAPI.Data
 {
     public class SQLConnecter
     {

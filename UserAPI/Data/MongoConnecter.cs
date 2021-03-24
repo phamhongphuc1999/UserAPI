@@ -6,7 +6,7 @@
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 
-namespace UserAPI.Services.DataConnecters
+namespace UserAPI.Data
 {
     public class MongoConnecter
     {

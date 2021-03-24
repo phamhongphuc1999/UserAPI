@@ -54,7 +54,7 @@ namespace UserAPI.Models.MongoModel
         [RegularExpression(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$", ErrorMessage = "Minimum eight characters, at least one letter and one number")]
         [StringLength(200)]
         public string password { get; set; }
-        
+
         [EmailAddress]
         public string email { get; set; }
     }

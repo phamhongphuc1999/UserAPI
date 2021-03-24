@@ -3,9 +3,9 @@
 // API with mongodb, SQL server database and more.
 // Owner: Pham Hong Phuc
 
+using System;
 using UserAPI.Models.MongoModel;
 using MongoDB.Driver;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,9 +17,7 @@ namespace UserAPI.Services.MongoService
 {
     public class UserService: BaseService<User>
     {
-        public UserService(string collection): base(collection)
-        {
-        }
+        public UserService(string collection): base(collection) { }
 
         public Result Login(string username, string password)
         {
@@ -59,7 +57,7 @@ namespace UserAPI.Services.MongoService
             if (user == null) return new Result
             {
                 status = 401,
-                data = "username or password wrong"
+                data = ""
             };
             string rawPassword = Helper.CalcuteSHA256Hash(password);
             if (user.password != rawPassword) return new Result
