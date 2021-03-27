@@ -61,7 +61,10 @@ namespace UserAPI.Controllers.MongoControllers
                 IAuthService authService = new JWTService(model.SecretKey);
                 string accessToken = authService.GenerateToken(model);
                 if (!authService.IsTokenValid(accessToken)) goto node1;
-                return Ok(Responder.Success(new { access_token = accessToken }));
+                return Ok(Responder.Success(new { 
+                    token = accessToken,
+                    user = result.data
+                }));
             }
             catch (Exception error)
             {
@@ -98,14 +101,14 @@ namespace UserAPI.Controllers.MongoControllers
         /// <returns></returns>
         /// <response code="200">return infomation of new user</response>
         /// <response code="400">if get mistake</response>
-        [HttpPost("/users")]
+        [HttpPost("/register")]
         [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
         [ProducesResponseType(400, Type = typeof(ResponseFailType))]
-        public async Task<object> CreateNewUser([FromBody] NewUserInfo newUser)
+        public async Task<object> Register([FromBody] NewUserInfo newUser)
         {
             try
             {
-                Result result = await userService.InsertUserAsync(newUser);
+                Result result = await userService.RegisterAsync(newUser);
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
             }

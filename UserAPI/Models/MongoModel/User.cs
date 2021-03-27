@@ -13,8 +13,9 @@ namespace UserAPI.Models.MongoModel
     public class User
     {
         [BsonId]
+        [BsonElement("_id")]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string _id { get; set; }
+        public string id { get; set; }
 
         public string username { get; set; }
 

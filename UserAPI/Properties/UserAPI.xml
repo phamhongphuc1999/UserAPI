@@ -1,139 +1,139 @@
 <?xml version="1.0"?>
 <doc>
-	<assembly>
-		<name>UserAPI</name>
-	</assembly>
-	<members>
-		<member name="M:UserAPI.Controllers.MongoControllers.UserController.Login(UserAPI.Models.MongoModel.UserLoginInfo)">
-			<summary>login</summary>
-			<remarks>login</remarks>
-			<returns></returns>
-			<response code="200">return the new access token or annount already login</response>
-			<response code="400">Bad Request</response>
-			<response code="401">username or password is wrong</response>
-			<response code="403">This account is enable to login</response>
-		</member>
-		<member name="M:UserAPI.Controllers.MongoControllers.UserController.Logout">
-			<summary>logout</summary>
-			<remarks>logout</remarks>
-			<returns></returns>
-			<response code="200">reset access token</response>
-		</member>
-		<member name="M:UserAPI.Controllers.MongoControllers.UserController.CreateNewUser(UserAPI.Models.MongoModel.NewUserInfo)">
-			<summary>create new user</summary>
-			<remarks>create new user</remarks>
-			<param name="newUser">the information of new user you want to add in your database</param>
-			<returns></returns>
-			<response code="200">return infomation of new user</response>
-			<response code="400">if get mistake</response>
-		</member>
-		<member name="M:UserAPI.Controllers.MongoControllers.UserController.GetUserById(System.String,System.String)">
-			<summary>get user by id</summary>
-			<remarks>get user by id</remarks>
-			<param name="userId">the id of user you want to get</param>
-			<param name="fields">the specified fields you want to get</param>
-			<returns></returns>
-			<response code="200">return infomation of user with specified fields</response>
-			<response code="400">if get mistake</response>
-		</member>
-		<member name="M:UserAPI.Controllers.MongoControllers.UserController.GetCurrentUser">
-			<summary>
-
-			</summary>
-			<returns></returns>
-		</member>
-		<member name="M:UserAPI.Controllers.MongoControllers.UserController.GetListUser(System.Int32,System.Int32,System.String)">
-			<summary>get list users</summary>
-			<remarks>get list users</remarks>
-			<param name="pageIndex">the page index you want to get</param>
-			<param name="pageSize">the user per page you want to set</param>
-			<param name="fields">the specified fields you want to get</param>
-			<returns></returns>
-			<response code="200">return infomation of list user with pagination</response>
-			<response code="400">if get mistake</response>
-		</member>
-		<member name="M:UserAPI.Controllers.MongoControllers.UserController.UpdateUser(UserAPI.Models.MongoModel.UpdateUserInfo,System.String,System.String)">
-			<summary>update user</summary>
-			<remarks>update user</remarks>
-			<returns></returns>
-			<param name="updateUser">the info used to update</param>
-			<param name="oldPassword">the confirm password to update</param>
-			<param name="oldUsername">the confirm username to update</param>
-			<response code="200">return infomation of user you updated</response>
-			<response code="400">if get mistake</response>
-		</member>
-		<member name="M:UserAPI.Controllers.MongoControllers.UserController.DeleteUser">
-			<summary>delete user</summary>
-			<remarks>delete user</remarks>
-			<returns></returns>
-			<response code="200">return infomation of user you deleted</response>
-			<response code="400">if get mistake</response>
-			<response code="401">You not allow to action</response>
-		</member>
-		<member name="M:UserAPI.Controllers.SQLControllers.EmployeeController.CreateNewEmployee(UserAPI.Models.SQLServerModel.InsertEmployeeInfo)">
-			<summary>Create New Employee</summary>
-			<remarks>Create New Employee</remarks>
-			<param name="newEmployee"></param>
-			<returns></returns>
-			<response code="200">return infomation of new user</response>
-			<response code="400">if get mistake</response>
-		</member>
-		<member name="M:UserAPI.Controllers.SQLControllers.EmployeeController.GetEmployeeByUsername(System.String,System.String)">
-			<summary>Get Employee By Username</summary>
-			<remarks>Get Employee By Username</remarks>
-			<param name="username">the username of employee you want to get</param>
-			<param name="fields">the specified fields you want to get</param>
-			<response code="200">return infomation of user with specified fields</response>
-			<response code="400">if get mistake</response>
-			<returns></returns>
-		</member>
-		<member name="M:UserAPI.Controllers.SQLControllers.EmployeeController.GetListEmployees(System.Int32,System.Int32,System.String)">
-			<summary>Get List Employee</summary>
-			<remarks>Get List Employee</remarks>
-			<param name="pageIndex">the page index you want to get</param>
-			<param name="pageSize">the user per page you want to set</param>
-			<param name="fields">the specified fields you want to get</param>
-			<returns></returns>
-			<response code="200">return infomation of list employees</response>
-			<response code="400">if get mistake</response>
-		</member>
-		<member name="M:UserAPI.Controllers.SQLControllers.EmployeeController.UpdateEmployee(System.Int32,UserAPI.Models.SQLServerModel.InsertEmployeeInfo)">
-			<summary>Update Employee</summary>
-			<remarks>Update Employee</remarks>
-			<param name="employeeId"></param>
-			<param name="updateEmployee"></param>
-			<returns></returns>
-			<response code="200">return infomation of updated employee</response>
-			<response code="400">if get mistake</response>
-		</member>
-		<member name="M:UserAPI.Controllers.SQLControllers.EmployeeController.DeleteEmployee(System.Int32)">
-			<summary>Delete Employee</summary>
-			<remarks>Delete Employee</remarks>
-			<param name="employeeId"></param>
-			<returns></returns>
-		</member>
-		<member name="M:UserAPI.Helper.CalcuteSHA256Hash(System.String)">
-			<summary>
-
-			</summary>
-			<param name="rawData"></param>
-			<returns></returns>
-		</member>
-		<member name="M:UserAPI.Helper.SplipFields(System.String,System.Char)">
-			<summary>
-
-			</summary>
-			<param name="fields"></param>
-			<param name="separator"></param>
-			<returns></returns>
-		</member>
-		<member name="M:UserAPI.Helper.ConvertStringToTime(System.String,System.String)">
-			<summary>
-
-			</summary>
-			<param name="time"></param>
-			<param name="format"></param>
-			<returns></returns>
-		</member>
-	</members>
+    <assembly>
+        <name>UserAPI</name>
+    </assembly>
+    <members>
+        <member name="M:UserAPI.Controllers.MongoControllers.UserController.Login(UserAPI.Models.MongoModel.UserLoginInfo)">
+            <summary>login</summary>
+            <remarks>login</remarks>
+            <returns></returns>
+            <response code="200">return the new access token or annount already login</response>
+            <response code="400">Bad Request</response>
+            <response code="401">username or password is wrong</response>
+            <response code="403">This account is enable to login</response>
+        </member>
+        <member name="M:UserAPI.Controllers.MongoControllers.UserController.Logout">
+            <summary>logout</summary>
+            <remarks>logout</remarks>
+            <returns></returns>
+            <response code="200">reset access token</response>
+        </member>
+        <member name="M:UserAPI.Controllers.MongoControllers.UserController.Register(UserAPI.Models.MongoModel.NewUserInfo)">
+            <summary>create new user</summary>
+            <remarks>create new user</remarks>
+            <param name="newUser">the information of new user you want to add in your database</param>
+            <returns></returns>
+            <response code="200">return infomation of new user</response>
+            <response code="400">if get mistake</response>
+        </member>
+        <member name="M:UserAPI.Controllers.MongoControllers.UserController.GetUserById(System.String,System.String)">
+            <summary>get user by id</summary>
+            <remarks>get user by id</remarks>
+            <param name="userId">the id of user you want to get</param>
+            <param name="fields">the specified fields you want to get</param>
+            <returns></returns>
+            <response code="200">return infomation of user with specified fields</response>
+            <response code="400">if get mistake</response>
+        </member>
+        <member name="M:UserAPI.Controllers.MongoControllers.UserController.GetCurrentUser">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:UserAPI.Controllers.MongoControllers.UserController.GetListUser(System.Int32,System.Int32,System.String)">
+            <summary>get list users</summary>
+            <remarks>get list users</remarks>
+            <param name="pageIndex">the page index you want to get</param>
+            <param name="pageSize">the user per page you want to set</param>
+            <param name="fields">the specified fields you want to get</param>
+            <returns></returns>
+            <response code="200">return infomation of list user with pagination</response>
+            <response code="400">if get mistake</response>
+        </member>
+        <member name="M:UserAPI.Controllers.MongoControllers.UserController.UpdateUser(UserAPI.Models.MongoModel.UpdateUserInfo,System.String,System.String)">
+            <summary>update user</summary>
+            <remarks>update user</remarks>
+            <returns></returns>
+            <param name="updateUser">the info used to update</param>
+            <param name="oldPassword">the confirm password to update</param>
+            <param name="oldUsername">the confirm username to update</param>
+            <response code="200">return infomation of user you updated</response>
+            <response code="400">if get mistake</response>
+        </member>
+        <member name="M:UserAPI.Controllers.MongoControllers.UserController.DeleteUser">
+            <summary>delete user</summary>
+            <remarks>delete user</remarks>
+            <returns></returns>
+            <response code="200">return infomation of user you deleted</response>
+            <response code="400">if get mistake</response>
+            <response code="401">You not allow to action</response>
+        </member>
+        <member name="M:UserAPI.Controllers.SQLControllers.EmployeeController.CreateNewEmployee(UserAPI.Models.SQLServerModel.InsertEmployeeInfo)">
+            <summary>Create New Employee</summary>
+            <remarks>Create New Employee</remarks>
+            <param name="newEmployee"></param>
+            <returns></returns>
+            <response code="200">return infomation of new user</response>
+            <response code="400">if get mistake</response>
+        </member>
+        <member name="M:UserAPI.Controllers.SQLControllers.EmployeeController.GetEmployeeByUsername(System.String,System.String)">
+            <summary>Get Employee By Username</summary>
+            <remarks>Get Employee By Username</remarks>
+            <param name="username">the username of employee you want to get</param>
+            <param name="fields">the specified fields you want to get</param>
+            <response code="200">return infomation of user with specified fields</response>
+            <response code="400">if get mistake</response>
+            <returns></returns>
+        </member>
+        <member name="M:UserAPI.Controllers.SQLControllers.EmployeeController.GetListEmployees(System.Int32,System.Int32,System.String)">
+            <summary>Get List Employee</summary>
+            <remarks>Get List Employee</remarks>
+            <param name="pageIndex">the page index you want to get</param>
+            <param name="pageSize">the user per page you want to set</param>
+            <param name="fields">the specified fields you want to get</param>
+            <returns></returns>
+            <response code="200">return infomation of list employees</response>
+            <response code="400">if get mistake</response>
+        </member>
+        <member name="M:UserAPI.Controllers.SQLControllers.EmployeeController.UpdateEmployee(System.Int32,UserAPI.Models.SQLServerModel.InsertEmployeeInfo)">
+            <summary>Update Employee</summary>
+            <remarks>Update Employee</remarks>
+            <param name="employeeId"></param>
+            <param name="updateEmployee"></param>
+            <returns></returns>
+            <response code="200">return infomation of updated employee</response>
+            <response code="400">if get mistake</response>
+        </member>
+        <member name="M:UserAPI.Controllers.SQLControllers.EmployeeController.DeleteEmployee(System.Int32)">
+            <summary>Delete Employee</summary>
+            <remarks>Delete Employee</remarks>
+            <param name="employeeId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:UserAPI.Helper.CalcuteSHA256Hash(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="rawData"></param>
+            <returns></returns>
+        </member>
+        <member name="M:UserAPI.Helper.SplipFields(System.String,System.Char)">
+            <summary>
+            
+            </summary>
+            <param name="fields"></param>
+            <param name="separator"></param>
+            <returns></returns>
+        </member>
+        <member name="M:UserAPI.Helper.ConvertStringToTime(System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="time"></param>
+            <param name="format"></param>
+            <returns></returns>
+        </member>
+    </members>
 </doc>

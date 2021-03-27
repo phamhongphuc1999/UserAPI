@@ -32,7 +32,7 @@ namespace UserAPI
             sqlConnecter = SQLConnecter.GetInstance(sqlSetting);
 
             //Init mongo service
-            userService = new UserService("User");
+            userService = new UserService("Users");
 
             //Init sql server service
             employeeService = new EmployeeService();

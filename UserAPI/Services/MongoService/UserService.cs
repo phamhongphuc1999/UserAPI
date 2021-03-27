@@ -11,7 +11,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using UserAPI.Models.CommonModel;
 using MongoDB.Bson;
-using static UserAPI.Program;
 
 namespace UserAPI.Services.MongoService
 {
@@ -45,6 +44,7 @@ namespace UserAPI.Services.MongoService
                 status = 200,
                 data = new
                 {
+                    id = user.id,
                     username = user.username,
                     email = user.email
                 }
@@ -77,13 +77,14 @@ namespace UserAPI.Services.MongoService
                 status = 200,
                 data = new
                 {
+                    id = user.id,
                     username = user.username,
                     email = user.email
                 }
             };
         }
 
-        public Result InsertUser(NewUserInfo entity)
+        public Result Register(NewUserInfo entity)
         {
             User user = mCollection.Find(x => x.username == entity.username).ToList().FirstOrDefault();
             if (user != null) return new Result
@@ -109,7 +110,7 @@ namespace UserAPI.Services.MongoService
             };
         }
 
-        public async Task<Result> InsertUserAsync(NewUserInfo entity)
+        public async Task<Result> RegisterAsync(NewUserInfo entity)
         {
             User user = mCollection.Find(x => x.username == entity.username).ToList().FirstOrDefault();
             if (user != null) return new Result
@@ -137,51 +138,51 @@ namespace UserAPI.Services.MongoService
 
         public Result GetUserById(string userId, string[] fields = null)
         {
-            List<User> result = mCollection.Find(x => x._id == userId).ToList();
-            User user = result.FirstOrDefault();
+            User user;
+            if (fields == null) user = mCollection.Find(x => x.id == userId).First();
+            else
+            {
+                ProjectionDefinition<User> projection = Builders<User>.Projection.Include(fields[0]);
+                int len = fields.Length;
+                for (int i = 1; i < len; i++) projection = projection.Include(fields[i]);
+                user = mCollection.Find(x => x.id == userId).Project<User>(projection).First();
+            }
             if (user == null) return new Result
             {
                 status = 400,
                 data = $"the user with id: {userId} do not exist"
             };
-            if (fields == null) return new Result
-            {
-                status = 200,
-                data = user
-            };
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            foreach (string field in fields)
-                if (mongoConnecter.Setting.UserFields.Contains(field))
-                    data.Add(field, result.GetType().GetProperty(field).GetValue(result));
             return new Result
             {
                 status = 200,
-                data = data
+                data = user
             };
         }
 
         public async Task<Result> GetUserByIdAsync(string userId, string[] fields = null)
         {
-            List<User> result = await mCollection.Find(x => x._id == userId).ToListAsync();
-            User user = result.FirstOrDefault();
+            BsonDocument user;
+            if (fields == null)
+            {
+                var filter = Builders<User>.Filter.Eq("id", userId);
+                user = mCollection.Find(filter).First().ToBsonDocument();
+            }
+            else
+            {
+                ProjectionDefinition<User> projection = Builders<User>.Projection.Include(fields[0]);
+                int len = fields.Length;
+                for (int i = 1; i < len; i++) projection = projection.Include(fields[i]);
+                user = await mCollection.Find(x => x.id == userId).Project(projection).FirstAsync();
+            }
             if (user == null) return new Result
             {
                 status = 400,
                 data = $"the user with id: {userId} do not exist"
             };
-            if (fields == null) return new Result
-            {
-                status = 200,
-                data = user
-            };
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            foreach (string field in fields)
-                if (mongoConnecter.Setting.UserFields.Contains(field))
-                    data.Add(field, result.GetType().GetProperty(field).GetValue(result));
             return new Result
             {
                 status = 200,
-                data = data
+                data = user
             };
         }
 
@@ -333,7 +334,7 @@ namespace UserAPI.Services.MongoService
             User user = mCollection.FindOneAndUpdate(x => x.username == username, updateBuilder);
             if (user != null)
             {
-                user = mCollection.Find(x => x._id == user._id).FirstOrDefault();
+                user = mCollection.Find(x => x.id == user.id).FirstOrDefault();
                 return new Result
                 {
                     status = 200,
@@ -368,7 +369,7 @@ namespace UserAPI.Services.MongoService
             User user = await mCollection.FindOneAndUpdateAsync(x => x.username == username, updateBuilder);
             if (user != null)
             {
-                user = mCollection.Find(x => x._id == user._id).FirstOrDefault();
+                user = mCollection.Find(x => x.id == user.id).FirstOrDefault();
                 return new Result
                 {
                     status = 200,
