@@ -8,3 +8,5 @@
 
 ## note
     make sure your computer has installed make
+
+- more information in [here](https://mongodb.github.io/mongo-csharp-driver/2.12/getting_started/)
