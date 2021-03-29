@@ -26,7 +26,7 @@ namespace UserAPI
         {
             await _next(httpContext);
             int statusCode = httpContext.Response.StatusCode;
-            if (statusCode == 200) _logger.LogInformation("{0}: {1}{2} => {3}",
+            if (statusCode >= 200 && statusCode < 300) _logger.LogInformation("{0}: {1}{2} => {3}",
                     httpContext.Request.Method, mainUrl,
                     httpContext.Request.Path, statusCode);
             else _logger.LogError("{0}: {1}{2} => {3}",

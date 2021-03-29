@@ -37,10 +37,11 @@
             <response code="400">if get mistake</response>
         </member>
         <member name="M:UserAPI.Controllers.MongoControllers.UserController.GetCurrentUser">
-            <summary>
-            
-            </summary>
-            <returns></returns>
+            <summary>get current user</summary>
+            <remarks>get current user</remarks>
+            <returns>return infomation of current user</returns>
+            <response code="200">return infomation of current user</response>
+            <response code="400">if get mistake</response>
         </member>
         <member name="M:UserAPI.Controllers.MongoControllers.UserController.GetListUser(System.Int32,System.Int32,System.String)">
             <summary>get list users</summary>
@@ -112,14 +113,14 @@
             <param name="employeeId"></param>
             <returns></returns>
         </member>
-        <member name="M:UserAPI.Helper.CalcuteSHA256Hash(System.String)">
+        <member name="M:UserAPI.Utilities.CalcuteSHA256Hash(System.String)">
             <summary>
             
             </summary>
             <param name="rawData"></param>
             <returns></returns>
         </member>
-        <member name="M:UserAPI.Helper.SplipFields(System.String,System.Char)">
+        <member name="M:UserAPI.Utilities.SplipFields(System.String,System.Char)">
             <summary>
             
             </summary>
@@ -127,7 +128,7 @@
             <param name="separator"></param>
             <returns></returns>
         </member>
-        <member name="M:UserAPI.Helper.ConvertStringToTime(System.String,System.String)">
+        <member name="M:UserAPI.Utilities.ConvertStringToTime(System.String,System.String)">
             <summary>
             
             </summary>

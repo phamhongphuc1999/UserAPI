@@ -61,7 +61,8 @@ namespace UserAPI.Controllers.MongoControllers
                 IAuthService authService = new JWTService(model.SecretKey);
                 string accessToken = authService.GenerateToken(model);
                 if (!authService.IsTokenValid(accessToken)) goto node1;
-                return Ok(Responder.Success(new { 
+                return Ok(Responder.Success(new
+                {
                     token = accessToken,
                     user = result.data
                 }));
@@ -136,7 +137,7 @@ namespace UserAPI.Controllers.MongoControllers
                 Result result;
                 if (fields != null)
                 {
-                    string[] fieldList = Helper.SplipFields(fields);
+                    string[] fieldList = Utilities.SplipFields(fields);
                     result = await userService.GetUserByIdAsync(userId, fieldList);
                 }
                 else result = await userService.GetUserByIdAsync(userId);
@@ -149,10 +150,11 @@ namespace UserAPI.Controllers.MongoControllers
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
+        /// <summary>get current user</summary>
+        /// <remarks>get current user</remarks>
+        /// <returns>return infomation of current user</returns>
+        /// <response code="200">return infomation of current user</response>
+        /// <response code="400">if get mistake</response>
         [HttpGet("/users/current-user")]
         [CustomAuthorization]
         public async Task<object> GetCurrentUser()
@@ -162,7 +164,7 @@ namespace UserAPI.Controllers.MongoControllers
                 string token = HttpContext.Request.Headers["token"];
                 List<Claim> claims = authService.GetTokenClaims(token).ToList();
                 string username = claims.Find(x => x.Type == ClaimTypes.Name).Value;
-                Result result = await userService.GetUserByUserNameAsync(username);
+                Result result = await userService.GetUserByUserNameAsync(username, new string[] { "username" });
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
             }
@@ -191,7 +193,7 @@ namespace UserAPI.Controllers.MongoControllers
                 Result result;
                 if (fields != null)
                 {
-                    string[] fieldList = Helper.SplipFields(fields);
+                    string[] fieldList = Utilities.SplipFields(fields);
                     result = await userService.GetListUserAsync(pageSize, pageIndex, fieldList);
                 }
                 else result = await userService.GetListUserAsync(pageSize, pageIndex);

@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UserAPI.Contances;
 using UserAPI.Models.CommonModel;
 using UserAPI.Models.SQLServerModel;
 using static UserAPI.Program;
@@ -20,8 +21,8 @@ namespace UserAPI.Services.SQLServerService
             Employee employee = sqlConnecter.SqlData.Employees.SingleOrDefault(x => x.Username == entity.Username);
             if (employee != null) return new Result
             {
-                status = 400,
-                data = $"username {entity.Username} have existed"
+                status = Status.BadRequest,
+                data = Messages.EXISTED_USER
             };
             Employee newEmployee = new Employee()
             {
@@ -40,13 +41,13 @@ namespace UserAPI.Services.SQLServerService
             int check = sqlConnecter.SqlData.SaveChanges();
             if (check > 0) return new Result
             {
-                status = 200,
+                status = Status.OK,
                 data = newEmployee
             };
             return new Result
             {
-                status = 400,
-                data = "do not to create new user"
+                status = Status.BadRequest,
+                data = Messages.BAD_REQUEST
             };
         }
 
@@ -55,8 +56,8 @@ namespace UserAPI.Services.SQLServerService
             Employee employee = await sqlConnecter.SqlData.Employees.SingleOrDefaultAsync(x => x.Username == entity.Username);
             if (employee != null) return new Result
             {
-                status = 400,
-                data = $"username {entity.Username} have existed"
+                status = Status.BadRequest,
+                data = Messages.EXISTED_USER
             };
             Employee newEmployee = new Employee()
             {
@@ -75,13 +76,13 @@ namespace UserAPI.Services.SQLServerService
             int check = await sqlConnecter.SqlData.SaveChangesAsync();
             if (check > 0) return new Result
             {
-                status = 200,
+                status = Status.OK,
                 data = newEmployee
             };
             return new Result
             {
-                status = 400,
-                data = "do not to create new user"
+                status = Status.BadRequest,
+                data = Messages.BAD_REQUEST
             };
         }
 
@@ -90,12 +91,12 @@ namespace UserAPI.Services.SQLServerService
             Employee employee = sqlConnecter.SqlData.Employees.SingleOrDefault(x => x.Username == username);
             if (employee == null) return new Result
             {
-                status = 400,
+                status = Status.BadRequest,
                 data = $"the employee with username: {username} do not exist"
             };
             if (fields == null) return new Result
             {
-                status = 200,
+                status = Status.OK,
                 data = employee
             };
             List<(string, object)> data = new List<(string, object)>();
@@ -104,7 +105,7 @@ namespace UserAPI.Services.SQLServerService
                     data.Add((field, employee.GetType().GetProperty(field).GetValue(employee)));
             return new Result
             {
-                status = 200,
+                status = Status.OK,
                 data = data
             };
         }
@@ -114,12 +115,12 @@ namespace UserAPI.Services.SQLServerService
             Employee employee = await sqlConnecter.SqlData.Employees.SingleOrDefaultAsync(x => x.Username == username);
             if (employee == null) return new Result
             {
-                status = 400,
+                status = Status.BadRequest,
                 data = $"the employee with username: {username} do not exist"
             };
             if (fields == null) return new Result
             {
-                status = 200,
+                status = Status.OK,
                 data = employee
             };
             List<(string, object)> data = new List<(string, object)>();
@@ -128,7 +129,7 @@ namespace UserAPI.Services.SQLServerService
                     data.Add((field, employee.GetType().GetProperty(field).GetValue(employee)));
             return new Result
             {
-                status = 200,
+                status = Status.OK,
                 data = data
             };
         }
@@ -142,7 +143,7 @@ namespace UserAPI.Services.SQLServerService
             int index = pageSize * (pageIndex - 1);
             if (fields == null) return new Result
             {
-                status = 200,
+                status = Status.OK,
                 data = new
                 {
                     user_list = employeeList.GetRange(index, pageSize),
@@ -167,7 +168,7 @@ namespace UserAPI.Services.SQLServerService
             });
             return new Result
             {
-                status = 200,
+                status = Status.OK,
                 data = new
                 {
                     user_list = employeeFilterList,
@@ -190,7 +191,7 @@ namespace UserAPI.Services.SQLServerService
             int index = pageSize * (pageIndex - 1);
             if (fields == null) return new Result
             {
-                status = 200,
+                status = Status.OK,
                 data = new
                 {
                     user_list = employeeList.GetRange(index, pageSize),
@@ -215,7 +216,7 @@ namespace UserAPI.Services.SQLServerService
             });
             return new Result
             {
-                status = 200,
+                status = Status.OK,
                 data = new
                 {
                     user_list = employeeFilterList,
@@ -234,7 +235,7 @@ namespace UserAPI.Services.SQLServerService
             Employee employee = sqlConnecter.SqlData.Employees.Find(employeeId);
             if (employee == null) return new Result
             {
-                status = 400,
+                status = Status.BadRequest,
                 data = $"the employee with id: {employeeId} do not exist"
             };
             if (updateEmployee.Username != null)
@@ -242,14 +243,14 @@ namespace UserAPI.Services.SQLServerService
                 Employee checkEmployee = sqlConnecter.SqlData.Employees.SingleOrDefault(x => x.Username == updateEmployee.Username);
                 if (checkEmployee != null) return new Result
                 {
-                    status = 400,
+                    status = Status.BadRequest,
                     data = $"the username: {updateEmployee.Username} is exist"
                 };
                 employee.Username = updateEmployee.Username;
             }
             if (updateEmployee.Password != null)
             {
-                string newPassword = Helper.CalcuteSHA256Hash(updateEmployee.Password);
+                string newPassword = Utilities.CalcuteSHA256Hash(updateEmployee.Password);
                 employee.Password = newPassword;
             }
             if (updateEmployee.Name != null) employee.Name = updateEmployee.Name;
@@ -263,12 +264,12 @@ namespace UserAPI.Services.SQLServerService
             Employee result = sqlConnecter.SqlData.Employees.Find(employeeId);
             if (check > 0) return new Result
             {
-                status = 200,
+                status = Status.OK,
                 data = result
             };
             else return new Result
             {
-                status = 400,
+                status = Status.BadRequest,
                 data = $"do not update employee with id: {employeeId}"
             };
         }
@@ -278,7 +279,7 @@ namespace UserAPI.Services.SQLServerService
             Employee employee = await sqlConnecter.SqlData.Employees.FindAsync(employeeId);
             if (employee == null) return new Result
             {
-                status = 400,
+                status = Status.BadRequest,
                 data = $"the employee with id: {employeeId} do not exist"
             };
             if (updateEmployee.Username != null)
@@ -286,14 +287,14 @@ namespace UserAPI.Services.SQLServerService
                 Employee checkEmployee = await sqlConnecter.SqlData.Employees.SingleOrDefaultAsync(x => x.Username == updateEmployee.Username);
                 if (checkEmployee != null) return new Result
                 {
-                    status = 400,
+                    status = Status.BadRequest,
                     data = $"the username: {updateEmployee.Username} is exist"
                 };
                 employee.Username = updateEmployee.Username;
             }
             if (updateEmployee.Password != null)
             {
-                string newPassword = Helper.CalcuteSHA256Hash(updateEmployee.Password);
+                string newPassword = Utilities.CalcuteSHA256Hash(updateEmployee.Password);
                 employee.Password = newPassword;
             }
             if (updateEmployee.Name != null) employee.Name = updateEmployee.Name;
@@ -307,12 +308,12 @@ namespace UserAPI.Services.SQLServerService
             Employee result = await sqlConnecter.SqlData.Employees.FindAsync(employeeId);
             if (check > 0) return new Result
             {
-                status = 200,
+                status = Status.OK,
                 data = result
             };
             else return new Result
             {
-                status = 400,
+                status = Status.BadRequest,
                 data = $"do not update employee with id: {employeeId}"
             };
         }
@@ -322,19 +323,19 @@ namespace UserAPI.Services.SQLServerService
             Employee employee = sqlConnecter.SqlData.Employees.Find(employeeId);
             if (employee == null) return new Result
             {
-                status = 400,
+                status = Status.BadRequest,
                 data = $"the employee with id: {employeeId} do not exist"
             };
             sqlConnecter.SqlData.Remove(employee);
             int check = sqlConnecter.SqlData.SaveChanges();
             if (check > 0) return new Result
             {
-                status = 200,
+                status = Status.OK,
                 data = employee
             };
             else return new Result
             {
-                status = 400,
+                status = Status.BadRequest,
                 data = $"do not delete employee with id: {employeeId}"
             };
         }
@@ -344,19 +345,19 @@ namespace UserAPI.Services.SQLServerService
             Employee employee = await sqlConnecter.SqlData.Employees.FindAsync(employeeId);
             if (employee == null) return new Result
             {
-                status = 400,
+                status = Status.BadRequest,
                 data = $"the employee with id: {employeeId} do not exist"
             };
             sqlConnecter.SqlData.Remove(employee);
             int check = await sqlConnecter.SqlData.SaveChangesAsync();
             if (check > 0) return new Result
             {
-                status = 200,
+                status = Status.OK,
                 data = employee
             };
             else return new Result
             {
-                status = 400,
+                status = Status.BadRequest,
                 data = $"do not delete employee with id: {employeeId}"
             };
         }

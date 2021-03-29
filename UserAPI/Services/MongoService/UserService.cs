@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UserAPI.Models.CommonModel;
 using MongoDB.Bson;
+using UserAPI.Contances;
 
 namespace UserAPI.Services.MongoService
 {
@@ -24,28 +25,37 @@ namespace UserAPI.Services.MongoService
             BsonDocument user = mCollection.Find(filter).First();
             if (user == null) return new Result
             {
-                status = 401,
-                data = "username or password wrong"
+                status = Status.Unauthorized,
+                data = Messages.WRONG_USER_PASSWORD
             };
-            string rawPassword = Helper.CalcuteSHA256Hash(password);
+            string rawPassword = Utilities.CalcuteSHA256Hash(password);
             BsonValue _password = user.GetElement("password").Value;
             if (_password.AsString != rawPassword) return new Result
             {
-                status = 401,
-                data = "username or password wrong"
+                status = Status.Unauthorized,
+                data = Messages.WRONG_USER_PASSWORD
             };
             bool status = user.GetElement("status").Value.AsBoolean;
             if (!status) return new Result
             {
-                status = 403,
-                data = "This account is enable to login"
+                status = Status.Forbidden,
+                data = Messages.ENABLE_ACCOUNT
             };
             UpdateDefinition<BsonDocument> updateBuilder = Builders<BsonDocument>.Update.Set("lastLogin", BsonDateTime.Create(DateTime.Now));
-            mCollection.UpdateOne(filter, updateBuilder);
+            UpdateResult result = mCollection.UpdateOne(filter, updateBuilder);
+            if (result.ModifiedCount > 0) return new Result
+            {
+                status = Status.OK,
+                data = new
+                {
+                    id = user.GetElement("_id").Value.ToString(),
+                    username = user.GetElement("username").Value.AsString
+                }
+            };
             return new Result
             {
-                status = 200,
-                data = user
+                status = Status.BadRequest,
+                data = Messages.BAD_REQUEST
             };
         }
 
@@ -55,28 +65,37 @@ namespace UserAPI.Services.MongoService
             BsonDocument user = await mCollection.Find(filter).FirstAsync();
             if (user == null) return new Result
             {
-                status = 401,
-                data = "username or password wrong"
+                status = Status.Unauthorized,
+                data = Messages.WRONG_USER_PASSWORD
             };
-            string rawPassword = Helper.CalcuteSHA256Hash(password);
+            string rawPassword = Utilities.CalcuteSHA256Hash(password);
             BsonValue _password = user.GetElement("password").Value;
             if (_password.AsString != rawPassword) return new Result
             {
-                status = 401,
-                data = "username or password wrong"
+                status = Status.Unauthorized,
+                data = Messages.WRONG_USER_PASSWORD
             };
             bool status = user.GetElement("status").Value.AsBoolean;
             if (!status) return new Result
             {
-                status = 403,
-                data = "This account is enable to login"
+                status = Status.Forbidden,
+                data = Messages.ENABLE_ACCOUNT
             };
             UpdateDefinition<BsonDocument> updateBuilder = Builders<BsonDocument>.Update.Set("lastLogin", BsonDateTime.Create(DateTime.Now));
-            mCollection.UpdateOne(filter, updateBuilder);
+            UpdateResult result = await mCollection.UpdateOneAsync(filter, updateBuilder);
+            if (result.ModifiedCount > 0) return new Result
+            {
+                status = Status.OK,
+                data = new
+                {
+                    id = user.GetElement("_id").Value.ToString(),
+                    username = user.GetElement("username").Value.AsString
+                }
+            };
             return new Result
             {
-                status = 200,
-                data = user
+                status = Status.BadRequest,
+                data = Messages.BAD_REQUEST
             };
         }
 
@@ -86,13 +105,13 @@ namespace UserAPI.Services.MongoService
             BsonDocument user = mCollection.Find(filter).First();
             if (user != null) return new Result
             {
-                status = 400,
-                data = $"username {entity.username} have existed"
+                status = Status.BadRequest,
+                data = Messages.EXISTED_USER
             };
             BsonDocument newUser = new BsonDocument
             {
                 { "username", entity.username},
-                { "password", Helper.CalcuteSHA256Hash(entity.password) },
+                { "password", Utilities.CalcuteSHA256Hash(entity.password) },
                 { "email", entity.email },
                 { "createAt", DateTime.Now },
                 { "updateAt", DateTime.Now },
@@ -102,8 +121,8 @@ namespace UserAPI.Services.MongoService
             mCollection.InsertOne(newUser);
             return new Result
             {
-                status = 200,
-                data = newUser
+                status = Status.Created,
+                data = newUser.ToJson()
             };
         }
 
@@ -113,13 +132,13 @@ namespace UserAPI.Services.MongoService
             BsonDocument user = await mCollection.Find(filter).FirstOrDefaultAsync();
             if (user != null) return new Result
             {
-                status = 400,
-                data = $"username {entity.username} have existed"
+                status = Status.BadRequest,
+                data = Messages.EXISTED_USER
             };
             BsonDocument newUser = new BsonDocument
             {
                 { "username", entity.username},
-                { "password", Helper.CalcuteSHA256Hash(entity.password) },
+                { "password", Utilities.CalcuteSHA256Hash(entity.password) },
                 { "email", entity.email },
                 { "createAt", DateTime.Now },
                 { "updateAt", DateTime.Now },
@@ -129,7 +148,7 @@ namespace UserAPI.Services.MongoService
             await mCollection.InsertOneAsync(newUser);
             return new Result
             {
-                status = 200,
+                status = Status.Created,
                 data = newUser.ToJson()
             };
         }
@@ -137,93 +156,117 @@ namespace UserAPI.Services.MongoService
         public Result GetUserById(string userId, string[] fields = null)
         {
             BsonDocument user;
-            FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("id", userId);
-            if (fields == null) user = mCollection.Find(filter).First();
+            FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("_id", userId);
+            if (fields == null) user = mCollection.Find(filter).FirstOrDefault();
             else
             {
-                ProjectionDefinition<BsonDocument> projection = Builders<BsonDocument>.Projection.Include(fields[0]);
-                int len = fields.Length;
-                for (int i = 1; i < len; i++) projection = projection.Include(fields[i]);
-                user = mCollection.Find(filter).Project(projection).First();
+                Dictionary<string, object> dic = new Dictionary<string, object>();
+                foreach (string field in fields) dic.Add(field, 1);
+                ProjectionDefinition<BsonDocument> projection = new BsonDocument(dic);
+                user = mCollection.Find(filter).Project(projection).FirstOrDefault();
             }
             if (user == null) return new Result
             {
-                status = 400,
-                data = $"the user with id: {userId} do not exist"
+                status = Status.BadRequest,
+                data = Messages.NOT_EXISTED_USER
             };
             return new Result
             {
-                status = 200,
-                data = user
+                status = Status.OK,
+                data = user.ToJson()
             };
         }
 
         public async Task<Result> GetUserByIdAsync(string userId, string[] fields = null)
         {
             BsonDocument user;
-            FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("id", userId);
+            FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("_id", ObjectId.Parse(userId));
+            if (fields == null) user = await mCollection.Find(filter).FirstOrDefaultAsync();
+            else
+            {
+                Dictionary<string, object> dic = new Dictionary<string, object>();
+                foreach (string field in fields) dic.Add(field, 1);
+                ProjectionDefinition<BsonDocument> projection = new BsonDocument(dic);
+                user = await mCollection.Find(filter).Project(projection).FirstOrDefaultAsync();
+            }
+            if (user == null) return new Result
+            {
+                status = Status.BadRequest,
+                data = Messages.NOT_EXISTED_USER
+            };
+            return new Result
+            {
+                status = Status.OK,
+                data = user.ToJson()
+            };
+        }
+
+        public Result GetUserByUserName(string username, string[] fields = null)
+        {
+            BsonDocument user;
+            FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("username", username);
+            if (fields == null) user = mCollection.Find(filter).First();
+            else
+            {
+                Dictionary<string, object> dic = new Dictionary<string, object>();
+                foreach (string field in fields) dic.Add(field, 1);
+                ProjectionDefinition<BsonDocument> projection = new BsonDocument(dic);
+                user = mCollection.Find(filter).Project(projection).First();
+            }
+            if (user == null) return new Result
+            {
+                status = Status.BadRequest,
+                data = Messages.NOT_EXISTED_USER
+            };
+            return new Result
+            {
+                status = Status.OK,
+                data = user.ToJson()
+            };
+        }
+
+        public async Task<Result> GetUserByUserNameAsync(string username, string[] fields = null)
+        {
+            BsonDocument user;
+            FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("username", username);
             if (fields == null) user = await mCollection.Find(filter).FirstAsync();
             else
             {
-                ProjectionDefinition<BsonDocument> projection = Builders<BsonDocument>.Projection.Include(fields[0]);
-                int len = fields.Length;
-                for (int i = 1; i < len; i++) projection = projection.Include(fields[i]);
+                Dictionary<string, object> dic = new Dictionary<string, object>();
+                foreach (string field in fields) dic.Add(field, 1);
+                ProjectionDefinition<BsonDocument> projection = new BsonDocument(dic);
                 user = await mCollection.Find(filter).Project(projection).FirstAsync();
             }
             if (user == null) return new Result
             {
-                status = 400,
-                data = $"the user with id: {userId} do not exist"
+                status = Status.BadRequest,
+                data = Messages.NOT_EXISTED_USER
             };
             return new Result
             {
-                status = 200,
-                data = user
-            };
-        }
-
-        public Result GetUserByUserName(string username)
-        {
-            FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("username", username);
-            BsonDocument user = mCollection.Find(filter).First();
-            if (user == null) return new Result
-            {
-                status = 400,
-                data = $"user with username: ${username} do not exist"
-            };
-            return new Result
-            {
-                status = 200,
-                data = user
-            };
-        }
-
-        public async Task<Result> GetUserByUserNameAsync(string username)
-        {
-            FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("username", username);
-            BsonDocument user = await mCollection.Find(filter).FirstAsync();
-            if (user == null) return new Result
-            {
-                status = 400,
-                data = $"user with username: ${username} do not exist"
-            };
-            return new Result
-            {
-                status = 200,
-                data = user
+                status = Status.OK,
+                data = user.ToJson()
             };
         }
 
         public Result GetListUser(int pageSize = 0, int pageIndex = 0, string[] fields = null)
         {
-            List<BsonDocument> userList = mCollection.Find(new BsonDocument()).ToList();
+            List<BsonDocument> userList = new List<BsonDocument>();
+            if (fields == null) userList = mCollection.Find(new BsonDocument()).ToList();
+            else
+            {
+                Dictionary<string, object> dic = new Dictionary<string, object>();
+                foreach (string field in fields) dic.Add(field, 1);
+                ProjectionDefinition<BsonDocument> projection = new BsonDocument(dic);
+                userList = mCollection.Find(new BsonDocument()).Project(projection).ToList();
+            }
             int totalResult = userList.Count;
             if (pageSize == 0) pageSize = totalResult;
             if (pageIndex == 0) pageIndex = 1;
             int index = pageSize * (pageIndex - 1);
             return new Result
             {
-                status = 200,
+                status = Status.OK,
                 data = new
                 {
                     user_list = userList.GetRange(index, pageSize),
@@ -239,14 +282,22 @@ namespace UserAPI.Services.MongoService
 
         public async Task<Result> GetListUserAsync(int pageSize = 0, int pageIndex = 0, string[] fields = null)
         {
-            List<BsonDocument> userList = await mCollection.Find(new BsonDocument()).ToListAsync();
+            List<BsonDocument> userList = new List<BsonDocument>();
+            if (userList == null) userList = await mCollection.Find(new BsonDocument()).ToListAsync();
+            else
+            {
+                Dictionary<string, object> dic = new Dictionary<string, object>();
+                foreach (string field in fields) dic.Add(field, 1);
+                ProjectionDefinition<BsonDocument> projection = new BsonDocument(dic);
+                userList = await mCollection.Find(new BsonDocument()).Project(projection).ToListAsync();
+            }
             int totalResult = userList.Count;
             if (pageSize == 0) pageSize = totalResult;
             if (pageIndex == 0) pageIndex = 1;
             int index = pageSize * (pageIndex - 1);
             return new Result
             {
-                status = 200,
+                status = Status.OK,
                 data = new
                 {
                     user_list = userList.GetRange(index, pageSize),
@@ -269,26 +320,26 @@ namespace UserAPI.Services.MongoService
                 BsonDocument checkUser = mCollection.Find(nameFilter).First();
                 if (checkUser != null) return new Result
                 {
-                    status = 400,
+                    status = Status.BadRequest,
                     data = $"the username: {updateUser.username} is exist"
                 };
                 update = update.Set("username", updateUser.username);
             }
             if (updateUser.password != null)
             {
-                string newPassword = Helper.CalcuteSHA256Hash(updateUser.password);
+                string newPassword = Utilities.CalcuteSHA256Hash(updateUser.password);
                 update = update.Set("password", newPassword);
             }
             FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("id", userId);
             UpdateResult result = mCollection.UpdateOne(filter, update);
             if (result.ModifiedCount > 0) return new Result
             {
-                status = 200,
+                status = Status.OK,
                 data = result
             };
             else return new Result
             {
-                status = 400,
+                status = Status.BadRequest,
                 data = $"do not update user with userId: {userId}"
             };
         }
@@ -302,26 +353,26 @@ namespace UserAPI.Services.MongoService
                 BsonDocument checkUser = await mCollection.Find(nameFilter).FirstAsync();
                 if (checkUser != null) return new Result
                 {
-                    status = 400,
+                    status = Status.BadRequest,
                     data = $"the username: {updateUser.username} is exist"
                 };
                 update = update.Set("username", updateUser.username);
             }
             if (updateUser.password != null)
             {
-                string newPassword = Helper.CalcuteSHA256Hash(updateUser.password);
+                string newPassword = Utilities.CalcuteSHA256Hash(updateUser.password);
                 update = update.Set("password", newPassword);
             }
             FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("id", userId);
             UpdateResult result = mCollection.UpdateOne(filter, update);
             if (result.ModifiedCount > 0) return new Result
             {
-                status = 200,
+                status = Status.OK,
                 data = result
             };
             else return new Result
             {
-                status = 400,
+                status = Status.BadRequest,
                 data = $"do not update user with userId: {userId}"
             };
         }
@@ -332,12 +383,12 @@ namespace UserAPI.Services.MongoService
             DeleteResult result = mCollection.DeleteOne(filter);
             if (result.DeletedCount > 0) return new Result
             {
-                status = 200,
+                status = Status.OK,
                 data = result
             };
             else return new Result
             {
-                status = 400,
+                status = Status.BadRequest,
                 data = $"do not delete user with id: {username}"
             };
         }
@@ -348,12 +399,12 @@ namespace UserAPI.Services.MongoService
             DeleteResult result = await mCollection.DeleteOneAsync(filter);
             if (result.DeletedCount > 0) return new Result
             {
-                status = 200,
+                status = Status.OK,
                 data = result
             };
             else return new Result
             {
-                status = 400,
+                status = Status.BadRequest,
                 data = $"do not delete user with id: {username}"
             };
         }

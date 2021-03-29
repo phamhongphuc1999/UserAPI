@@ -3,6 +3,8 @@
 // API with mongodb, SQL server database and more.
 // Owner: Pham Hong Phuc
 
+using System.Net;
+
 namespace UserAPI.Models.CommonModel
 {
     public class Result

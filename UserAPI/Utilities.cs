@@ -9,7 +9,7 @@ using System.Text;
 
 namespace UserAPI
 {
-    public class Helper
+    public class Utilities
     {
         /// <summary>
         /// 

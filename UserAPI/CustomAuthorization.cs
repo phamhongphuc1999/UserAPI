@@ -10,6 +10,7 @@ using Microsoft.Extensions.Primitives;
 using System;
 using System.Linq;
 using System.Net;
+using UserAPI.Contances;
 
 namespace UserAPI
 {
@@ -51,7 +52,7 @@ namespace UserAPI
                                 Value = new
                                 {
                                     Status = "Error",
-                                    Message = "Invalid Token"
+                                    Message = Messages.INVALID_TOKEN
                                 },
                             };
                         }
@@ -66,7 +67,7 @@ namespace UserAPI
                         Value = new
                         {
                             Status = "Error",
-                            Message = "Please Provide authToken"
+                            Message = Messages.UNAUTHORIZED
                         },
                     };
                 }
