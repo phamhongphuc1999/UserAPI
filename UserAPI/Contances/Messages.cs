@@ -7,6 +7,7 @@ namespace UserAPI.Contances
 {
     public static class Messages
     {
+        public static readonly string OK = "OK";
         public static readonly string BadRequest = "Bad Request";
         public static readonly string Unauthorized = "Unauthorized";
         public static readonly string Forbidden = "Forbidden";

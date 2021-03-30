@@ -12,9 +12,9 @@ namespace UserAPI.Services.MongoService
     {
         public ProductService(string collection) : base(collection) { }
 
-        public Result InsertProduct(InsertProduct insertProduct, string userId)
-        {
+        //public Result InsertProduct(InsertProduct insertProduct, string userId)
+        //{
 
-        }
+        //}
     }
 }

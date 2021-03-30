@@ -17,11 +17,6 @@ namespace UserAPI
     [AttributeUsage(AttributeTargets.Method)]
     public class CustomAuthorization : Attribute, IAuthorizationFilter
     {
-        public bool IsValidToken(string token)
-        {
-            return token != "";
-        }
-
         public void OnAuthorization(AuthorizationFilterContext filterContext)
         {
             if (filterContext != null)
@@ -32,30 +27,27 @@ namespace UserAPI
                 if (_token != null)
                 {
                     string authToken = _token;
-                    if (authToken != null)
+                    if (Utilities.IsValidToken(authToken))
                     {
-                        if (IsValidToken(authToken))
+                        filterContext.HttpContext.Response.Headers.Add("authToken", authToken);
+                        filterContext.HttpContext.Response.Headers.Add("AuthStatus", "Authorized");
+                        filterContext.HttpContext.Response.Headers.Add("storeAccessiblity", "Authorized");
+                        return;
+                    }
+                    else
+                    {
+                        filterContext.HttpContext.Response.Headers.Add("authToken", authToken);
+                        filterContext.HttpContext.Response.Headers.Add("AuthStatus", "NotAuthorized");
+                        filterContext.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                        filterContext.HttpContext.Response.HttpContext.Features.Get<IHttpResponseFeature>().ReasonPhrase = "Not Authorized";
+                        filterContext.Result = new JsonResult("NotAuthorized")
                         {
-                            filterContext.HttpContext.Response.Headers.Add("authToken", authToken);
-                            filterContext.HttpContext.Response.Headers.Add("AuthStatus", "Authorized");
-                            filterContext.HttpContext.Response.Headers.Add("storeAccessiblity", "Authorized");
-                            return;
-                        }
-                        else
-                        {
-                            filterContext.HttpContext.Response.Headers.Add("authToken", authToken);
-                            filterContext.HttpContext.Response.Headers.Add("AuthStatus", "NotAuthorized");
-                            filterContext.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                            filterContext.HttpContext.Response.HttpContext.Features.Get<IHttpResponseFeature>().ReasonPhrase = "Not Authorized";
-                            filterContext.Result = new JsonResult("NotAuthorized")
+                            Value = new
                             {
-                                Value = new
-                                {
-                                    Status = "Error",
-                                    Message = Messages.INVALID_TOKEN
-                                },
-                            };
-                        }
+                                Status = "Error",
+                                Message = Messages.InvalidToken
+                            },
+                        };
                     }
                 }
                 else
@@ -67,7 +59,7 @@ namespace UserAPI
                         Value = new
                         {
                             Status = "Error",
-                            Message = Messages.UNAUTHORIZED
+                            Message = Messages.Unauthorized
                         },
                     };
                 }

@@ -50,5 +50,15 @@ namespace UserAPI
         {
             return DateTime.ParseExact(time , format, System.Globalization.CultureInfo.InvariantCulture);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public static bool IsValidToken(string token)
+        {
+            return token != "" && token != null;
+        }
     }
 }

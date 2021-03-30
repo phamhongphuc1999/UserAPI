@@ -1,12 +1,16 @@
-## install
+### install
     nuget will be auto install the missing library
 
-## run project
+---
+### run project
 ###### in .NET CLI
-    cd ./UserAPI
-    make run
+* ``cd ./UserAPI``
+* ``make run``
 
-## note
+---
+### note
     make sure your computer has installed make
 
-- more information in [here](https://mongodb.github.io/mongo-csharp-driver/2.12/getting_started/)
+---
+### reference
+- **Mongo**: [doc](https://mongodb.github.io/mongo-csharp-driver/2.12/getting_started/quick_tour/)

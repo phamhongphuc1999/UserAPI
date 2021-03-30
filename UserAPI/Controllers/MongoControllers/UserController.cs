@@ -53,7 +53,7 @@ namespace UserAPI.Controllers.MongoControllers
                 StringValues token;
                 Request.Headers.TryGetValue("token", out token);
                 string _token = token.FirstOrDefault();
-                if (_token != null && _token != "") return Ok(Responder.Success("Already logined"));
+                if (Utilities.IsValidToken(_token)) return Ok(Responder.Success("Already logined"));
                 Result result = await userService.LoginAsync(info.username, info.password);
                 if (result.status != 200) return StatusCode(result.status, Responder.Fail(result.data));
                 node1:
