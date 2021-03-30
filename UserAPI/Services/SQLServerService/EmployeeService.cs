@@ -22,7 +22,7 @@ namespace UserAPI.Services.SQLServerService
             if (employee != null) return new Result
             {
                 status = Status.BadRequest,
-                data = Messages.EXISTED_USER
+                data = Messages.ExistedUser
             };
             Employee newEmployee = new Employee()
             {
@@ -47,7 +47,7 @@ namespace UserAPI.Services.SQLServerService
             return new Result
             {
                 status = Status.BadRequest,
-                data = Messages.BAD_REQUEST
+                data = Messages.BadRequest
             };
         }
 
@@ -57,7 +57,7 @@ namespace UserAPI.Services.SQLServerService
             if (employee != null) return new Result
             {
                 status = Status.BadRequest,
-                data = Messages.EXISTED_USER
+                data = Messages.ExistedUser
             };
             Employee newEmployee = new Employee()
             {
@@ -82,7 +82,7 @@ namespace UserAPI.Services.SQLServerService
             return new Result
             {
                 status = Status.BadRequest,
-                data = Messages.BAD_REQUEST
+                data = Messages.BadRequest
             };
         }
 
@@ -92,7 +92,7 @@ namespace UserAPI.Services.SQLServerService
             if (employee == null) return new Result
             {
                 status = Status.BadRequest,
-                data = $"the employee with username: {username} do not exist"
+                data = Messages.BadRequest
             };
             if (fields == null) return new Result
             {
@@ -116,7 +116,7 @@ namespace UserAPI.Services.SQLServerService
             if (employee == null) return new Result
             {
                 status = Status.BadRequest,
-                data = $"the employee with username: {username} do not exist"
+                data = Messages.BadRequest
             };
             if (fields == null) return new Result
             {
@@ -236,7 +236,7 @@ namespace UserAPI.Services.SQLServerService
             if (employee == null) return new Result
             {
                 status = Status.BadRequest,
-                data = $"the employee with id: {employeeId} do not exist"
+                data = Messages.BadRequest
             };
             if (updateEmployee.Username != null)
             {
@@ -244,7 +244,7 @@ namespace UserAPI.Services.SQLServerService
                 if (checkEmployee != null) return new Result
                 {
                     status = Status.BadRequest,
-                    data = $"the username: {updateEmployee.Username} is exist"
+                    data = Messages.BadRequest
                 };
                 employee.Username = updateEmployee.Username;
             }
@@ -270,7 +270,7 @@ namespace UserAPI.Services.SQLServerService
             else return new Result
             {
                 status = Status.BadRequest,
-                data = $"do not update employee with id: {employeeId}"
+                data = Messages.BadRequest
             };
         }
 
@@ -280,7 +280,7 @@ namespace UserAPI.Services.SQLServerService
             if (employee == null) return new Result
             {
                 status = Status.BadRequest,
-                data = $"the employee with id: {employeeId} do not exist"
+                data = Messages.BadRequest
             };
             if (updateEmployee.Username != null)
             {
@@ -288,7 +288,7 @@ namespace UserAPI.Services.SQLServerService
                 if (checkEmployee != null) return new Result
                 {
                     status = Status.BadRequest,
-                    data = $"the username: {updateEmployee.Username} is exist"
+                    data = Messages.BadRequest
                 };
                 employee.Username = updateEmployee.Username;
             }
@@ -314,7 +314,7 @@ namespace UserAPI.Services.SQLServerService
             else return new Result
             {
                 status = Status.BadRequest,
-                data = $"do not update employee with id: {employeeId}"
+                data = Messages.BadRequest
             };
         }
 
@@ -324,7 +324,7 @@ namespace UserAPI.Services.SQLServerService
             if (employee == null) return new Result
             {
                 status = Status.BadRequest,
-                data = $"the employee with id: {employeeId} do not exist"
+                data = Messages.BadRequest
             };
             sqlConnecter.SqlData.Remove(employee);
             int check = sqlConnecter.SqlData.SaveChanges();
@@ -336,7 +336,7 @@ namespace UserAPI.Services.SQLServerService
             else return new Result
             {
                 status = Status.BadRequest,
-                data = $"do not delete employee with id: {employeeId}"
+                data = Messages.BadRequest
             };
         }
 
@@ -346,7 +346,7 @@ namespace UserAPI.Services.SQLServerService
             if (employee == null) return new Result
             {
                 status = Status.BadRequest,
-                data = $"the employee with id: {employeeId} do not exist"
+                data = Messages.BadRequest
             };
             sqlConnecter.SqlData.Remove(employee);
             int check = await sqlConnecter.SqlData.SaveChangesAsync();
@@ -358,7 +358,7 @@ namespace UserAPI.Services.SQLServerService
             else return new Result
             {
                 status = Status.BadRequest,
-                data = $"do not delete employee with id: {employeeId}"
+                data = Messages.BadRequest
             };
         }
     }

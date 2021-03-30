@@ -25,21 +25,21 @@ namespace UserAPI.Services.MongoService
             BsonDocument user = mCollection.Find(filter).First();
             if (user == null) return new Result
             {
-                status = Status.Unauthorized,
-                data = Messages.WRONG_USER_PASSWORD
+                status = Status.BadRequest,
+                data = Messages.WrongUserPassword
             };
             string rawPassword = Utilities.CalcuteSHA256Hash(password);
             BsonValue _password = user.GetElement("password").Value;
             if (_password.AsString != rawPassword) return new Result
             {
                 status = Status.Unauthorized,
-                data = Messages.WRONG_USER_PASSWORD
+                data = Messages.WrongUserPassword
             };
             bool status = user.GetElement("status").Value.AsBoolean;
             if (!status) return new Result
             {
                 status = Status.Forbidden,
-                data = Messages.ENABLE_ACCOUNT
+                data = Messages.EnableAccount
             };
             UpdateDefinition<BsonDocument> updateBuilder = Builders<BsonDocument>.Update.Set("lastLogin", BsonDateTime.Create(DateTime.Now));
             UpdateResult result = mCollection.UpdateOne(filter, updateBuilder);
@@ -55,7 +55,7 @@ namespace UserAPI.Services.MongoService
             return new Result
             {
                 status = Status.BadRequest,
-                data = Messages.BAD_REQUEST
+                data = Messages.BadRequest
             };
         }
 
@@ -66,20 +66,20 @@ namespace UserAPI.Services.MongoService
             if (user == null) return new Result
             {
                 status = Status.Unauthorized,
-                data = Messages.WRONG_USER_PASSWORD
+                data = Messages.WrongUserPassword
             };
             string rawPassword = Utilities.CalcuteSHA256Hash(password);
             BsonValue _password = user.GetElement("password").Value;
             if (_password.AsString != rawPassword) return new Result
             {
                 status = Status.Unauthorized,
-                data = Messages.WRONG_USER_PASSWORD
+                data = Messages.WrongUserPassword
             };
             bool status = user.GetElement("status").Value.AsBoolean;
             if (!status) return new Result
             {
                 status = Status.Forbidden,
-                data = Messages.ENABLE_ACCOUNT
+                data = Messages.EnableAccount
             };
             UpdateDefinition<BsonDocument> updateBuilder = Builders<BsonDocument>.Update.Set("lastLogin", BsonDateTime.Create(DateTime.Now));
             UpdateResult result = await mCollection.UpdateOneAsync(filter, updateBuilder);
@@ -95,7 +95,7 @@ namespace UserAPI.Services.MongoService
             return new Result
             {
                 status = Status.BadRequest,
-                data = Messages.BAD_REQUEST
+                data = Messages.BadRequest
             };
         }
 
@@ -106,7 +106,7 @@ namespace UserAPI.Services.MongoService
             if (user != null) return new Result
             {
                 status = Status.BadRequest,
-                data = Messages.EXISTED_USER
+                data = Messages.ExistedUser
             };
             BsonDocument newUser = new BsonDocument
             {
@@ -133,7 +133,7 @@ namespace UserAPI.Services.MongoService
             if (user != null) return new Result
             {
                 status = Status.BadRequest,
-                data = Messages.EXISTED_USER
+                data = Messages.ExistedUser
             };
             BsonDocument newUser = new BsonDocument
             {
@@ -168,7 +168,7 @@ namespace UserAPI.Services.MongoService
             if (user == null) return new Result
             {
                 status = Status.BadRequest,
-                data = Messages.NOT_EXISTED_USER
+                data = Messages.NotExistedUser
             };
             return new Result
             {
@@ -192,7 +192,7 @@ namespace UserAPI.Services.MongoService
             if (user == null) return new Result
             {
                 status = Status.BadRequest,
-                data = Messages.NOT_EXISTED_USER
+                data = Messages.NotExistedUser
             };
             return new Result
             {
@@ -216,7 +216,7 @@ namespace UserAPI.Services.MongoService
             if (user == null) return new Result
             {
                 status = Status.BadRequest,
-                data = Messages.NOT_EXISTED_USER
+                data = Messages.NotExistedUser
             };
             return new Result
             {
@@ -240,7 +240,7 @@ namespace UserAPI.Services.MongoService
             if (user == null) return new Result
             {
                 status = Status.BadRequest,
-                data = Messages.NOT_EXISTED_USER
+                data = Messages.NotExistedUser
             };
             return new Result
             {
@@ -251,7 +251,7 @@ namespace UserAPI.Services.MongoService
 
         public Result GetListUser(int pageSize = 0, int pageIndex = 0, string[] fields = null)
         {
-            List<BsonDocument> userList = new List<BsonDocument>();
+            List<BsonDocument> userList;
             if (fields == null) userList = mCollection.Find(new BsonDocument()).ToList();
             else
             {
@@ -321,7 +321,7 @@ namespace UserAPI.Services.MongoService
                 if (checkUser != null) return new Result
                 {
                     status = Status.BadRequest,
-                    data = $"the username: {updateUser.username} is exist"
+                    data = Messages.BadRequest
                 };
                 update = update.Set("username", updateUser.username);
             }
@@ -340,7 +340,7 @@ namespace UserAPI.Services.MongoService
             else return new Result
             {
                 status = Status.BadRequest,
-                data = $"do not update user with userId: {userId}"
+                data = Messages.BadRequest
             };
         }
 
@@ -354,7 +354,7 @@ namespace UserAPI.Services.MongoService
                 if (checkUser != null) return new Result
                 {
                     status = Status.BadRequest,
-                    data = $"the username: {updateUser.username} is exist"
+                    data = Messages.BadRequest
                 };
                 update = update.Set("username", updateUser.username);
             }
@@ -373,7 +373,7 @@ namespace UserAPI.Services.MongoService
             else return new Result
             {
                 status = Status.BadRequest,
-                data = $"do not update user with userId: {userId}"
+                data = Messages.BadRequest
             };
         }
 
@@ -389,7 +389,7 @@ namespace UserAPI.Services.MongoService
             else return new Result
             {
                 status = Status.BadRequest,
-                data = $"do not delete user with id: {username}"
+                data = Messages.BadRequest
             };
         }
 
@@ -405,7 +405,7 @@ namespace UserAPI.Services.MongoService
             else return new Result
             {
                 status = Status.BadRequest,
-                data = $"do not delete user with id: {username}"
+                data = Messages.BadRequest
             };
         }
     }
