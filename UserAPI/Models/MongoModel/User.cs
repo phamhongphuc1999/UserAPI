@@ -58,6 +58,10 @@ namespace UserAPI.Models.MongoModel
 
         [EmailAddress]
         public string email { get; set; }
+
+        public DateTime updateAt { get; set; }
+
+        public DateTime lastLogin { get; set; }
     }
 
     public class UserLoginInfo
