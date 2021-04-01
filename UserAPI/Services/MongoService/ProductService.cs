@@ -3,18 +3,51 @@
 // API with mongodb, SQL server database and more.
 // Owner: Pham Hong Phuc
 
+using System.Threading.Tasks;
+using UserAPI.Contances;
+using UserAPI.Data.MongoDataService;
 using UserAPI.Models.CommonModel;
 using UserAPI.Models.MongoModel;
 
 namespace UserAPI.Services.MongoService
 {
-    public class ProductService: BaseService<Product>
+    public class ProductService
     {
-        public ProductService(string collection) : base(collection) { }
+        private ProductDataService service;
 
-        //public Result InsertProduct(InsertProduct insertProduct, string userId)
-        //{
+        public ProductService(string collection)
+        {
+            service = new ProductDataService(collection);
+        }
 
-        //}
+        public Result InsertOneProduct(InsertProduct insertProduct, string userId)
+        {
+            bool result = service.InsertOneProduct(insertProduct, userId);
+            if (result) return new Result
+            {
+                status = Status.Created,
+                data = Messages.OK
+            };
+            return new Result
+            {
+                status = Status.BadRequest,
+                data = Messages.BadRequest
+            };
+        }
+
+        public async Task<Result> InsertOneProductAsync(InsertProduct insertProduct, string userId)
+        {
+            bool result = await service.InsertOneProductAsync(insertProduct, userId);
+            if (result) return new Result
+            {
+                status = Status.Created,
+                data = Messages.OK
+            };
+            return new Result
+            {
+                status = Status.BadRequest,
+                data = Messages.BadRequest
+            };
+        }
     }
 }

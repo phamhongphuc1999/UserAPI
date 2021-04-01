@@ -10,7 +10,7 @@ namespace UserAPI.Models.JWTModel
 {
     public static class Helper
     {
-        public static JWTContainerModel GetJWTContainerModel(string username, string email, IOptions<JWTConfig> config)
+        public static JWTContainerModel GetJWTContainerModel(string userId, string username, string email, IOptions<JWTConfig> config)
         {
             return new JWTContainerModel(config)
             {

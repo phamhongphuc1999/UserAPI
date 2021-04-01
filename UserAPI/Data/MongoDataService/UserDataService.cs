@@ -24,15 +24,15 @@ namespace UserAPI.Data.MongoDataService
                 BsonDocument user = mCollection.Find(filter).First();
                 if (user != null) return false;
                 BsonDocument newUser = new BsonDocument
-            {
-                { "username", entity.username},
-                { "password", Utilities.CalcuteSHA256Hash(entity.password) },
-                { "email", entity.email },
-                { "createAt", DateTime.Now },
-                { "updateAt", DateTime.Now },
-                { "lastLogin", DateTime.Now },
-                { "status", true }
-            };
+                {
+                    { "username", entity.username},
+                    { "password", Utilities.CalcuteSHA256Hash(entity.password) },
+                    { "email", entity.email },
+                    { "createAt", DateTime.Now },
+                    { "updateAt", DateTime.Now },
+                    { "lastLogin", DateTime.Now },
+                    { "status", true }
+                };
                 mCollection.InsertOne(newUser);
                 return true;
             }
@@ -50,15 +50,15 @@ namespace UserAPI.Data.MongoDataService
                 BsonDocument user = await mCollection.Find(filter).FirstOrDefaultAsync();
                 if (user != null) return false;
                 BsonDocument newUser = new BsonDocument
-            {
-                { "username", entity.username},
-                { "password", Utilities.CalcuteSHA256Hash(entity.password) },
-                { "email", entity.email },
-                { "createAt", DateTime.Now },
-                { "updateAt", DateTime.Now },
-                { "lastLogin", DateTime.Now },
-                { "status", true }
-            };
+                {
+                    { "username", entity.username},
+                    { "password", Utilities.CalcuteSHA256Hash(entity.password) },
+                    { "email", entity.email },
+                    { "createAt", DateTime.Now },
+                    { "updateAt", DateTime.Now },
+                    { "lastLogin", DateTime.Now },
+                    { "status", true }
+                };
                 await mCollection.InsertOneAsync(newUser);
                 return true;
             }
@@ -68,10 +68,9 @@ namespace UserAPI.Data.MongoDataService
             }
         }
 
-        public BsonDocument GetUserById(string userId, string[] fields = null)
+        public BsonDocument GetSingleUser(FilterDefinition<BsonDocument> filter, string[] fields = null)
         {
             BsonDocument user;
-            FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("_id", userId);
             if (fields == null) user = mCollection.Find(filter).FirstOrDefault();
             else
             {
@@ -83,10 +82,9 @@ namespace UserAPI.Data.MongoDataService
             return user;
         }
 
-        public async Task<BsonDocument> GetUserByIdAsync(string userId, string[] fields = null)
+        public async Task<BsonDocument> GetSingleUserAsync(FilterDefinition<BsonDocument> filter, string[] fields = null)
         {
             BsonDocument user;
-            FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("_id", ObjectId.Parse(userId));
             if (fields == null) user = await mCollection.Find(filter).FirstOrDefaultAsync();
             else
             {
@@ -98,65 +96,45 @@ namespace UserAPI.Data.MongoDataService
             return user;
         }
 
-        public BsonDocument GetUserByName(string username, string[] fields = null)
+        public List<BsonDocument> GetListUsers(FilterDefinition<BsonDocument> filter, string[] fields = null)
         {
-            BsonDocument user;
-            FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("username", username);
-            if (fields == null) user = mCollection.Find(filter).First();
+            List<BsonDocument> userList;
+            if (fields == null) userList = mCollection.Find(filter).ToList();
             else
             {
                 Dictionary<string, object> dic = new Dictionary<string, object>();
                 foreach (string field in fields) dic.Add(field, 1);
                 ProjectionDefinition<BsonDocument> projection = new BsonDocument(dic);
-                user = mCollection.Find(filter).Project(projection).First();
+                userList = mCollection.Find(filter).Project(projection).ToList();
             }
-            return user;
-        }
-
-        public async Task<BsonDocument> GetUserByNameAsync(string username, string[] fields = null)
-        {
-            BsonDocument user;
-            FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("username", username);
-            if (fields == null) user = await mCollection.Find(filter).FirstAsync();
-            else
-            {
-                Dictionary<string, object> dic = new Dictionary<string, object>();
-                foreach (string field in fields) dic.Add(field, 1);
-                ProjectionDefinition<BsonDocument> projection = new BsonDocument(dic);
-                user = await mCollection.Find(filter).Project(projection).FirstAsync();
-            }
-            return user;
+            return userList;
         }
 
         public List<BsonDocument> GetListUsers(string[] fields = null)
         {
-            List<BsonDocument> userList;
-            if (fields == null) userList = mCollection.Find(new BsonDocument()).ToList();
+            return GetListUsers(new BsonDocument(), fields);
+        }
+
+        public async Task<List<BsonDocument>> GetListUsersAsync(FilterDefinition<BsonDocument> filter, string[] fields = null)
+        {
+            List<BsonDocument> userList = new List<BsonDocument>();
+            if (userList == null) userList = await mCollection.Find(filter).ToListAsync();
             else
             {
                 Dictionary<string, object> dic = new Dictionary<string, object>();
                 foreach (string field in fields) dic.Add(field, 1);
                 ProjectionDefinition<BsonDocument> projection = new BsonDocument(dic);
-                userList = mCollection.Find(new BsonDocument()).Project(projection).ToList();
+                userList = await mCollection.Find(filter).Project(projection).ToListAsync();
             }
             return userList;
         }
 
         public async Task<List<BsonDocument>> GetListUsersAsync(string[] fields = null)
         {
-            List<BsonDocument> userList = new List<BsonDocument>();
-            if (userList == null) userList = await mCollection.Find(new BsonDocument()).ToListAsync();
-            else
-            {
-                Dictionary<string, object> dic = new Dictionary<string, object>();
-                foreach (string field in fields) dic.Add(field, 1);
-                ProjectionDefinition<BsonDocument> projection = new BsonDocument(dic);
-                userList = await mCollection.Find(new BsonDocument()).Project(projection).ToListAsync();
-            }
-            return userList;
+            return await GetListUsersAsync(new BsonDocument(), fields);
         }
 
-        public bool UpdateUser(string userId, UpdateUserInfo updateUser)
+        public bool UpdateUser(FilterDefinition<BsonDocument> filter, UpdateUserInfo updateUser)
         {
             try
             {
@@ -173,7 +151,7 @@ namespace UserAPI.Data.MongoDataService
                     string newPassword = Utilities.CalcuteSHA256Hash(updateUser.password);
                     update = update.Set("password", newPassword);
                 }
-                FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("id", userId);
+                if (updateUser.email != null) update = update.Set("email", updateUser.email);
                 UpdateResult result = mCollection.UpdateOne(filter, update);
                 return result.ModifiedCount > 0;
             }
@@ -183,7 +161,7 @@ namespace UserAPI.Data.MongoDataService
             }
         }
 
-        public async Task<bool> UpdateUserAsync(string userId, UpdateUserInfo updateUser)
+        public async Task<bool> UpdateUserAsync(FilterDefinition<BsonDocument> filter, UpdateUserInfo updateUser)
         {
             try
             {
@@ -200,7 +178,7 @@ namespace UserAPI.Data.MongoDataService
                     string newPassword = Utilities.CalcuteSHA256Hash(updateUser.password);
                     update = update.Set("password", newPassword);
                 }
-                FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("id", userId);
+                if (updateUser.email != null) update = update.Set("email", updateUser.email);
                 UpdateResult result = mCollection.UpdateOne(filter, update);
                 return result.ModifiedCount > 0;
             }

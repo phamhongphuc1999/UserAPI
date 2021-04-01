@@ -58,6 +58,10 @@ namespace UserAPI.Models.MongoModel
 
         [EmailAddress]
         public string email { get; set; }
+
+        public DateTime updateAt { get; set; }
+
+        public DateTime lastLogin { get; set; }
     }
 
     public class UserLoginInfo
@@ -67,5 +71,12 @@ namespace UserAPI.Models.MongoModel
 
         [Required(ErrorMessage = "the password is required")]
         public string password { get; set; }
+    }
+
+    public class HeplerTokenUser
+    {
+        public string userId { get; set; }
+        public string username { get; set; }
+        public string email { get; set; }
     }
 }

@@ -19,6 +19,7 @@ namespace UserAPI
         public static SQLConnecter sqlConnecter { get; private set; }
 
         public static UserService userService { get; private set; }
+        public static ProductService productService { get; private set; }
         public static EmployeeService employeeService { get; private set; }
 
         public static void Main(string[] args)
@@ -33,6 +34,7 @@ namespace UserAPI
 
             //Init mongo service
             userService = new UserService("Users");
+            productService = new ProductService("Products");
 
             //Init sql server service
             employeeService = new EmployeeService();

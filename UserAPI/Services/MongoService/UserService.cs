@@ -15,19 +15,20 @@ using UserAPI.Data.MongoDataService;
 
 namespace UserAPI.Services.MongoService
 {
-    public class UserService : BaseService<BsonDocument>
+    public class UserService
     {
         private UserDataService service;
 
-        public UserService(string collection) : base(collection)
+        public UserService(string collection)
         {
-            service = new UserDataService("Users");
+            service = new UserDataService(collection);
         }
 
         public Result Login(string username, string password)
         {
-            FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("username", username);
-            BsonDocument user = service.GetUserByName(username);
+            FilterDefinitionBuilder<BsonDocument> builder = Builders<BsonDocument>.Filter;
+            FilterDefinition<BsonDocument> filter = builder.Eq("username", username);
+            BsonDocument user = service.GetSingleUser(filter);
             if (user == null) return new Result
             {
                 status = Status.BadRequest,
@@ -46,15 +47,15 @@ namespace UserAPI.Services.MongoService
                 status = Status.Forbidden,
                 data = Messages.EnableAccount
             };
-            UpdateDefinition<BsonDocument> updateBuilder = Builders<BsonDocument>.Update.Set("lastLogin", BsonDateTime.Create(DateTime.Now));
-            UpdateResult result = mCollection.UpdateOne(filter, updateBuilder);
-            if (result.ModifiedCount > 0) return new Result
+            bool check = service.UpdateUser(filter, new UpdateUserInfo {lastLogin = DateTime.Now });
+            if (check) return new Result
             {
                 status = Status.OK,
-                data = new
+                data = new HeplerTokenUser
                 {
-                    id = user.GetElement("_id").Value.ToString(),
-                    username = user.GetElement("username").Value.AsString
+                    userId = user.GetElement("_id").Value.ToString(),
+                    username = user.GetElement("username").Value.AsString,
+                    email = user.GetElement("email").Value.AsString
                 }
             };
             return new Result
@@ -66,8 +67,9 @@ namespace UserAPI.Services.MongoService
 
         public async Task<Result> LoginAsync(string username, string password)
         {
-            FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("username", username);
-            BsonDocument user = await mCollection.Find(filter).FirstAsync();
+            FilterDefinitionBuilder<BsonDocument> builder = Builders<BsonDocument>.Filter;
+            FilterDefinition<BsonDocument> filter = builder.Eq("username", username);
+            BsonDocument user = await service.GetSingleUserAsync(filter);
             if (user == null) return new Result
             {
                 status = Status.Unauthorized,
@@ -86,15 +88,15 @@ namespace UserAPI.Services.MongoService
                 status = Status.Forbidden,
                 data = Messages.EnableAccount
             };
-            UpdateDefinition<BsonDocument> updateBuilder = Builders<BsonDocument>.Update.Set("lastLogin", BsonDateTime.Create(DateTime.Now));
-            UpdateResult result = await mCollection.UpdateOneAsync(filter, updateBuilder);
-            if (result.ModifiedCount > 0) return new Result
+            bool check = await service.UpdateUserAsync(filter, new UpdateUserInfo { lastLogin = DateTime.Now });
+            if (check) return new Result
             {
                 status = Status.OK,
-                data = new
+                data = new HeplerTokenUser
                 {
-                    id = user.GetElement("_id").Value.ToString(),
-                    username = user.GetElement("username").Value.AsString
+                    userId = user.GetElement("_id").Value.ToString(),
+                    username = user.GetElement("username").Value.AsString,
+                    email = user.GetElement("email").Value.AsString
                 }
             };
             return new Result
@@ -136,7 +138,9 @@ namespace UserAPI.Services.MongoService
 
         public Result GetUserById(string userId, string[] fields = null)
         {
-            BsonDocument user = service.GetUserById(userId, fields);
+            FilterDefinitionBuilder<BsonDocument> builder = Builders<BsonDocument>.Filter;
+            FilterDefinition<BsonDocument> filter = builder.Eq("_id", ObjectId.Parse(userId));
+            BsonDocument user = service.GetSingleUser(filter, fields);
             if (user == null) return new Result
             {
                 status = Status.BadRequest,
@@ -151,7 +155,9 @@ namespace UserAPI.Services.MongoService
 
         public async Task<Result> GetUserByIdAsync(string userId, string[] fields = null)
         {
-            BsonDocument user = await service.GetUserByIdAsync(userId, fields);
+            FilterDefinitionBuilder<BsonDocument> builder = Builders<BsonDocument>.Filter;
+            FilterDefinition<BsonDocument> filter = builder.Eq("_id", ObjectId.Parse(userId));
+            BsonDocument user = await service.GetSingleUserAsync(filter, fields);
             if (user == null) return new Result
             {
                 status = Status.BadRequest,
@@ -166,7 +172,9 @@ namespace UserAPI.Services.MongoService
 
         public Result GetUserByUserName(string username, string[] fields = null)
         {
-            BsonDocument user = service.GetUserByName(username, fields);
+            FilterDefinitionBuilder<BsonDocument> builder = Builders<BsonDocument>.Filter;
+            FilterDefinition<BsonDocument> filter = builder.Eq("username", username);
+            BsonDocument user = service.GetSingleUser(filter, fields);
             if (user == null) return new Result
             {
                 status = Status.BadRequest,
@@ -181,7 +189,9 @@ namespace UserAPI.Services.MongoService
 
         public async Task<Result> GetUserByUserNameAsync(string username, string[] fields = null)
         {
-            BsonDocument user = await service.GetUserByNameAsync(username, fields);
+            FilterDefinitionBuilder<BsonDocument> builder = Builders<BsonDocument>.Filter;
+            FilterDefinition<BsonDocument> filter = builder.Eq("username", username);
+            BsonDocument user = await service.GetSingleUserAsync(filter, fields);
             if (user == null) return new Result
             {
                 status = Status.BadRequest,
@@ -242,7 +252,9 @@ namespace UserAPI.Services.MongoService
 
         public Result UpdateUser(string userId, UpdateUserInfo updateUser)
         {
-            bool result = service.UpdateUser(userId, updateUser);
+            FilterDefinitionBuilder<BsonDocument> builder = Builders<BsonDocument>.Filter;
+            FilterDefinition<BsonDocument> filter = builder.Eq("_id", userId);
+            bool result = service.UpdateUser(filter, updateUser);
             if (result) return new Result
             {
                 status = Status.OK,
@@ -257,7 +269,9 @@ namespace UserAPI.Services.MongoService
 
         public async Task<Result> UpdateUserAsync(string userId, UpdateUserInfo updateUser)
         {
-            bool result = await service.UpdateUserAsync(userId, updateUser);
+            FilterDefinitionBuilder<BsonDocument> builder = Builders<BsonDocument>.Filter;
+            FilterDefinition<BsonDocument> filter = builder.Eq("_id", userId);
+            bool result = await service.UpdateUserAsync(filter, updateUser);
             if (result) return new Result
             {
                 status = Status.OK,
