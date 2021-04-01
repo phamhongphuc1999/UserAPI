@@ -17,21 +17,17 @@ using Microsoft.Extensions.Primitives;
 using System.Linq;
 using System.Security.Claims;
 using static UserAPI.Program;
+using JwtHelper = UserAPI.Models.JWTModel.Helper;
 
 namespace UserAPI.Controllers.MongoControllers
 {
     [ApiController]
     [Produces("application/json")]
     [Consumes("application/json")]
-    public class UserController : ControllerBase
+    public class UserController : BaseMongoController
     {
-        private readonly IOptions<JWTConfig> _jwtConfig;
-        private IAuthService authService;
-
-        public UserController(IOptions<JWTConfig> jwtConfig)
+        public UserController(IOptions<JWTConfig> jwtConfig): base(jwtConfig)
         {
-            _jwtConfig = jwtConfig;
-            authService = new JWTService(_jwtConfig.Value.SecretKey);
         }
 
         /// <summary>login</summary>
@@ -57,7 +53,8 @@ namespace UserAPI.Controllers.MongoControllers
                 Result result = await userService.LoginAsync(info.username, info.password);
                 if (result.status != 200) return StatusCode(result.status, Responder.Fail(result.data));
                 node1:
-                IAuthContainerModel model = Models.JWTModel.Helper.GetJWTContainerModel(info.username, info.password, _jwtConfig);
+                HeplerTokenUser user = (HeplerTokenUser)result.data;
+                IAuthContainerModel model = JwtHelper.GetJWTContainerModel(user.userId, user.username, user.email, _jwtConfig);
                 IAuthService authService = new JWTService(model.SecretKey);
                 string accessToken = authService.GenerateToken(model);
                 if (!authService.IsTokenValid(accessToken)) goto node1;

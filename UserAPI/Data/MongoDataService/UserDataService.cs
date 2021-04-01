@@ -151,6 +151,7 @@ namespace UserAPI.Data.MongoDataService
                     string newPassword = Utilities.CalcuteSHA256Hash(updateUser.password);
                     update = update.Set("password", newPassword);
                 }
+                if (updateUser.email != null) update = update.Set("email", updateUser.email);
                 UpdateResult result = mCollection.UpdateOne(filter, update);
                 return result.ModifiedCount > 0;
             }
@@ -177,6 +178,7 @@ namespace UserAPI.Data.MongoDataService
                     string newPassword = Utilities.CalcuteSHA256Hash(updateUser.password);
                     update = update.Set("password", newPassword);
                 }
+                if (updateUser.email != null) update = update.Set("email", updateUser.email);
                 UpdateResult result = mCollection.UpdateOne(filter, update);
                 return result.ModifiedCount > 0;
             }

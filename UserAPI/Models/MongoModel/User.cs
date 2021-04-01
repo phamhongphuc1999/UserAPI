@@ -72,4 +72,11 @@ namespace UserAPI.Models.MongoModel
         [Required(ErrorMessage = "the password is required")]
         public string password { get; set; }
     }
+
+    public class HeplerTokenUser
+    {
+        public string userId { get; set; }
+        public string username { get; set; }
+        public string email { get; set; }
+    }
 }

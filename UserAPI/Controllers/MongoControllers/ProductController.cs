@@ -5,24 +5,30 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using UserAPI.Services.JWTService;
+using System;
+using System.Threading.Tasks;
+using UserAPI.Models.CommonModel;
+using UserAPI.Models.MongoModel;
 
 namespace UserAPI.Controllers.MongoControllers
 {
-    [ApiController]
-    [Produces("application/json")]
-    [Consumes("application/json")]
-    public class ProductController: ControllerBase
+    public class ProductController: BaseMongoController
     {
-        private readonly IOptions<JWTConfig> _jwtConfig;
-        private IAuthService authService;
-
-        public ProductController(IOptions<JWTConfig> jwtConfig)
+        public ProductController(IOptions<JWTConfig> jwtConfig): base(jwtConfig)
         {
-            _jwtConfig = jwtConfig;
-            authService = new JWTService(_jwtConfig.Value.SecretKey);
         }
 
+        //[CustomAuthorization]
+        //public async Task<object> InsertOneProduct([FromBody] InsertProduct entity)
+        //{
+        //    try
+        //    {
 
+        //    }
+        //    catch(Exception error)
+        //    {
+        //        return BadRequest(Responder.Fail(error.Message));
+        //    }
+        //}
     }
 }

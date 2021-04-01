@@ -15,13 +15,13 @@ using UserAPI.Data.MongoDataService;
 
 namespace UserAPI.Services.MongoService
 {
-    public class UserService : BaseService<BsonDocument>
+    public class UserService
     {
         private UserDataService service;
 
-        public UserService(string collection) : base(collection)
+        public UserService(string collection)
         {
-            service = new UserDataService("Users");
+            service = new UserDataService(collection);
         }
 
         public Result Login(string username, string password)
@@ -51,10 +51,11 @@ namespace UserAPI.Services.MongoService
             if (check) return new Result
             {
                 status = Status.OK,
-                data = new
+                data = new HeplerTokenUser
                 {
-                    id = user.GetElement("_id").Value.ToString(),
-                    username = user.GetElement("username").Value.AsString
+                    userId = user.GetElement("_id").Value.ToString(),
+                    username = user.GetElement("username").Value.AsString,
+                    email = user.GetElement("email").Value.AsString
                 }
             };
             return new Result
@@ -91,10 +92,11 @@ namespace UserAPI.Services.MongoService
             if (check) return new Result
             {
                 status = Status.OK,
-                data = new
+                data = new HeplerTokenUser
                 {
-                    id = user.GetElement("_id").Value.ToString(),
-                    username = user.GetElement("username").Value.AsString
+                    userId = user.GetElement("_id").Value.ToString(),
+                    username = user.GetElement("username").Value.AsString,
+                    email = user.GetElement("email").Value.AsString
                 }
             };
             return new Result
