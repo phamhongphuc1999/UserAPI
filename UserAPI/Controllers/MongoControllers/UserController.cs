@@ -1,7 +1,14 @@
-﻿// Copyright (c) Microsoft. All Rights Reserved.
+﻿// -------------------- SIMPLE API -------------------- 
+//
+//
+// Copyright (c) Microsoft. All Rights Reserved.
 // License under the Apache License, Version 2.0.
-// API with mongodb, SQL server database and more.
-// Owner: Pham Hong Phuc
+//
+//
+// Product by: Pham Hong Phuc
+//
+//
+// ----------------------------------------------------
 
 using System;
 using System.Threading.Tasks;
@@ -17,6 +24,7 @@ using Microsoft.Extensions.Primitives;
 using System.Linq;
 using System.Security.Claims;
 using static UserAPI.Program;
+using UserAPI.Configuration;
 using JwtHelper = UserAPI.Models.JWTModel.Helper;
 
 namespace UserAPI.Controllers.MongoControllers
@@ -26,7 +34,7 @@ namespace UserAPI.Controllers.MongoControllers
     [Consumes("application/json")]
     public class UserController : BaseMongoController
     {
-        public UserController(IOptions<JWTConfig> jwtConfig): base(jwtConfig)
+        public UserController(IOptions<JWTConfig> jwtConfig) : base(jwtConfig)
         {
         }
 

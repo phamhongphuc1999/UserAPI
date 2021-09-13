@@ -1,9 +1,16 @@
-﻿// Copyright (c) Microsoft. All Rights Reserved.
+﻿// -------------------- SIMPLE API -------------------- 
+//
+//
+// Copyright (c) Microsoft. All Rights Reserved.
 // License under the Apache License, Version 2.0.
-// API with mongodb, SQL server database and more.
-// Owner: Pham Hong Phuc
+//
+//
+// Product by: Pham Hong Phuc
+//
+//
+// ----------------------------------------------------
 
-namespace UserAPI
+namespace UserAPI.Configuration
 {
     public class JWTConfig
     {
@@ -11,16 +18,21 @@ namespace UserAPI
         public string SecretKey { get; set; }
     }
 
-    public class MongoSetting
+    public class MongoConfig
     {
         public string Connect { get; set; }
         public string Database { get; set; }
     }
 
-    public class SQLSetting
+    public class SQLConfig
     {
         public string Connect { get; set; }
         public string[] EmployeeFields { get; set; }
+    }
+
+    public class SQLiteConfig
+    {
+        public string Connect { get; set; }
     }
 
     public class DevelopmentConfig

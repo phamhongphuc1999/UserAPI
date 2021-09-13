@@ -1,10 +1,18 @@
-﻿// Copyright (c) Microsoft. All Rights Reserved.
+﻿// -------------------- SIMPLE API -------------------- 
+//
+//
+// Copyright (c) Microsoft. All Rights Reserved.
 // License under the Apache License, Version 2.0.
-// API with mongodb, SQL server database and more.
-// Owner: Pham Hong Phuc
+//
+//
+// Product by: Pham Hong Phuc
+//
+//
+// ----------------------------------------------------
 
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
+using UserAPI.Configuration;
 
 namespace UserAPI.Models.JWTModel
 {

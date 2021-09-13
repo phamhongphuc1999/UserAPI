@@ -1,7 +1,14 @@
-﻿// Copyright (c) Microsoft. All Rights Reserved.
+﻿// -------------------- SIMPLE API -------------------- 
+//
+//
+// Copyright (c) Microsoft. All Rights Reserved.
 // License under the Apache License, Version 2.0.
-// API with mongodb, SQL server database and more.
-// Owner: Pham Hong Phuc
+//
+//
+// Product by: Pham Hong Phuc
+//
+//
+// ----------------------------------------------------
 
 using System;
 using System.Security.Cryptography;
@@ -48,7 +55,7 @@ namespace UserAPI
         /// <returns></returns>
         public static DateTime ConvertStringToTime(string time, string format = "yyyy-MM-dd HH:mm:ss")
         {
-            return DateTime.ParseExact(time , format, System.Globalization.CultureInfo.InvariantCulture);
+            return DateTime.ParseExact(time, format, System.Globalization.CultureInfo.InvariantCulture);
         }
 
         /// <summary>

@@ -1,7 +1,14 @@
-﻿// Copyright (c) Microsoft. All Rights Reserved.
+﻿// -------------------- SIMPLE API -------------------- 
+//
+//
+// Copyright (c) Microsoft. All Rights Reserved.
 // License under the Apache License, Version 2.0.
-// API with mongodb, SQL server database and more.
-// Owner: Pham Hong Phuc
+//
+//
+// Product by: Pham Hong Phuc
+//
+//
+// ----------------------------------------------------
 
 using System;
 using System.Collections.Generic;
@@ -12,7 +19,7 @@ using UserAPI.Models.JWTModel;
 
 namespace UserAPI.Services.JWTService
 {
-    public class JWTService: IAuthService
+    public class JWTService : IAuthService
     {
         public string SecretKey { get; set; }
         public JWTService(string secretKey)

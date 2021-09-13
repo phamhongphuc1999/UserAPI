@@ -1,13 +1,20 @@
+// -------------------- SIMPLE API -------------------- 
+//
+//
 // Copyright (c) Microsoft. All Rights Reserved.
 // License under the Apache License, Version 2.0.
-// API with mongodb, SQL server database and more.
-// Owner: Pham Hong Phuc
+//
+//
+// Product by: Pham Hong Phuc
+//
+//
+// ----------------------------------------------------
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using UserAPI.Data;
+using UserAPI.Connecter;
 using UserAPI.Services.MongoService;
 using UserAPI.Services.SQLServerService;
 
@@ -15,8 +22,7 @@ namespace UserAPI
 {
     public class Program
     {
-        public static MongoConnecter mongoConnecter { get; private set; }
-        public static SQLConnecter sqlConnecter { get; private set; }
+        public static APIConnection APIConnecter { get; private set; }
 
         public static UserService userService { get; private set; }
         public static ProductService productService { get; private set; }
@@ -27,10 +33,10 @@ namespace UserAPI
             IConfigurationRoot config = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false).Build();
             IConfigurationSection mongoSetting = config.GetSection("MongoSetting");
             IConfigurationSection sqlSetting = config.GetSection("SQLSetting");
+            IConfigurationSection sqliteSetting = config.GetSection("SQLiteSetting");
 
             //Create new connections to database
-            mongoConnecter = MongoConnecter.GetInstance(mongoSetting);
-            sqlConnecter = SQLConnecter.GetInstance(sqlSetting);
+            APIConnecter = new APIConnection(mongoSetting, sqlSetting, sqliteSetting);
 
             //Init mongo service
             userService = new UserService("Users");

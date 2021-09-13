@@ -1,7 +1,14 @@
-﻿// Copyright (c) Microsoft. All Rights Reserved.
+﻿// -------------------- SIMPLE API -------------------- 
+//
+//
+// Copyright (c) Microsoft. All Rights Reserved.
 // License under the Apache License, Version 2.0.
-// API with mongodb, SQL server database and more.
-// Owner: Pham Hong Phuc
+//
+//
+// Product by: Pham Hong Phuc
+//
+//
+// ----------------------------------------------------
 
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +19,7 @@ using System.Linq;
 using System.Net;
 using UserAPI.Contances;
 
-namespace UserAPI
+namespace UserAPI.Configuration
 {
     [AttributeUsage(AttributeTargets.Method)]
     public class CustomAuthorization : Attribute, IAuthorizationFilter

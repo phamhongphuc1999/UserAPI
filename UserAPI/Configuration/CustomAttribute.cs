@@ -1,13 +1,20 @@
-﻿// Copyright (c) Microsoft. All Rights Reserved.
+﻿// -------------------- SIMPLE API -------------------- 
+//
+//
+// Copyright (c) Microsoft. All Rights Reserved.
 // License under the Apache License, Version 2.0.
-// API with mongodb, SQL server database and more.
-// Owner: Pham Hong Phuc
+//
+//
+// Product by: Pham Hong Phuc
+//
+//
+// ----------------------------------------------------
 
 using System.ComponentModel.DataAnnotations;
 
-namespace UserAPI
+namespace UserAPI.Configuration
 {
-    public sealed class IncludeArray: ValidationAttribute
+    public sealed class IncludeArray : ValidationAttribute
     {
         public object[] CheckArray { get; set; }
         private bool allowNull;
@@ -22,8 +29,8 @@ namespace UserAPI
             if (value == null) return allowNull;
             if (CheckArray == null) return true;
             bool result = false;
-            foreach(object item in CheckArray)
-                if(value.Equals(item))
+            foreach (object item in CheckArray)
+                if (value.Equals(item))
                 {
                     result = true;
                     break;

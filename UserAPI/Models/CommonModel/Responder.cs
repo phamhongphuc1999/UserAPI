@@ -1,7 +1,14 @@
-﻿// Copyright (c) Microsoft. All Rights Reserved.
+﻿// -------------------- SIMPLE API -------------------- 
+//
+//
+// Copyright (c) Microsoft. All Rights Reserved.
 // License under the Apache License, Version 2.0.
-// API with mongodb, SQL server database and more.
-// Owner: Pham Hong Phuc
+//
+//
+// Product by: Pham Hong Phuc
+//
+//
+// ----------------------------------------------------
 
 namespace UserAPI.Models.CommonModel
 {
@@ -21,7 +28,7 @@ namespace UserAPI.Models.CommonModel
     {
         public static object Success(object data = null)
         {
-            if(data != null) return new ResponseSuccessType
+            if (data != null) return new ResponseSuccessType
             {
                 status = "success",
                 data = data

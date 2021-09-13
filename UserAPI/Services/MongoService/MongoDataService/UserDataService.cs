@@ -1,7 +1,14 @@
-﻿// Copyright (c) Microsoft. All Rights Reserved.
+﻿// -------------------- SIMPLE API -------------------- 
+//
+//
+// Copyright (c) Microsoft. All Rights Reserved.
 // License under the Apache License, Version 2.0.
-// API with mongodb, SQL server database and more.
-// Owner: Pham Hong Phuc
+//
+//
+// Product by: Pham Hong Phuc
+//
+//
+// ----------------------------------------------------
 
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -10,7 +17,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UserAPI.Models.MongoModel;
 
-namespace UserAPI.Data.MongoDataService
+namespace UserAPI.Services.MongoService.MongoDataService
 {
     public class UserDataService : BaseDataService<BsonDocument>
     {

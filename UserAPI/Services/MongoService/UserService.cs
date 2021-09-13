@@ -1,7 +1,14 @@
-﻿// Copyright (c) Microsoft. All Rights Reserved.
+﻿// -------------------- SIMPLE API -------------------- 
+//
+//
+// Copyright (c) Microsoft. All Rights Reserved.
 // License under the Apache License, Version 2.0.
-// API with mongodb, SQL server database and more.
-// Owner: Pham Hong Phuc
+//
+//
+// Product by: Pham Hong Phuc
+//
+//
+// ----------------------------------------------------
 
 using System;
 using UserAPI.Models.MongoModel;
@@ -11,7 +18,7 @@ using System.Threading.Tasks;
 using UserAPI.Models.CommonModel;
 using MongoDB.Bson;
 using UserAPI.Contances;
-using UserAPI.Data.MongoDataService;
+using UserAPI.Services.MongoService.MongoDataService;
 
 namespace UserAPI.Services.MongoService
 {
@@ -47,7 +54,7 @@ namespace UserAPI.Services.MongoService
                 status = Status.Forbidden,
                 data = Messages.EnableAccount
             };
-            bool check = service.UpdateUser(filter, new UpdateUserInfo {lastLogin = DateTime.Now });
+            bool check = service.UpdateUser(filter, new UpdateUserInfo { lastLogin = DateTime.Now });
             if (check) return new Result
             {
                 status = Status.OK,

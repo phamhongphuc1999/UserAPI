@@ -1,7 +1,14 @@
-﻿// Copyright (c) Microsoft. All Rights Reserved.
+﻿// -------------------- SIMPLE API -------------------- 
+//
+//
+// Copyright (c) Microsoft. All Rights Reserved.
 // License under the Apache License, Version 2.0.
-// API with mongodb, SQL server database and more.
-// Owner: Pham Hong Phuc
+//
+//
+// Product by: Pham Hong Phuc
+//
+//
+// ----------------------------------------------------
 
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -18,7 +25,7 @@ namespace UserAPI.Services.SQLServerService
     {
         public Result InsertEmployee(InsertEmployeeInfo entity)
         {
-            Employee employee = sqlConnecter.SqlData.Employees.SingleOrDefault(x => x.Username == entity.Username);
+            Employee employee = APIConnecter.SQL.SqlData.Employees.SingleOrDefault(x => x.Username == entity.Username);
             if (employee != null) return new Result
             {
                 status = Status.BadRequest,
@@ -37,8 +44,8 @@ namespace UserAPI.Services.SQLServerService
                 Birthday = entity.Birthday ?? null,
                 Node = entity.Node ?? null
             };
-            sqlConnecter.SqlData.Employees.Add(newEmployee);
-            int check = sqlConnecter.SqlData.SaveChanges();
+            APIConnecter.SQL.SqlData.Employees.Add(newEmployee);
+            int check = APIConnecter.SQL.SqlData.SaveChanges();
             if (check > 0) return new Result
             {
                 status = Status.OK,
@@ -53,7 +60,7 @@ namespace UserAPI.Services.SQLServerService
 
         public async Task<Result> InsertEmployeeAsync(InsertEmployeeInfo entity)
         {
-            Employee employee = await sqlConnecter.SqlData.Employees.SingleOrDefaultAsync(x => x.Username == entity.Username);
+            Employee employee = await APIConnecter.SQL.SqlData.Employees.SingleOrDefaultAsync(x => x.Username == entity.Username);
             if (employee != null) return new Result
             {
                 status = Status.BadRequest,
@@ -72,8 +79,8 @@ namespace UserAPI.Services.SQLServerService
                 Birthday = entity.Birthday ?? null,
                 Node = entity.Node ?? null
             };
-            await sqlConnecter.SqlData.Employees.AddAsync(newEmployee);
-            int check = await sqlConnecter.SqlData.SaveChangesAsync();
+            await APIConnecter.SQL.SqlData.Employees.AddAsync(newEmployee);
+            int check = await APIConnecter.SQL.SqlData.SaveChangesAsync();
             if (check > 0) return new Result
             {
                 status = Status.OK,
@@ -88,7 +95,7 @@ namespace UserAPI.Services.SQLServerService
 
         public Result GetEmployeeByUsername(string username, string[] fields = null)
         {
-            Employee employee = sqlConnecter.SqlData.Employees.SingleOrDefault(x => x.Username == username);
+            Employee employee = APIConnecter.SQL.SqlData.Employees.SingleOrDefault(x => x.Username == username);
             if (employee == null) return new Result
             {
                 status = Status.BadRequest,
@@ -101,7 +108,7 @@ namespace UserAPI.Services.SQLServerService
             };
             List<(string, object)> data = new List<(string, object)>();
             foreach (string field in fields)
-                if (sqlConnecter.Setting.EmployeeFields.Contains(field))
+                if (APIConnecter.SQL.Config.EmployeeFields.Contains(field))
                     data.Add((field, employee.GetType().GetProperty(field).GetValue(employee)));
             return new Result
             {
@@ -112,7 +119,7 @@ namespace UserAPI.Services.SQLServerService
 
         public async Task<Result> GetEmployeeByUsernameAsync(string username, string[] fields = null)
         {
-            Employee employee = await sqlConnecter.SqlData.Employees.SingleOrDefaultAsync(x => x.Username == username);
+            Employee employee = await APIConnecter.SQL.SqlData.Employees.SingleOrDefaultAsync(x => x.Username == username);
             if (employee == null) return new Result
             {
                 status = Status.BadRequest,
@@ -125,7 +132,7 @@ namespace UserAPI.Services.SQLServerService
             };
             List<(string, object)> data = new List<(string, object)>();
             foreach (string field in fields)
-                if (sqlConnecter.Setting.EmployeeFields.Contains(field))
+                if (APIConnecter.SQL.Config.EmployeeFields.Contains(field))
                     data.Add((field, employee.GetType().GetProperty(field).GetValue(employee)));
             return new Result
             {
@@ -136,7 +143,7 @@ namespace UserAPI.Services.SQLServerService
 
         public Result GetListEmployees(int pageSize = 0, int pageIndex = 0, string[] fields = null)
         {
-            List<Employee> employeeList = sqlConnecter.SqlData.Employees.ToList();
+            List<Employee> employeeList = APIConnecter.SQL.SqlData.Employees.ToList();
             int totalResult = employeeList.Count;
             if (pageSize == 0) pageSize = totalResult;
             if (pageIndex == 0) pageIndex = 1;
@@ -184,7 +191,7 @@ namespace UserAPI.Services.SQLServerService
 
         public async Task<Result> GetListEmployeesAsync(int pageSize = 0, int pageIndex = 0, string[] fields = null)
         {
-            List<Employee> employeeList = await sqlConnecter.SqlData.Employees.ToListAsync();
+            List<Employee> employeeList = await APIConnecter.SQL.SqlData.Employees.ToListAsync();
             int totalResult = employeeList.Count;
             if (pageSize == 0) pageSize = totalResult;
             if (pageIndex == 0) pageIndex = 1;
@@ -232,7 +239,7 @@ namespace UserAPI.Services.SQLServerService
 
         public Result UpdateEmployee(int employeeId, InsertEmployeeInfo updateEmployee)
         {
-            Employee employee = sqlConnecter.SqlData.Employees.Find(employeeId);
+            Employee employee = APIConnecter.SQL.SqlData.Employees.Find(employeeId);
             if (employee == null) return new Result
             {
                 status = Status.BadRequest,
@@ -240,7 +247,7 @@ namespace UserAPI.Services.SQLServerService
             };
             if (updateEmployee.Username != null)
             {
-                Employee checkEmployee = sqlConnecter.SqlData.Employees.SingleOrDefault(x => x.Username == updateEmployee.Username);
+                Employee checkEmployee = APIConnecter.SQL.SqlData.Employees.SingleOrDefault(x => x.Username == updateEmployee.Username);
                 if (checkEmployee != null) return new Result
                 {
                     status = Status.BadRequest,
@@ -260,8 +267,8 @@ namespace UserAPI.Services.SQLServerService
             if (updateEmployee.Gender != null) employee.Gender = updateEmployee.Gender;
             if (updateEmployee.Birthday != null) employee.Birthday = updateEmployee.Birthday;
             if (updateEmployee.Node != null) employee.Node = updateEmployee.Node;
-            int check = sqlConnecter.SqlData.SaveChanges();
-            Employee result = sqlConnecter.SqlData.Employees.Find(employeeId);
+            int check = APIConnecter.SQL.SqlData.SaveChanges();
+            Employee result = APIConnecter.SQL.SqlData.Employees.Find(employeeId);
             if (check > 0) return new Result
             {
                 status = Status.OK,
@@ -276,7 +283,7 @@ namespace UserAPI.Services.SQLServerService
 
         public async Task<Result> UpdateEmployeeAsync(int employeeId, InsertEmployeeInfo updateEmployee)
         {
-            Employee employee = await sqlConnecter.SqlData.Employees.FindAsync(employeeId);
+            Employee employee = await APIConnecter.SQL.SqlData.Employees.FindAsync(employeeId);
             if (employee == null) return new Result
             {
                 status = Status.BadRequest,
@@ -284,7 +291,7 @@ namespace UserAPI.Services.SQLServerService
             };
             if (updateEmployee.Username != null)
             {
-                Employee checkEmployee = await sqlConnecter.SqlData.Employees.SingleOrDefaultAsync(x => x.Username == updateEmployee.Username);
+                Employee checkEmployee = await APIConnecter.SQL.SqlData.Employees.SingleOrDefaultAsync(x => x.Username == updateEmployee.Username);
                 if (checkEmployee != null) return new Result
                 {
                     status = Status.BadRequest,
@@ -304,8 +311,8 @@ namespace UserAPI.Services.SQLServerService
             if (updateEmployee.Gender != null) employee.Gender = updateEmployee.Gender;
             if (updateEmployee.Birthday != null) employee.Birthday = updateEmployee.Birthday;
             if (updateEmployee.Node != null) employee.Node = updateEmployee.Node;
-            int check = await sqlConnecter.SqlData.SaveChangesAsync();
-            Employee result = await sqlConnecter.SqlData.Employees.FindAsync(employeeId);
+            int check = await APIConnecter.SQL.SqlData.SaveChangesAsync();
+            Employee result = await APIConnecter.SQL.SqlData.Employees.FindAsync(employeeId);
             if (check > 0) return new Result
             {
                 status = Status.OK,
@@ -320,14 +327,14 @@ namespace UserAPI.Services.SQLServerService
 
         public Result DeleteEmployee(int employeeId)
         {
-            Employee employee = sqlConnecter.SqlData.Employees.Find(employeeId);
+            Employee employee = APIConnecter.SQL.SqlData.Employees.Find(employeeId);
             if (employee == null) return new Result
             {
                 status = Status.BadRequest,
                 data = Messages.BadRequest
             };
-            sqlConnecter.SqlData.Remove(employee);
-            int check = sqlConnecter.SqlData.SaveChanges();
+            APIConnecter.SQL.SqlData.Remove(employee);
+            int check = APIConnecter.SQL.SqlData.SaveChanges();
             if (check > 0) return new Result
             {
                 status = Status.OK,
@@ -342,14 +349,14 @@ namespace UserAPI.Services.SQLServerService
 
         public async Task<Result> DeleteEmployeeAsync(int employeeId)
         {
-            Employee employee = await sqlConnecter.SqlData.Employees.FindAsync(employeeId);
+            Employee employee = await APIConnecter.SQL.SqlData.Employees.FindAsync(employeeId);
             if (employee == null) return new Result
             {
                 status = Status.BadRequest,
                 data = Messages.BadRequest
             };
-            sqlConnecter.SqlData.Remove(employee);
-            int check = await sqlConnecter.SqlData.SaveChangesAsync();
+            APIConnecter.SQL.SqlData.Remove(employee);
+            int check = await APIConnecter.SQL.SqlData.SaveChangesAsync();
             if (check > 0) return new Result
             {
                 status = Status.OK,

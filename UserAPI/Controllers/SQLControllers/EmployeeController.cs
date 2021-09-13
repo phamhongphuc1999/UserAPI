@@ -1,7 +1,14 @@
-﻿// Copyright (c) Microsoft. All Rights Reserved.
+﻿// -------------------- SIMPLE API -------------------- 
+//
+//
+// Copyright (c) Microsoft. All Rights Reserved.
 // License under the Apache License, Version 2.0.
-// API with mongodb, SQL server database and more.
-// Owner: Pham Hong Phuc
+//
+//
+// Product by: Pham Hong Phuc
+//
+//
+// ----------------------------------------------------
 
 using System;
 using System.Threading.Tasks;
@@ -86,7 +93,7 @@ namespace UserAPI.Controllers.SQLControllers
             try
             {
                 Result result;
-                if(fields != null)
+                if (fields != null)
                 {
                     string[] fieldList = Utilities.SplipFields(fields);
                     result = await employeeService.GetListEmployeesAsync(pageSize, pageIndex, fieldList);
@@ -95,7 +102,7 @@ namespace UserAPI.Controllers.SQLControllers
                 if (result.status == 200) return Ok(Responder.Success(result.data));
                 else return StatusCode(result.status, Responder.Fail(result.data));
             }
-            catch(Exception error)
+            catch (Exception error)
             {
                 return BadRequest(Responder.Fail(error.Message));
             }

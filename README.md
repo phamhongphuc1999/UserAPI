@@ -1,16 +1,17 @@
-### install
-    nuget will be auto install the missing library
+<h1 align="center">Simple API</h1>
+
+### Introduction
+    Simple API with ASP.NET
 
 ---
-### run project
-###### in .NET CLI
-* ``cd ./UserAPI``
-* ``make run``
+### Run
+1. **cd ./UserAPI**
+2. **make run**
 
 ---
-### note
+### Note
     make sure your computer has installed make
 
 ---
-### reference
+### Reference
 - **Mongo**: [doc](https://mongodb.github.io/mongo-csharp-driver/2.12/getting_started/quick_tour/)

@@ -1,20 +1,28 @@
-﻿// Copyright (c) Microsoft. All Rights Reserved.
+﻿// -------------------- SIMPLE API -------------------- 
+//
+//
+// Copyright (c) Microsoft. All Rights Reserved.
 // License under the Apache License, Version 2.0.
-// API with mongodb, SQL server database and more.
-// Owner: Pham Hong Phuc
+//
+//
+// Product by: Pham Hong Phuc
+//
+//
+// ----------------------------------------------------
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
+using UserAPI.Configuration;
 using UserAPI.Models.CommonModel;
 using UserAPI.Models.MongoModel;
 
 namespace UserAPI.Controllers.MongoControllers
 {
-    public class ProductController: BaseMongoController
+    public class ProductController : BaseMongoController
     {
-        public ProductController(IOptions<JWTConfig> jwtConfig): base(jwtConfig)
+        public ProductController(IOptions<JWTConfig> jwtConfig) : base(jwtConfig)
         {
         }
 

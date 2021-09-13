@@ -1,7 +1,14 @@
+// -------------------- SIMPLE API -------------------- 
+//
+//
 // Copyright (c) Microsoft. All Rights Reserved.
 // License under the Apache License, Version 2.0.
-// API with mongodb, SQL server database and more.
-// Owner: Pham Hong Phuc
+//
+//
+// Product by: Pham Hong Phuc
+//
+//
+// ----------------------------------------------------
 
 using UserAPI.Models.SQLServerModel;
 using Microsoft.AspNetCore.Builder;
@@ -10,6 +17,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using UserAPI.Configuration;
 
 namespace UserAPI
 {
@@ -54,7 +62,7 @@ namespace UserAPI
             services.AddMvcCore();
 
             services.Configure<JWTConfig>(Configuration.GetSection("JWT"));
-            services.Configure<MongoSetting>(Configuration.GetSection("MongoSetting"));
+            services.Configure<MongoConfig>(Configuration.GetSection("MongoSetting"));
             if (_env.IsDevelopment()) services.Configure<DevelopmentConfig>(Configuration.GetSection("Develop"));
             else if (_env.IsProduction()) services.Configure<ProductionConfig>(Configuration.GetSection("Product"));
         }

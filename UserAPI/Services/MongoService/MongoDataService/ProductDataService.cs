@@ -1,14 +1,25 @@
-﻿using MongoDB.Driver;
+﻿// -------------------- SIMPLE API -------------------- 
+//
+//
+// Copyright (c) Microsoft. All Rights Reserved.
+// License under the Apache License, Version 2.0.
+//
+//
+// Product by: Pham Hong Phuc
+//
+//
+// ----------------------------------------------------
+
+using MongoDB.Driver;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using UserAPI.Models.MongoModel;
 
-namespace UserAPI.Data.MongoDataService
+namespace UserAPI.Services.MongoService.MongoDataService
 {
-    public class ProductDataService: BaseDataService<Product>
+    public class ProductDataService : BaseDataService<Product>
     {
-        public ProductDataService(string collection): base(collection)
+        public ProductDataService(string collection) : base(collection)
         {
 
         }
@@ -42,15 +53,5 @@ namespace UserAPI.Data.MongoDataService
             await mCollection.InsertOneAsync(product);
             return true;
         }
-
-        //public bool InsertManyProducts(List<InsertProduct> entities)
-        //{
-
-        //}
-
-        //public async Task<bool> InsertManyProductsAsync(List<InsertProduct> entities)
-        //{
-
-        //}
     }
 }
