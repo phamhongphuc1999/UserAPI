@@ -13,11 +13,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Remove="Contances\data.sqlite" />
+	  <Compile Remove="Resources\**" />
+	  <Content Remove="Resources\**" />
+	  <EmbeddedResource Remove="Resources\**" />
+	  <None Remove="Resources\**" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Include="Configuration\data\data.sqlite" />
+	  <None Remove="Contances\data.sqlite" />
 	</ItemGroup>
 
 	<ItemGroup>

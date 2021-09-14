@@ -29,5 +29,16 @@ namespace UserAPI.Models.JWTModel
                 }
             };
         }
+
+        public static JWTContainerModel GetJWTContainerModel1(string userId, string username, IOptions<JWTConfig> config)
+        {
+            return new JWTContainerModel(config)
+            {
+                Claims = new Claim[]
+                {
+                    new Claim(ClaimTypes.Name, username)
+                }
+            };
+        }
     }
 }

@@ -16,6 +16,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using UserAPI.Connecter;
 using UserAPI.Services.MongoService;
+using UserAPI.Services.SQLiteService;
 using UserAPI.Services.SQLServerService;
 
 namespace UserAPI
@@ -27,6 +28,7 @@ namespace UserAPI
         public static UserService userService { get; private set; }
         public static ProductService productService { get; private set; }
         public static EmployeeService employeeService { get; private set; }
+        public static UserSQLiteService userSQLiteService { get; private set; }
 
         public static void Main(string[] args)
         {
@@ -44,6 +46,10 @@ namespace UserAPI
 
             //Init sql server service
             employeeService = new EmployeeService();
+
+            //Init sqlite service
+            userSQLiteService = new UserSQLiteService();
+            userSQLiteService.CreateTable(APIConnecter.SQLite);
 
             IHostBuilder builder = CreateHostBuilder(args);
             builder.Build().Run();

@@ -13,6 +13,7 @@
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Data.SQLite;
+using System.IO;
 using UserAPI.Configuration;
 
 namespace UserAPI.Connecter
@@ -31,7 +32,8 @@ namespace UserAPI.Connecter
             Config = new SQLiteConfig();
             configuration.Bind(Config);
             string currentPath = Environment.CurrentDirectory;
-            string connectString = string.Format("Data Source={0}; Version = 3;", currentPath + Config.Connect);
+            string projectDirectory = Directory.GetParent(currentPath).FullName;
+            string connectString = string.Format("Data Source={0}; Version = 3;", projectDirectory + Config.Connect);
             connection = new SQLiteConnection();
             connection.ConnectionString = connectString;
         }
