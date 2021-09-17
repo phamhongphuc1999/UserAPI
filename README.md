@@ -14,6 +14,11 @@ Or run with specified launch
 make run launch={your-launch}
 ```
 
+For more information, you can run command:
+```shell
+make help
+```
+
 ---
 ### Note
     make sure your computer has installed make
