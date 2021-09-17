@@ -27,6 +27,11 @@ namespace UserAPI.Services.JWTService
             SecretKey = secretKey;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public bool IsTokenValid(string token)
         {
             if (string.IsNullOrEmpty(token))
@@ -44,6 +49,11 @@ namespace UserAPI.Services.JWTService
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public string GenerateToken(IAuthContainerModel model)
         {
             if (model == null || model.Claims == null || model.Claims.Length == 0)
@@ -62,6 +72,11 @@ namespace UserAPI.Services.JWTService
             return token;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public IEnumerable<Claim> GetTokenClaims(string token)
         {
             if (string.IsNullOrEmpty(token))
@@ -81,12 +96,20 @@ namespace UserAPI.Services.JWTService
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         private SecurityKey GetSymmetricSecurityKey()
         {
             byte[] symmetricKey = Convert.FromBase64String(SecretKey);
             return new SymmetricSecurityKey(symmetricKey);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         private TokenValidationParameters GetTokenValidationParameters()
         {
             return new TokenValidationParameters()

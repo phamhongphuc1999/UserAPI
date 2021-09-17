@@ -24,6 +24,10 @@ namespace UserAPI.Connecter
         public SQLConfig Config { get; private set; }
         private static SQLConnecter connecter;
 
+        /// <summary>
+        /// Constructor of MongoConnecter
+        /// </summary>
+        /// <param name="configuration">Contain all of config for connecter</param>
         private SQLConnecter(IConfigurationSection configuration)
         {
             Config = new SQLConfig();
@@ -33,6 +37,11 @@ namespace UserAPI.Connecter
             SqlData = new SQLData(Option.Options);
         }
 
+        /// <summary>
+        /// Return single instance of connecter
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <returns>The instance of connecter</returns>
         public static SQLConnecter GetInstance(IConfigurationSection configuration)
         {
             if (connecter == null) connecter = new SQLConnecter(configuration);

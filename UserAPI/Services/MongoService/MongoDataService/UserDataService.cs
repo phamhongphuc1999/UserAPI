@@ -10,12 +10,14 @@
 //
 // ----------------------------------------------------
 
+using System;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using UserAPI.Models.MongoModel;
+using System.Collections.Generic;
+using MongoDB.Bson.Serialization;
+using System.Linq;
 
 namespace UserAPI.Services.MongoService.MongoDataService
 {
@@ -75,7 +77,7 @@ namespace UserAPI.Services.MongoService.MongoDataService
             }
         }
 
-        public BsonDocument GetSingleUser(FilterDefinition<BsonDocument> filter, string[] fields = null)
+        public User GetSingleUser(FilterDefinition<BsonDocument> filter, string[] fields = null)
         {
             BsonDocument user;
             if (fields == null) user = mCollection.Find(filter).FirstOrDefault();
@@ -86,10 +88,10 @@ namespace UserAPI.Services.MongoService.MongoDataService
                 ProjectionDefinition<BsonDocument> projection = new BsonDocument(dic);
                 user = mCollection.Find(filter).Project(projection).FirstOrDefault();
             }
-            return user;
+            return BsonSerializer.Deserialize<User>(user);
         }
 
-        public async Task<BsonDocument> GetSingleUserAsync(FilterDefinition<BsonDocument> filter, string[] fields = null)
+        public async Task<User> GetSingleUserAsync(FilterDefinition<BsonDocument> filter, string[] fields = null)
         {
             BsonDocument user;
             if (fields == null) user = await mCollection.Find(filter).FirstOrDefaultAsync();
@@ -100,32 +102,32 @@ namespace UserAPI.Services.MongoService.MongoDataService
                 ProjectionDefinition<BsonDocument> projection = new BsonDocument(dic);
                 user = await mCollection.Find(filter).Project(projection).FirstOrDefaultAsync();
             }
-            return user;
+            return BsonSerializer.Deserialize<User>(user);
         }
 
-        public List<BsonDocument> GetListUsers(FilterDefinition<BsonDocument> filter, string[] fields = null)
+        public List<User> GetListUsers(FilterDefinition<BsonDocument> filter, string[] fields = null)
         {
-            List<BsonDocument> userList;
-            if (fields == null) userList = mCollection.Find(filter).ToList();
+            IEnumerable<BsonDocument> userList;
+            if (fields == null) userList = mCollection.Find(filter).ToEnumerable();
             else
             {
                 Dictionary<string, object> dic = new Dictionary<string, object>();
                 foreach (string field in fields) dic.Add(field, 1);
                 ProjectionDefinition<BsonDocument> projection = new BsonDocument(dic);
-                userList = mCollection.Find(filter).Project(projection).ToList();
+                userList = mCollection.Find(filter).Project(projection).ToEnumerable();
             }
-            return userList;
+            return userList.Select(x => BsonSerializer.Deserialize<User>(x)).ToList();
         }
 
-        public List<BsonDocument> GetListUsers(string[] fields = null)
+        public List<User> GetListUsers(string[] fields = null)
         {
             return GetListUsers(new BsonDocument(), fields);
         }
 
-        public async Task<List<BsonDocument>> GetListUsersAsync(FilterDefinition<BsonDocument> filter, string[] fields = null)
+        public async Task<List<User>> GetListUsersAsync(FilterDefinition<BsonDocument> filter, string[] fields = null)
         {
             List<BsonDocument> userList = new List<BsonDocument>();
-            if (userList == null) userList = await mCollection.Find(filter).ToListAsync();
+            if (fields == null) userList = await mCollection.Find(filter).ToListAsync();
             else
             {
                 Dictionary<string, object> dic = new Dictionary<string, object>();
@@ -133,10 +135,10 @@ namespace UserAPI.Services.MongoService.MongoDataService
                 ProjectionDefinition<BsonDocument> projection = new BsonDocument(dic);
                 userList = await mCollection.Find(filter).Project(projection).ToListAsync();
             }
-            return userList;
+            return userList.Select(x => BsonSerializer.Deserialize<User>(x)).ToList();
         }
 
-        public async Task<List<BsonDocument>> GetListUsersAsync(string[] fields = null)
+        public async Task<List<User>> GetListUsersAsync(string[] fields = null)
         {
             return await GetListUsersAsync(new BsonDocument(), fields);
         }

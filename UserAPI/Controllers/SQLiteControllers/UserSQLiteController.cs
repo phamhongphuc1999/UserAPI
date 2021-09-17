@@ -84,5 +84,19 @@ namespace UserAPI.Controllers.SQLiteControllers
                 return BadRequest(Responder.Fail(error.Message));
             }
         }
+
+        [HttpGet("/sqlite/users")]
+        public ObjectResult GetListUsers([FromQuery] int pageSize, [FromQuery] int pageIndex, [FromQuery] string fields)
+        {
+            try
+            {
+                Result result = new Result();
+                return Ok(Responder.Success(result.data));
+            }
+            catch (Exception error)
+            {
+                return BadRequest(Responder.Fail(error.Message));
+            }
+        }
     }
 }

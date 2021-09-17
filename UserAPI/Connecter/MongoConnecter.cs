@@ -24,6 +24,10 @@ namespace UserAPI.Connecter
 
         private static MongoConnecter connecter;
 
+        /// <summary>
+        /// Constructor of MongoConnecter
+        /// </summary>
+        /// <param name="configuration">Contain all of config for connecter</param>
         private MongoConnecter(IConfigurationSection configuration)
         {
             Config = new MongoConfig();
@@ -32,6 +36,11 @@ namespace UserAPI.Connecter
             MDatabase = Client.GetDatabase(Config.Database);
         }
 
+        /// <summary>
+        /// Return single instance of connecter
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <returns>The instance of connecter</returns>
         public static MongoConnecter GetInstance(IConfigurationSection configuration)
         {
             if (connecter == null) connecter = new MongoConnecter(configuration);

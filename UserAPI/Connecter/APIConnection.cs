@@ -20,6 +20,12 @@ namespace UserAPI.Connecter
         public SQLConnecter SQL { get; private set; }
         public SQLiteConnecter SQLite { get; private set; }
 
+        /// <summary>
+        /// The constructor of APIConnection class
+        /// </summary>
+        /// <param name="mongoConfig">The config of mongo connecter</param>
+        /// <param name="sqlConfig">The config of sql server connecter</param>
+        /// <param name="sqliteConfig">The config of sqlite connecter</param>
         public APIConnection(IConfigurationSection mongoConfig, IConfigurationSection sqlConfig, IConfigurationSection sqliteConfig)
         {
             Mongo = MongoConnecter.GetInstance(mongoConfig);

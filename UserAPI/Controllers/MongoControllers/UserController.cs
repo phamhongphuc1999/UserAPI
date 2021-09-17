@@ -40,7 +40,7 @@ namespace UserAPI.Controllers.MongoControllers
 
         /// <summary>login</summary>
         /// <remarks>login</remarks>
-        /// <returns></returns>
+        /// <returns>The token and basic information of user</returns>
         /// <response code="200">return the new access token or annount already login</response>
         /// <response code="400">Bad Request</response>
         /// <response code="401">username or password is wrong</response>
@@ -162,6 +162,8 @@ namespace UserAPI.Controllers.MongoControllers
         /// <response code="400">if get mistake</response>
         [HttpGet("/users/current-user")]
         [CustomAuthorization]
+        [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
+        [ProducesResponseType(400, Type = typeof(ResponseFailType))]
         public async Task<object> GetCurrentUser()
         {
             try

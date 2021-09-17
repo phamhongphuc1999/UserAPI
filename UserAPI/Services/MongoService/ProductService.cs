@@ -15,6 +15,8 @@ using UserAPI.Contances;
 using UserAPI.Services.MongoService.MongoDataService;
 using UserAPI.Models.CommonModel;
 using UserAPI.Models.MongoModel;
+using MongoDB.Driver;
+using MongoDB.Bson;
 
 namespace UserAPI.Services.MongoService
 {
@@ -54,6 +56,40 @@ namespace UserAPI.Services.MongoService
             {
                 status = Status.BadRequest,
                 data = Messages.BadRequest
+            };
+        }
+
+        public Result GetProductById(string productId, string[] fields = null)
+        {
+            FilterDefinitionBuilder<BsonDocument> builder = Builders<BsonDocument>.Filter;
+            FilterDefinition<BsonDocument> filter = builder.Eq("_id", ObjectId.Parse(productId));
+            Product product = service.GetSingleProduct(filter, fields);
+            if (product == null) return new Result
+            {
+                status = Status.BadRequest,
+                data = Messages.NotExistedUser
+            };
+            return new Result
+            {
+                status = Status.OK,
+                data = product
+            };
+        }
+
+        public async Task<Result> GetProductByIdAsync(string productId, string[] fields = null)
+        {
+            FilterDefinitionBuilder<BsonDocument> builder = Builders<BsonDocument>.Filter;
+            FilterDefinition<BsonDocument> filter = builder.Eq("_id", ObjectId.Parse(productId));
+            Product product = await service.GetSingleProductAsync(filter, fields);
+            if (product == null) return new Result
+            {
+                status = Status.BadRequest,
+                data = Messages.NotExistedUser
+            };
+            return new Result
+            {
+                status = Status.OK,
+                data = product
             };
         }
     }

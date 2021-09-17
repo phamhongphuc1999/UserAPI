@@ -35,21 +35,19 @@ namespace UserAPI.Services.MongoService
         {
             FilterDefinitionBuilder<BsonDocument> builder = Builders<BsonDocument>.Filter;
             FilterDefinition<BsonDocument> filter = builder.Eq("username", username);
-            BsonDocument user = service.GetSingleUser(filter);
+            User user = service.GetSingleUser(filter);
             if (user == null) return new Result
             {
                 status = Status.BadRequest,
                 data = Messages.WrongUserPassword
             };
             string rawPassword = Utilities.CalcuteSHA256Hash(password);
-            BsonValue _password = user.GetElement("password").Value;
-            if (_password.AsString != rawPassword) return new Result
+            if (user.password != rawPassword) return new Result
             {
                 status = Status.Unauthorized,
                 data = Messages.WrongUserPassword
             };
-            bool status = user.GetElement("status").Value.AsBoolean;
-            if (!status) return new Result
+            if (!user.status) return new Result
             {
                 status = Status.Forbidden,
                 data = Messages.EnableAccount
@@ -60,9 +58,9 @@ namespace UserAPI.Services.MongoService
                 status = Status.OK,
                 data = new HeplerTokenUser
                 {
-                    userId = user.GetElement("_id").Value.ToString(),
-                    username = user.GetElement("username").Value.AsString,
-                    email = user.GetElement("email").Value.AsString
+                    userId = user.id,
+                    username = user.username,
+                    email = user.email
                 }
             };
             return new Result
@@ -76,21 +74,19 @@ namespace UserAPI.Services.MongoService
         {
             FilterDefinitionBuilder<BsonDocument> builder = Builders<BsonDocument>.Filter;
             FilterDefinition<BsonDocument> filter = builder.Eq("username", username);
-            BsonDocument user = await service.GetSingleUserAsync(filter);
+            User user = await service.GetSingleUserAsync(filter);
             if (user == null) return new Result
             {
                 status = Status.Unauthorized,
                 data = Messages.WrongUserPassword
             };
             string rawPassword = Utilities.CalcuteSHA256Hash(password);
-            BsonValue _password = user.GetElement("password").Value;
-            if (_password.AsString != rawPassword) return new Result
+            if (user.password != rawPassword) return new Result
             {
                 status = Status.Unauthorized,
                 data = Messages.WrongUserPassword
             };
-            bool status = user.GetElement("status").Value.AsBoolean;
-            if (!status) return new Result
+            if (!user.status) return new Result
             {
                 status = Status.Forbidden,
                 data = Messages.EnableAccount
@@ -101,9 +97,9 @@ namespace UserAPI.Services.MongoService
                 status = Status.OK,
                 data = new HeplerTokenUser
                 {
-                    userId = user.GetElement("_id").Value.ToString(),
-                    username = user.GetElement("username").Value.AsString,
-                    email = user.GetElement("email").Value.AsString
+                    userId = user.id,
+                    username = user.username,
+                    email = user.email
                 }
             };
             return new Result
@@ -147,7 +143,7 @@ namespace UserAPI.Services.MongoService
         {
             FilterDefinitionBuilder<BsonDocument> builder = Builders<BsonDocument>.Filter;
             FilterDefinition<BsonDocument> filter = builder.Eq("_id", ObjectId.Parse(userId));
-            BsonDocument user = service.GetSingleUser(filter, fields);
+            User user = service.GetSingleUser(filter, fields);
             if (user == null) return new Result
             {
                 status = Status.BadRequest,
@@ -156,7 +152,7 @@ namespace UserAPI.Services.MongoService
             return new Result
             {
                 status = Status.OK,
-                data = user.ToJson()
+                data = user
             };
         }
 
@@ -164,7 +160,7 @@ namespace UserAPI.Services.MongoService
         {
             FilterDefinitionBuilder<BsonDocument> builder = Builders<BsonDocument>.Filter;
             FilterDefinition<BsonDocument> filter = builder.Eq("_id", ObjectId.Parse(userId));
-            BsonDocument user = await service.GetSingleUserAsync(filter, fields);
+            User user = await service.GetSingleUserAsync(filter, fields);
             if (user == null) return new Result
             {
                 status = Status.BadRequest,
@@ -173,7 +169,7 @@ namespace UserAPI.Services.MongoService
             return new Result
             {
                 status = Status.OK,
-                data = user.ToJson()
+                data = user
             };
         }
 
@@ -181,7 +177,7 @@ namespace UserAPI.Services.MongoService
         {
             FilterDefinitionBuilder<BsonDocument> builder = Builders<BsonDocument>.Filter;
             FilterDefinition<BsonDocument> filter = builder.Eq("username", username);
-            BsonDocument user = service.GetSingleUser(filter, fields);
+            User user = service.GetSingleUser(filter, fields);
             if (user == null) return new Result
             {
                 status = Status.BadRequest,
@@ -190,7 +186,7 @@ namespace UserAPI.Services.MongoService
             return new Result
             {
                 status = Status.OK,
-                data = user.ToJson()
+                data = user
             };
         }
 
@@ -198,7 +194,7 @@ namespace UserAPI.Services.MongoService
         {
             FilterDefinitionBuilder<BsonDocument> builder = Builders<BsonDocument>.Filter;
             FilterDefinition<BsonDocument> filter = builder.Eq("username", username);
-            BsonDocument user = await service.GetSingleUserAsync(filter, fields);
+            User user = await service.GetSingleUserAsync(filter, fields);
             if (user == null) return new Result
             {
                 status = Status.BadRequest,
@@ -207,23 +203,26 @@ namespace UserAPI.Services.MongoService
             return new Result
             {
                 status = Status.OK,
-                data = user.ToJson()
+                data = user
             };
         }
 
         public Result GetListUser(int pageSize = 0, int pageIndex = 0, string[] fields = null)
         {
-            List<BsonDocument> userList = service.GetListUsers(fields);
+            List<User> userList = service.GetListUsers(fields);
             int totalResult = userList.Count;
             if (pageSize == 0) pageSize = totalResult;
             if (pageIndex == 0) pageIndex = 1;
             int index = pageSize * (pageIndex - 1);
+            List<User> result = new List<User>();
+            if (index + pageSize <= totalResult) result = userList.GetRange(index, pageSize);
+            else if (index < totalResult) result = userList.GetRange(index, totalResult - 1);
             return new Result
             {
                 status = Status.OK,
                 data = new
                 {
-                    user_list = userList.GetRange(index, pageSize),
+                    user_list = result,
                     pagination = new
                     {
                         totalResult = totalResult,
@@ -236,17 +235,20 @@ namespace UserAPI.Services.MongoService
 
         public async Task<Result> GetListUserAsync(int pageSize = 0, int pageIndex = 0, string[] fields = null)
         {
-            List<BsonDocument> userList = await service.GetListUsersAsync(fields);
+            List<User> userList = await service.GetListUsersAsync(fields);
             int totalResult = userList.Count;
             if (pageSize == 0) pageSize = totalResult;
             if (pageIndex == 0) pageIndex = 1;
             int index = pageSize * (pageIndex - 1);
+            List<User> result = new List<User>();
+            if (index + pageSize <= totalResult) result = userList.GetRange(index, pageSize);
+            else if (index < totalResult) result = userList.GetRange(index, totalResult - 1);
             return new Result
             {
                 status = Status.OK,
                 data = new
                 {
-                    user_list = userList.GetRange(index, pageSize),
+                    user_list = result,
                     pagination = new
                     {
                         totalResult = totalResult,

@@ -5,13 +5,15 @@
 
 ---
 ### Run
-1. **cd ./UserAPI**
-2. **make run**
+```shell
+make run
+```
+
+Or run with specified launch
+```shell
+make run launch={your-launch}
+```
 
 ---
 ### Note
     make sure your computer has installed make
-
----
-### Reference
-- **Mongo**: [doc](https://mongodb.github.io/mongo-csharp-driver/2.12/getting_started/quick_tour/)

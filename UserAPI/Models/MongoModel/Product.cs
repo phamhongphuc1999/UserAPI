@@ -30,6 +30,8 @@ namespace UserAPI.Models.MongoModel
         public double price { get; set; }
 
         public DateTime createAt { get; set; }
+
+        public DateTime updateAt { get; set; }
     }
 
     public class InsertProduct

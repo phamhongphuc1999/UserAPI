@@ -13,14 +13,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Resources\**" />
-	  <Content Remove="Resources\**" />
-	  <EmbeddedResource Remove="Resources\**" />
-	  <None Remove="Resources\**" />
+		<Compile Remove="Resources\**" />
+		<Content Remove="Resources\**" />
+		<EmbeddedResource Remove="Resources\**" />
+		<None Remove="Resources\**" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Contances\data.sqlite" />
+		<None Remove="Contances\data.sqlite" />
 	</ItemGroup>
 
 	<ItemGroup>
