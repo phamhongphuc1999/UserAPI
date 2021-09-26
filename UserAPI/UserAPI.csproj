@@ -17,6 +17,7 @@
 		<Content Remove="Resources\**" />
 		<EmbeddedResource Remove="Resources\**" />
 		<None Remove="Resources\**" />
+		<None Remove="DockerConfig\" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -35,5 +36,8 @@
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
 		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.115" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.7.1" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="DockerConfig\" />
 	</ItemGroup>
 </Project>

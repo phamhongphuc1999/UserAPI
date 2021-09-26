@@ -93,9 +93,9 @@ namespace UserAPI
 
             //check authorization
             string secretKey = Configuration.GetSection("JWT").GetValue<string>("SecretKey");
-            string mainUrl = Configuration.GetValue<string>("Develop:ApplicationUrl");
+            string baseUrl = Configuration.GetValue<string>("Develop:ApplicationUrl");
 
-            app.UseMiddleware<LoggerMiddleware>(mainUrl);
+            app.UseMiddleware<LoggerMiddleware>(baseUrl);
 
             app.UseEndpoints(endpoints =>
             {
