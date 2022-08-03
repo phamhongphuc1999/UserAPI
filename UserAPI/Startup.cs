@@ -36,10 +36,9 @@ namespace UserAPI
         public void ConfigureServices(IServiceCollection services)
         {
             //config swagger service
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(options =>
             {
-                var xmlPath = "Properties/UserAPI.xml";
-                c.IncludeXmlComments(xmlPath);
+                options.IncludeXmlComments("Properties/UserAPI.xml");
             });
 
             //config cors service
@@ -75,10 +74,10 @@ namespace UserAPI
 
             //swagger
             app.UseSwagger();
-            app.UseSwaggerUI(c =>
+            app.UseSwaggerUI(options =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-                c.RoutePrefix = string.Empty;
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                options.RoutePrefix = string.Empty;
             });
 
             app.UseRouting();
