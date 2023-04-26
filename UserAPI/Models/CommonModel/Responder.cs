@@ -1,52 +1,40 @@
-﻿// -------------------- SIMPLE API -------------------- 
-//
-//
-// Copyright (c) Microsoft. All Rights Reserved.
-// License under the Apache License, Version 2.0.
-//
-//
-// Product by: Pham Hong Phuc
-//
-//
-// ----------------------------------------------------
-
-namespace UserAPI.Models.CommonModel
+﻿namespace UserAPI.Models.CommonModel
 {
-    public class ResponseSuccessType
+  public class ResponseSuccessType
+  {
+    public string status { get; set; }
+    public object data { get; set; }
+  }
+
+  public class ResponseFailType
+  {
+    public string status { get; set; }
+    public object reason { get; set; }
+  }
+
+  public static class Responder
+  {
+    public static object Success(object data = null)
     {
-        public string status { get; set; }
-        public object data { get; set; }
+      if (data != null) return new ResponseSuccessType
+      {
+        status = "success",
+        data = data
+      };
+      return new
+      {
+        status = "success",
+        data = "null"
+      };
     }
 
-    public class ResponseFailType
+    public static object Fail(object reason)
     {
-        public string status { get; set; }
-        public object reason { get; set; }
+      return new ResponseFailType
+      {
+        status = "fail",
+        reason = reason
+      };
     }
-
-    public static class Responder
-    {
-        public static object Success(object data = null)
-        {
-            if (data != null) return new ResponseSuccessType
-            {
-                status = "success",
-                data = data
-            };
-            return new
-            {
-                status = "success",
-                data = "null"
-            };
-        }
-
-        public static object Fail(object reason)
-        {
-            return new ResponseFailType
-            {
-                status = "fail",
-                reason = reason
-            };
-        }
-    }
+  }
 }

@@ -47,19 +47,3 @@ help:
 	} \
 	{ lastLine = $$0 }' $(MAKEFILE_LIST)
 	@echo ''
-
-## Build docker image | Docker
-dbuild:
-	docker build -t userapi ./UserAPI
-
-## Run docker container
-drun:
-	docker run -d -p 5000:50 --name myapi userapi
-
-## Build mongo container
-mbuild:
-	docker-compose -f UserAPI/DockerConfig/docker-compose-mongo.yaml up
-
-## Build sql server container
-sbuild:
-	docker-compose -f UserAPI/DockerConfig/docker-compose-sql.yaml up
