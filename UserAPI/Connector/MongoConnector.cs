@@ -10,9 +10,9 @@ namespace UserAPI.Connector
     public IMongoDatabase MDatabase { get; private set; }
     public MongoConfig Config { get; private set; }
 
-    private static MongoConnector connecter;
+    private static MongoConnector connector;
 
-    private MongoConnector(IConfigurationSection configuration)
+    protected MongoConnector(IConfigurationSection configuration)
     {
       Config = new MongoConfig();
       configuration.Bind(Config);
@@ -22,8 +22,8 @@ namespace UserAPI.Connector
 
     public static MongoConnector GetInstance(IConfigurationSection configuration)
     {
-      if (connecter == null) connecter = new MongoConnector(configuration);
-      return connecter;
+      if (connector == null) connector = new MongoConnector(configuration);
+      return connector;
     }
   }
 }

@@ -8,7 +8,7 @@ namespace UserAPI.Connector
 {
   public class SQLiteConnector
   {
-    private static SQLiteConnector connecter;
+    private static SQLiteConnector connector;
     public SQLiteConfig Config { get; private set; }
 
     public SQLiteConnection connection {
@@ -28,8 +28,8 @@ namespace UserAPI.Connector
 
     public static SQLiteConnector GetInstance(IConfigurationSection configuration)
     {
-      if (connecter == null) connecter = new SQLiteConnector(configuration);
-      return connecter;
+      if (connector == null) connector = new SQLiteConnector(configuration);
+      return connector;
     }
 
     public void OpenConnection()

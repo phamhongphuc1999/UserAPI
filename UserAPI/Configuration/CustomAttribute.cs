@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System;
 
 namespace UserAPI.Configuration
 {
@@ -24,6 +25,26 @@ namespace UserAPI.Configuration
           break;
         }
       return result;
+    }
+  }
+
+  public class Table : Attribute
+  {
+    public string Name { get; set; }
+
+    public Table(string name)
+    {
+      this.Name = name;
+    }
+  }
+
+  public class TableRow : Attribute
+  {
+    public string Name { get; set; }
+
+    public TableRow(string name)
+    {
+      this.Name = name;
     }
   }
 }

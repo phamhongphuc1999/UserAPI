@@ -3,21 +3,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using UserAPI.Connector;
-using UserAPI.Services.MongoService;
-using UserAPI.Services.SQLiteService;
-using UserAPI.Services.SQLServerService;
+using UserAPI.Services;
 
 namespace UserAPI
 {
   public class Program
   {
-    public static APIConnection APIConnector { get; private set; }
-
-    public static UserService userService { get; private set; }
-    public static ProductService productService { get; private set; }
-    public static EmployeeService employeeService { get; private set; }
-    public static UserSQLiteService userSQLiteService { get; private set; }
-
     public static void Main(string[] args)
     {
       IConfigurationRoot config = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false).Build();
@@ -25,19 +16,14 @@ namespace UserAPI
       IConfigurationSection sqlSetting = config.GetSection("SQLSetting");
       IConfigurationSection sqliteSetting = config.GetSection("SQLiteSetting");
 
-      //Create new connections to database
-      APIConnector = new APIConnection(mongoSetting, sqlSetting, sqliteSetting);
+      APIConnection.InitSqlConnection(sqlSetting);
+      APIConnection.InitMongoConnection(mongoSetting);
+      APIConnection.InitSqliteConnection(sqliteSetting);
 
-      //Init mongo service
-      userService = new UserService("Users");
-      productService = new ProductService("Products");
-
-      //Init sql server service
-      employeeService = new EmployeeService();
-
-      //Init sqlite service
-      userSQLiteService = new UserSQLiteService();
-      userSQLiteService.CreateTable(APIConnector.SQLite);
+      ServiceSelector.InitEmployeeService();
+      ServiceSelector.InitUserService();
+      ServiceSelector.InitProductionService();
+      ServiceSelector.InitUserSqliteService();
 
       IHostBuilder builder = CreateHostBuilder(args);
       builder.Build().Run();

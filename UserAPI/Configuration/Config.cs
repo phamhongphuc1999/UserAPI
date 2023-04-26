@@ -14,8 +14,7 @@
 
   public class SQLConfig
   {
-    public string Connect { get; set; }
-    public string[] EmployeeFields { get; set; }
+    public string ConnectString { get; set; }
   }
 
   public class SQLiteConfig

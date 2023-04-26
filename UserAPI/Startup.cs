@@ -1,4 +1,3 @@
-using UserAPI.Models.SQLServerModel;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -6,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using UserAPI.Configuration;
+using UserAPI.Services;
 
 namespace UserAPI
 {
@@ -35,14 +35,10 @@ namespace UserAPI
         options.AddPolicy("MyCorsPolicy",
                   builder =>
                   {
-                builder.WithOrigins("http://localhost:3000")
-                          .AllowAnyMethod().AllowAnyHeader().AllowCredentials();
-              });
+                    builder.WithOrigins("http://localhost:3000")
+                              .AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+                  });
       });
-
-      //connect SQL Server
-      services.AddDbContext<SQLData>();
-      services.AddScoped<SQLData>();
 
       services.AddControllers();
       services.AddHttpContextAccessor();

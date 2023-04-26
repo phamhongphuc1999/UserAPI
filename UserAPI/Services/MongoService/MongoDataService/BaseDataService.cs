@@ -1,5 +1,5 @@
 ﻿using MongoDB.Driver;
-using static UserAPI.Program;
+using UserAPI.Connector;
 
 namespace UserAPI.Services.MongoService.MongoDataService
 {
@@ -9,7 +9,7 @@ namespace UserAPI.Services.MongoService.MongoDataService
 
     public BaseDataService(string collection)
     {
-      mCollection = APIConnector.Mongo.MDatabase.GetCollection<T>(collection);
+      mCollection = APIConnection.Mongo.MDatabase.GetCollection<T>(collection);
     }
   }
 }

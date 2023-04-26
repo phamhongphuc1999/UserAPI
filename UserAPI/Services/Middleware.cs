@@ -4,7 +4,7 @@ using Microsoft.Extensions.Primitives;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace UserAPI.Configuration
+namespace UserAPI.Services
 {
   public class LoggerMiddleware
   {

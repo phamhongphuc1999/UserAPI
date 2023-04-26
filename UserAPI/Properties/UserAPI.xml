@@ -4,18 +4,6 @@
         <name>UserAPI</name>
     </assembly>
     <members>
-        <member name="M:UserAPI.Connecter.MongoConnecter.#ctor(Microsoft.Extensions.Configuration.IConfigurationSection)">
-            <summary>
-            Constructor of MongoConnecter
-            </summary>
-            <param name="configuration">Contain all of config for connecter</param>
-        </member>
-        <member name="M:UserAPI.Connecter.SQLConnecter.#ctor(Microsoft.Extensions.Configuration.IConfigurationSection)">
-            <summary>
-            Constructor of MongoConnecter
-            </summary>
-            <param name="configuration">Contain all of config for connecter</param>
-        </member>
         <member name="M:UserAPI.Controllers.MongoControllers.ProductController.InsertOneProduct(UserAPI.Models.MongoModel.InsertProduct)">
             <summary>
             Create new product
@@ -23,7 +11,7 @@
             <remarks>Create new product</remarks>
             <param name="entity"></param>
             <returns></returns>
-            <response code="200">return infomation of new product</response>
+            <response code="200">return information of new product</response>
             <response code="400">if get mistake</response>
         </member>
         <member name="M:UserAPI.Controllers.MongoControllers.ProductController.GetProductById(System.String,System.String)">
@@ -34,14 +22,14 @@
             <param name="productId">The product id</param>
             <param name="fields">the specified fields you want to get</param>
             <returns></returns>
-            <response code="200">return infomation of product with specified fields</response>
+            <response code="200">return information of product with specified fields</response>
             <response code="400">if get mistake</response>
         </member>
         <member name="M:UserAPI.Controllers.MongoControllers.UserController.Login(UserAPI.Models.MongoModel.UserLoginInfo)">
             <summary>login</summary>
             <remarks>login</remarks>
             <returns>The token and basic information of user</returns>
-            <response code="200">return the new access token or annount already login</response>
+            <response code="200">return the new access token or announce already login</response>
             <response code="400">Bad Request</response>
             <response code="401">username or password is wrong</response>
             <response code="403">This account is enable to login</response>
@@ -57,7 +45,7 @@
             <remarks>create new user</remarks>
             <param name="newUser">the information of new user you want to add in your database</param>
             <returns></returns>
-            <response code="200">return infomation of new user</response>
+            <response code="200">return information of new user</response>
             <response code="400">if get mistake</response>
         </member>
         <member name="M:UserAPI.Controllers.MongoControllers.UserController.GetUserById(System.String,System.String)">
@@ -66,14 +54,14 @@
             <param name="userId">the id of user you want to get</param>
             <param name="fields">the specified fields you want to get</param>
             <returns></returns>
-            <response code="200">return infomation of user with specified fields</response>
+            <response code="200">return information of user with specified fields</response>
             <response code="400">if get mistake</response>
         </member>
         <member name="M:UserAPI.Controllers.MongoControllers.UserController.GetCurrentUser">
             <summary>get current user</summary>
             <remarks>get current user</remarks>
-            <returns>return infomation of current user</returns>
-            <response code="200">return infomation of current user</response>
+            <returns>return information of current user</returns>
+            <response code="200">return information of current user</response>
             <response code="400">if get mistake</response>
         </member>
         <member name="M:UserAPI.Controllers.MongoControllers.UserController.GetListUser(System.Int32,System.Int32,System.String)">
@@ -83,7 +71,7 @@
             <param name="pageSize">the user per page you want to set</param>
             <param name="fields">the specified fields you want to get</param>
             <returns></returns>
-            <response code="200">return infomation of list user with pagination</response>
+            <response code="200">return information of list user with pagination</response>
             <response code="400">if get mistake</response>
         </member>
         <member name="M:UserAPI.Controllers.MongoControllers.UserController.UpdateUser(UserAPI.Models.MongoModel.UpdateUserInfo,System.String,System.String)">
@@ -93,23 +81,23 @@
             <param name="updateUser">the info used to update</param>
             <param name="oldPassword">the confirm password to update</param>
             <param name="oldUsername">the confirm username to update</param>
-            <response code="200">return infomation of user you updated</response>
+            <response code="200">return information of user you updated</response>
             <response code="400">if get mistake</response>
         </member>
         <member name="M:UserAPI.Controllers.MongoControllers.UserController.DeleteUser">
             <summary>delete user</summary>
             <remarks>delete user</remarks>
             <returns></returns>
-            <response code="200">return infomation of user you deleted</response>
+            <response code="200">return information of user you deleted</response>
             <response code="400">if get mistake</response>
             <response code="401">You not allow to action</response>
         </member>
         <member name="M:UserAPI.Controllers.SQLControllers.EmployeeController.CreateNewEmployee(UserAPI.Models.SQLServerModel.InsertEmployeeInfo)">
-            <summary>Create New Employee</summary>
-            <remarks>Create New Employee</remarks>
+            <summary>Create new employee</summary>
+            <remarks>Create new employee</remarks>
             <param name="newEmployee"></param>
             <returns></returns>
-            <response code="200">return infomation of new user</response>
+            <response code="200">return information of new user</response>
             <response code="400">if get mistake</response>
         </member>
         <member name="M:UserAPI.Controllers.SQLControllers.EmployeeController.GetEmployeeByUsername(System.String,System.String)">
@@ -117,18 +105,18 @@
             <remarks>Get Employee By Username</remarks>
             <param name="username">the username of employee you want to get</param>
             <param name="fields">the specified fields you want to get</param>
-            <response code="200">return infomation of user with specified fields</response>
+            <response code="200">return information of user with specified fields</response>
             <response code="400">if get mistake</response>
             <returns></returns>
         </member>
         <member name="M:UserAPI.Controllers.SQLControllers.EmployeeController.GetListEmployees(System.Int32,System.Int32,System.String)">
-            <summary>Get List Employee</summary>
-            <remarks>Get List Employee</remarks>
+            <summary>Get list employee</summary>
+            <remarks>Get list employee</remarks>
             <param name="pageIndex">the page index you want to get</param>
             <param name="pageSize">the user per page you want to set</param>
             <param name="fields">the specified fields you want to get</param>
             <returns></returns>
-            <response code="200">return infomation of list employees</response>
+            <response code="200">return information of list employees</response>
             <response code="400">if get mistake</response>
         </member>
         <member name="M:UserAPI.Controllers.SQLControllers.EmployeeController.UpdateEmployee(System.Int32,UserAPI.Models.SQLServerModel.InsertEmployeeInfo)">
@@ -137,46 +125,13 @@
             <param name="employeeId"></param>
             <param name="updateEmployee"></param>
             <returns></returns>
-            <response code="200">return infomation of updated employee</response>
+            <response code="200">return information of updated employee</response>
             <response code="400">if get mistake</response>
         </member>
         <member name="M:UserAPI.Controllers.SQLControllers.EmployeeController.DeleteEmployee(System.Int32)">
             <summary>Delete Employee</summary>
             <remarks>Delete Employee</remarks>
             <param name="employeeId"></param>
-            <returns></returns>
-        </member>
-        <member name="M:UserAPI.Services.JWTService.JWTService.IsTokenValid(System.String)">
-            <summary>
-            
-            </summary>
-            <param name="token"></param>
-            <returns></returns>
-        </member>
-        <member name="M:UserAPI.Services.JWTService.JWTService.GenerateToken(UserAPI.Models.JWTModel.IAuthContainerModel)">
-            <summary>
-            
-            </summary>
-            <param name="model"></param>
-            <returns></returns>
-        </member>
-        <member name="M:UserAPI.Services.JWTService.JWTService.GetTokenClaims(System.String)">
-            <summary>
-            
-            </summary>
-            <param name="token"></param>
-            <returns></returns>
-        </member>
-        <member name="M:UserAPI.Services.JWTService.JWTService.GetSymmetricSecurityKey">
-            <summary>
-            
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:UserAPI.Services.JWTService.JWTService.GetTokenValidationParameters">
-            <summary>
-            
-            </summary>
             <returns></returns>
         </member>
     </members>

@@ -11,8 +11,8 @@ using UserAPI.Models.CommonModel;
 using Microsoft.Extensions.Primitives;
 using System.Linq;
 using System.Security.Claims;
-using static UserAPI.Program;
 using UserAPI.Configuration;
+using UserAPI.Services;
 using JwtHelper = UserAPI.Models.JWTModel.Helper;
 
 namespace UserAPI.Controllers.MongoControllers
@@ -46,7 +46,7 @@ namespace UserAPI.Controllers.MongoControllers
         Request.Headers.TryGetValue("token", out token);
         string _token = token.FirstOrDefault();
         if (Utilities.IsValidToken(_token)) return Ok(Responder.Success("Already login"));
-        Result result = await userService.LoginAsync(info.username, info.password);
+        Result result = await ServiceSelector.userService.LoginAsync(info.username, info.password);
         if (result.status != 200) return StatusCode(result.status, Responder.Fail(result.data));
         node1:
         HelperTokenUser user = (HelperTokenUser)result.data;
@@ -102,7 +102,7 @@ namespace UserAPI.Controllers.MongoControllers
     {
       try
       {
-        Result result = await userService.RegisterAsync(newUser);
+        Result result = await ServiceSelector.userService.RegisterAsync(newUser);
         if (result.status == 200) return Ok(Responder.Success(result.data));
         else return StatusCode(result.status, Responder.Fail(result.data));
       }
@@ -131,9 +131,9 @@ namespace UserAPI.Controllers.MongoControllers
         if (fields != null)
         {
           string[] fieldList = Utilities.SplitFields(fields);
-          result = await userService.GetUserByIdAsync(userId, fieldList);
+          result = await ServiceSelector.userService.GetUserByIdAsync(userId, fieldList);
         }
-        else result = await userService.GetUserByIdAsync(userId);
+        else result = await ServiceSelector.userService.GetUserByIdAsync(userId);
         if (result.status == 200) return Ok(Responder.Success(result.data));
         return StatusCode(result.status, Responder.Fail(result.data));
       }
@@ -159,7 +159,7 @@ namespace UserAPI.Controllers.MongoControllers
         string token = HttpContext.Request.Headers["token"];
         List<Claim> claims = authService.GetTokenClaims(token).ToList();
         string username = claims.Find(x => x.Type == ClaimTypes.Name).Value;
-        Result result = await userService.GetUserByUserNameAsync(username, new string[] { "username" });
+        Result result = await ServiceSelector.userService.GetUserByUserNameAsync(username, new string[] { "username" });
         if (result.status == 200) return Ok(Responder.Success(result.data));
         else return StatusCode(result.status, Responder.Fail(result.data));
       }
@@ -189,9 +189,9 @@ namespace UserAPI.Controllers.MongoControllers
         if (fields != null)
         {
           string[] fieldList = Utilities.SplitFields(fields);
-          result = await userService.GetListUserAsync(pageSize, pageIndex, fieldList);
+          result = await ServiceSelector.userService.GetListUserAsync(pageSize, pageIndex, fieldList);
         }
-        else result = await userService.GetListUserAsync(pageSize, pageIndex);
+        else result = await ServiceSelector.userService.GetListUserAsync(pageSize, pageIndex);
         if (result.status == 200) return Ok(Responder.Success(result.data));
         else return StatusCode(result.status, Responder.Fail(result.data));
       }
@@ -223,7 +223,7 @@ namespace UserAPI.Controllers.MongoControllers
         string username = claims.Find(x => x.Type == ClaimTypes.Name).Value;
         string password = claims.Find(x => x.Type == "Password").Value;
         if (oldUsername != username || oldPassword != password) return StatusCode(401, Responder.Fail("wrong username or password"));
-        Result result = await userService.UpdateUserAsync(username, updateUser);
+        Result result = await ServiceSelector.userService.UpdateUserAsync(username, updateUser);
         if (result.status == 200) return Ok(Responder.Success(result.data));
         else return StatusCode(result.status, Responder.Fail(result.data));
       }
@@ -251,7 +251,7 @@ namespace UserAPI.Controllers.MongoControllers
         string token = HttpContext.Request.Headers["token"];
         List<Claim> claims = authService.GetTokenClaims(token).ToList();
         string username = claims.Find(x => x.Type == ClaimTypes.Name).Value;
-        Result result = await userService.DeleteUserAsync(username);
+        Result result = await ServiceSelector.userService.DeleteUserAsync(username);
         if (result.status == 200) return Ok(Responder.Success(result.data));
         else return StatusCode(result.status, Responder.Fail(result.data));
       }

@@ -2,17 +2,25 @@
 
 namespace UserAPI.Connector
 {
-  public class APIConnection
+  public static class APIConnection
   {
-    public MongoConnector Mongo { get; private set; }
-    public SQLConnector SQL { get; private set; }
-    public SQLiteConnector SQLite { get; private set; }
+    public static ApiSqlConnector SQL { get; private set; }
+    public static MongoConnector Mongo { get; private set; }
+    public static SQLiteConnector SQLite { get; private set; }
 
-    public APIConnection(IConfigurationSection mongoConfig, IConfigurationSection sqlConfig, IConfigurationSection sqliteConfig)
+    public static void InitSqlConnection(IConfigurationSection config)
     {
-      Mongo = MongoConnector.GetInstance(mongoConfig);
-      SQL = SQLConnector.GetInstance(sqlConfig);
-      SQLite = SQLiteConnector.GetInstance(sqliteConfig);
+      if (SQL == null) SQL = ApiSqlConnector.GetInstance(config);
+    }
+
+    public static void InitMongoConnection(IConfigurationSection config)
+    {
+      if (Mongo == null) Mongo = MongoConnector.GetInstance(config);
+    }
+
+    public static void InitSqliteConnection(IConfigurationSection config)
+    {
+      if (SQLite == null) SQLite = SQLiteConnector.GetInstance(config);
       SQLite.OpenConnection();
     }
   }

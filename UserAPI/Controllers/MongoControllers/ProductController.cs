@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using UserAPI.Configuration;
 using UserAPI.Models.CommonModel;
 using UserAPI.Models.MongoModel;
-using static UserAPI.Program;
+using UserAPI.Services;
 
 namespace UserAPI.Controllers.MongoControllers
 {
@@ -37,9 +37,9 @@ namespace UserAPI.Controllers.MongoControllers
         string token = HttpContext.Request.Headers["token"];
         List<Claim> claims = authService.GetTokenClaims(token).ToList();
         string username = claims.Find(x => x.Type == ClaimTypes.Name).Value;
-        Result data = await userService.GetUserByUserNameAsync(username, new string[] { "username" });
+        Result data = await ServiceSelector.userService.GetUserByUserNameAsync(username, new string[] { "username" });
         User user = (User)data.data;
-        Result result = await productService.InsertOneProductAsync(entity, user.id);
+        Result result = await ServiceSelector.productService.InsertOneProductAsync(entity, user.id);
         if (result.status == 200) return Ok(Responder.Success(result.data));
         else return StatusCode(result.status, Responder.Fail(result.data));
       }
@@ -67,11 +67,11 @@ namespace UserAPI.Controllers.MongoControllers
       try
       {
         Result result;
-        if (fields == null) result = await productService.GetProductByIdAsync(productId);
+        if (fields == null) result = await ServiceSelector.productService.GetProductByIdAsync(productId);
         else
         {
           string[] fieldList = Utilities.SplitFields(fields);
-          result = await productService.GetProductByIdAsync(productId, fieldList);
+          result = await ServiceSelector.productService.GetProductByIdAsync(productId, fieldList);
         }
         if (result.status == 200) return Ok(Responder.Success(result.data));
         return StatusCode(result.status, Responder.Fail(result.data));

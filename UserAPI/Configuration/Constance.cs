@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace UserAPI.Configuration
 {
   public static class Messages
@@ -21,5 +23,18 @@ namespace UserAPI.Configuration
     public static readonly int BadRequest = 400;
     public static readonly int Unauthorized = 401;
     public static readonly int Forbidden = 403;
+  }
+
+  public class TableInfo
+  {
+    public string Name { get; set; }
+    public string PropertyType { get; set; }
+    public string AttributeName { get; set; }
+  }
+
+  public class FullData
+  {
+    public string ModuleName { get; set; }
+    public List<TableInfo> ModuleInfo { get; set; }
   }
 }

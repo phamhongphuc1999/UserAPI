@@ -19,25 +19,16 @@
 		<None Remove="Resources\**" />
 		<None Remove="DockerConfig\" />
 	</ItemGroup>
-
 	<ItemGroup>
 		<None Remove="Contances\data.sqlite" />
 	</ItemGroup>
-
 	<ItemGroup>
-		<PackageReference Include="Ipfs.Http.Client" Version="0.33.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.7" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.7" />
-		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
-		<PackageReference Include="MongoDB.Bson" Version="2.11.1" />
-		<PackageReference Include="MongoDB.Driver" Version="2.11.1" />
-		<PackageReference Include="NEST" Version="7.9.0" />
+		<PackageReference Include="MySqlConnector" Version="2.1.11" />
+		<PackageReference Include="MongoDB.Bson" Version="2.19.0" />
+		<PackageReference Include="MongoDB.Driver" Version="2.19.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
 		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.115" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.7.1" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="DockerConfig\" />
 	</ItemGroup>
 </Project>
