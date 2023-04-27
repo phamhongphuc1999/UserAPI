@@ -10,10 +10,7 @@ namespace UserAPI.Services.MongoService.MongoDataService
 {
   public class ProductDataService : BaseDataService<BsonDocument>
   {
-    public ProductDataService(string collection) : base(collection)
-    {
-
-    }
+    public ProductDataService(string collection) : base(collection) { }
 
     public bool InsertOneProduct(InsertProduct entity, string userId)
     {

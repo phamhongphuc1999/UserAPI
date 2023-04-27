@@ -24,9 +24,9 @@ namespace UserAPI.Services.SqlService
       return rawData;
     }
 
-    public void InsertSingle(string insertedElement, string insertedValue)
+    public List<T> InsertSingle(string insertedElement, string insertedValue)
     {
-      this.dataSet.InsertSingle(insertedElement, insertedValue);
+      return this.dataSet.InsertSingle(insertedElement, insertedValue);
     }
   }
 }

@@ -21,7 +21,7 @@ namespace UserAPI.Models.MySqlModel
   public class InsertEmployeeInfo
   {
     [Required(ErrorMessage = "Username is required")]
-    [StringLength(100)]
+    [StringLength(30)]
     public string Username { get; set; }
 
     [Required(ErrorMessage = "Password is required")]
@@ -29,8 +29,7 @@ namespace UserAPI.Models.MySqlModel
     [StringLength(100)]
     public string Password { get; set; }
 
-    [Required(ErrorMessage = "Email is required")]
-    [StringLength(50)]
+    [EmailAddress]
     public string Email { get; set; }
   }
 }

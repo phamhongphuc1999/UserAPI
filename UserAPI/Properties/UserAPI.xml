@@ -92,47 +92,5 @@
             <response code="400">if get mistake</response>
             <response code="401">You not allow to action</response>
         </member>
-        <member name="M:UserAPI.Controllers.SQLControllers.EmployeeController.CreateNewEmployee(UserAPI.Models.SQLServerModel.InsertEmployeeInfo)">
-            <summary>Create new employee</summary>
-            <remarks>Create new employee</remarks>
-            <param name="newEmployee"></param>
-            <returns></returns>
-            <response code="200">return information of new user</response>
-            <response code="400">if get mistake</response>
-        </member>
-        <member name="M:UserAPI.Controllers.SQLControllers.EmployeeController.GetEmployeeByUsername(System.String,System.String)">
-            <summary>Get Employee By Username</summary>
-            <remarks>Get Employee By Username</remarks>
-            <param name="username">the username of employee you want to get</param>
-            <param name="fields">the specified fields you want to get</param>
-            <response code="200">return information of user with specified fields</response>
-            <response code="400">if get mistake</response>
-            <returns></returns>
-        </member>
-        <member name="M:UserAPI.Controllers.SQLControllers.EmployeeController.GetListEmployees(System.Int32,System.Int32,System.String)">
-            <summary>Get list employee</summary>
-            <remarks>Get list employee</remarks>
-            <param name="pageIndex">the page index you want to get</param>
-            <param name="pageSize">the user per page you want to set</param>
-            <param name="fields">the specified fields you want to get</param>
-            <returns></returns>
-            <response code="200">return information of list employees</response>
-            <response code="400">if get mistake</response>
-        </member>
-        <member name="M:UserAPI.Controllers.SQLControllers.EmployeeController.UpdateEmployee(System.Int32,UserAPI.Models.SQLServerModel.InsertEmployeeInfo)">
-            <summary>Update Employee</summary>
-            <remarks>Update Employee</remarks>
-            <param name="employeeId"></param>
-            <param name="updateEmployee"></param>
-            <returns></returns>
-            <response code="200">return information of updated employee</response>
-            <response code="400">if get mistake</response>
-        </member>
-        <member name="M:UserAPI.Controllers.SQLControllers.EmployeeController.DeleteEmployee(System.Int32)">
-            <summary>Delete Employee</summary>
-            <remarks>Delete Employee</remarks>
-            <param name="employeeId"></param>
-            <returns></returns>
-        </member>
     </members>
 </doc>
