@@ -27,9 +27,9 @@ VALUES ('PhamHongPhuc', '123456789', 'php@gmail.com'),
 GO
 
 CREATE TABLE Productions (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(30) NOT NULL,
-    amount INT NOT NULL,
+    Id INT PRIMARY KEY AUTO_INCREMENT,
+    Name VARCHAR(30) NOT NULL,
+    Amount INT NOT NULL,
     employeeId INT,
     FOREIGN KEY (employeeId) REFERENCES Employees(id)
 );

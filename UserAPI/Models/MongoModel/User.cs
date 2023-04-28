@@ -29,11 +29,11 @@ namespace UserAPI.Models.MongoModel
 
   public class NewUserInfo
   {
-    [Required(ErrorMessage = "the username is required", AllowEmptyStrings = false)]
+    [Required(ErrorMessage = "Username is required", AllowEmptyStrings = false)]
     [StringLength(200)]
     public string username { get; set; }
 
-    [Required(ErrorMessage = "the password is required")]
+    [Required(ErrorMessage = "Password is required")]
     [RegularExpression(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$", ErrorMessage = "Minimum eight characters, at least one letter and one number")]
     [StringLength(200)]
     public string password { get; set; }
@@ -61,10 +61,10 @@ namespace UserAPI.Models.MongoModel
 
   public class UserLoginInfo
   {
-    [Required(ErrorMessage = "the username is required")]
+    [Required(ErrorMessage = "Username is required")]
     public string username { get; set; }
 
-    [Required(ErrorMessage = "the password is required")]
+    [Required(ErrorMessage = "Password is required")]
     public string password { get; set; }
   }
 

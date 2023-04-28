@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using UserAPI.Configuration;
 
 namespace UserAPI.Models.MySqlModel
 {
@@ -16,6 +16,12 @@ namespace UserAPI.Models.MySqlModel
 
     [StringLength(50)]
     public string Email { get; set; }
+  }
+
+  public class LoginEmployeeInfo
+  {
+    public string Username { get; set; }
+    public string Password { get; set; }
   }
 
   public class InsertEmployeeInfo

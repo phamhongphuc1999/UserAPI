@@ -92,5 +92,14 @@
             <response code="400">if get mistake</response>
             <response code="401">You not allow to action</response>
         </member>
+        <member name="M:UserAPI.Controllers.SqlControllers.EmployeeController.Login(UserAPI.Models.MySqlModel.LoginEmployeeInfo)">
+            <summary>login</summary>
+            <remarks>login</remarks>
+            <returns>The token and basic information of user</returns>
+            <response code="200">return the new access token or announce already login</response>
+            <response code="400">Bad Request</response>
+            <response code="401">username or password is wrong</response>
+            <response code="403">This account is enable to login</response>
+        </member>
     </members>
 </doc>
