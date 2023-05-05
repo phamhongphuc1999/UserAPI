@@ -1,24 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
 	<PropertyGroup>
 		<TargetFramework>netcoreapp3.1</TargetFramework>
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 	</PropertyGroup>
-
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<DocumentationFile>.\Properties\UserAPI.xml</DocumentationFile>
 		<OutputPath></OutputPath>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<NoWarn>$(NoWarn);1591</NoWarn>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<Compile Remove="Resources\**" />
-		<Content Remove="Resources\**" />
-		<EmbeddedResource Remove="Resources\**" />
-		<None Remove="Resources\**" />
-		<None Remove="DockerConfig\" />
-	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="MySqlConnector" Version="2.1.11" />
 		<PackageReference Include="MongoDB.Bson" Version="2.19.0" />
