@@ -1,4 +1,5 @@
-from crawler.token_list_crawler import TokenListCrawler
+from configs import app_config
+from fetcher.coin_market_cap_fetcher import CoinMarketCapFetcher
 
 if __name__ == "__main__":
-    abc = TokenListCrawler(1)
+    pass
