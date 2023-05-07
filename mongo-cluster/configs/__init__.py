@@ -1,9 +1,11 @@
 from configs.global_config import GlobalConfig
+from configs.schema_config import SchemaConfig
 
 
-class AppConfig:
+class _AppConfig:
     def __init__(self):
         self.Global = GlobalConfig()
+        self.Schema = SchemaConfig()
 
 
-app_config = AppConfig()
+AppConfig = _AppConfig()

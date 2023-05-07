@@ -2,7 +2,7 @@
 
 All config is inspired in [here](https://github.com/minhhungit/mongodb-cluster-docker-compose)
 
-### Step 1: Start all of the containers
+### Step 1: Start all the containers
 
 ```shell
 docker-compose up -d
@@ -48,4 +48,12 @@ sh.enableSharding("MyDatabase")
 
 ```shell
 db.adminCommand( { shardCollection: "MyDatabase.MyCollection", key: { oemNumber: "hashed", zipCode: 1, supplierId: 1 } } )
+```
+
+### Done!
+
+- Btw, here is mongodb connection string if you want to try to connect mongodb cluster with MongoDB Compass from your host computer (which is running docker)
+
+```shell
+mongodb://127.0.0.1:27117,127.0.0.1:27118
 ```

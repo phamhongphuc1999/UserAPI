@@ -8,6 +8,11 @@ RESET = $(shell tput -Txterm sgr0)
 GRAY = $(shell tput -Txterm setaf 6)
 TARGET_MAX_CHAR_NUM = 20
 
+## Run mongo docker cluster
+cluster:
+	docker-compose up -d
+
+
 # Help
 
 ## Shows help.
