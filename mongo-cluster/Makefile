@@ -8,14 +8,23 @@ RESET = $(shell tput -Txterm sgr0)
 GRAY = $(shell tput -Txterm setaf 6)
 TARGET_MAX_CHAR_NUM = 20
 
-## Run mongo docker cluster
+## Run mongo docker cluster | Other
 cluster:
 	docker-compose up -d
 
+## Run service with environment | Run
+runEnv:
+	python3 main.py $(env)
 
-# Help
+## Run service with production environment
+run:
+	python3 main.py production
 
-## Shows help.
+## run service with development environment
+runDev:
+	python3 main.py development
+
+## Shows help | Help
 help:
 	@echo ''
 	@echo 'Usage:'
