@@ -4,8 +4,6 @@ from database.mongo_model.token_model import TokenModel
 
 
 class MongoModel:
-    def __init__(
-        self, connection: MongoBaseConnector = None, option: ConnectionOption = None
-    ):
+    def __init__(self, connection: MongoBaseConnector = None, option: ConnectionOption = None):
         self.Metadata = MetadataModel(connection=connection, option=option)
         self.Token = TokenModel(connection=connection, option=option)
