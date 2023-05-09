@@ -9,9 +9,10 @@ class _AppConfig:
         self.Global = GlobalConfig()
         self.Schema = SchemaConfig()
 
-    def init_env(self, _env: EnvironmentType):
+    def init_env(self, _env: EnvironmentType, _key: str):
         self.env = _env
         self.Global.init_env(_env)
+        self.Global.init_key(_key)
 
 
 AppConfig = _AppConfig()

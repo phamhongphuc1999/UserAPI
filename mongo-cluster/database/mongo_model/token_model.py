@@ -9,9 +9,7 @@ from services import app_logger, convert_mongo_id
 
 
 class TokenModel(MongoBaseModel):
-    def __init__(
-        self, connection: MongoBaseConnector = None, option: ConnectionOption = None
-    ):
+    def __init__(self, connection: MongoBaseConnector = None, option: ConnectionOption = None):
         super().__init__(connection, option)
         _client = connection.get_connection()
         self.database = _client[AppConfig.Global.Mongo.DATABASE_NAME]
@@ -28,9 +26,7 @@ class TokenModel(MongoBaseModel):
 
     def upsert_metadata(self, query, upsert_data):
         try:
-            upsert_result = self._token_collection.update_one(
-                query, upsert_data, upsert=True
-            )
+            upsert_result = self._token_collection.update_one(query, upsert_data, upsert=True)
             return {
                 "id": upsert_result.upserted_id,
                 "modified": upsert_result.modified_count,
@@ -44,7 +40,7 @@ class TokenModel(MongoBaseModel):
         try:
             _requests = []
             for item in bulk_data:
-                _requests.append(UpdateOne(item["query"], item["data"], upsert=True))
+                _requests.append(UpdateOne(item["query"], {"$set": item["data"]}, upsert=True))
             _result = self._token_collection.bulk_write(_requests, ordered=False)
             return _result.bulk_api_result
         except BulkWriteError as bulk_error:

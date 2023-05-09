@@ -30,4 +30,4 @@ class GlobalConfig:
                 self.CONNECTION_STRING = "mongodb://127.0.0.1:27117,127.0.0.1:27118"
             elif _env == EnvironmentType.PRODUCTION:
                 self.HOST = "127.0.0.1"
-                self.CONNECTION_STRING = "abc"
+                self.CONNECTION_STRING = "123"

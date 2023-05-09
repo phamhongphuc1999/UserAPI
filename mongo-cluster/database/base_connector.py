@@ -1,4 +1,6 @@
-from pymongo import MongoClient
+import ssl
+
+from pymongo import MongoClient, MAX_SUPPORTED_WIRE_VERSION
 
 from services import app_logger
 
@@ -34,11 +36,9 @@ class MongoBaseConnector(BaseConnector):
     def _connect(self):
         try:
             if self.option.connection_string:
-                self._connection = MongoClient(self.option.connection_string)
+                self._connection = MongoClient(self.option.connection_string, ssl=True, ssl_cert_reqs=ssl.CERT_NONE)
                 if self._connection.server_info():
-                    app_logger.info(
-                        f"Connected to database: {self.option.connection_string}"
-                    )
+                    app_logger.info(f"Connected to database: {self.option.connection_string}")
                 else:
                     raise Exception("Connection to mongodb fail")
             else:
@@ -46,9 +46,7 @@ class MongoBaseConnector(BaseConnector):
                 port = self.option.port
                 username = self.option.username
                 password = self.option.password
-                self._connection = MongoClient(
-                    host=host, port=port, username=username, password=password
-                )
+                self._connection = MongoClient(host=host, port=port, username=username, password=password)
                 if self._connection.server_info():
                     app_logger.info(f"Connected to database: {host}:{port}")
                 else:

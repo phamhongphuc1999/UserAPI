@@ -32,7 +32,7 @@ class CoinMarketCapFetcher:
         session = Session()
         session.headers.update(self.headers)
         try:
-            response = session.get(f"{CoinMarketCapFetcher}/v2/cryptocurrency/info")
+            response = session.get(f"{CoinMarketCapFetcher.BASE_URL}/v2/cryptocurrency/info")
             data = json.loads(response.text)
             return data
         except (ConnectionError, Timeout, TooManyRedirects) as error:

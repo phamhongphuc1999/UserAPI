@@ -10,23 +10,28 @@ TOKEN_DATA = {
         "circulating_supply": {"type": "number"},
         "total_supply": {"type": "number"},
         "market_cap_by_total_supply": {"type": "number"},
-        "max_supply": {"type": "number"},
+        "max_supply": {"anyOf": [{"type": "number"}, {"type": "null"}]},
         "infinite_supply": {"type": "boolean"},
         "last_updated": {"type": "string"},
         "date_added": {"type": "string"},
         "tags": {"type": "array", "items": {"type": "string"}},
-        "self_reported_circulating_supply": {"type": "number"},
-        "self_reported_market_cap": {"type": "number"},
-        "tvl_ratio": {"type": "number"},
+        "self_reported_circulating_supply": {"anyOf": [{"type": "number"}, {"type": "null"}]},
+        "self_reported_market_cap": {"anyOf": [{"type": "number"}, {"type": "null"}]},
+        "tvl_ratio": {"anyOf": [{"type": "number"}, {"type": "null"}]},
         "platform": {
-            "type": "object",
-            "properties": {
-                "id": {"type": "number"},
-                "name": {"type": "string"},
-                "symbol": {"type": "string"},
-                "slug": {"type": "string"},
-                "token_address": {"type": "string"},
-            },
+            "anyOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "id": {"type": "number"},
+                        "name": {"type": "string"},
+                        "symbol": {"type": "string"},
+                        "slug": {"type": "string"},
+                        "token_address": {"type": "string"},
+                    },
+                },
+                {"type": "null"},
+            ]
         },
         "quote": {
             "type": "object",
@@ -45,7 +50,7 @@ TOKEN_DATA = {
                         "market_cap": {"type": "number"},
                         "market_cap_dominance": {"type": "number"},
                         "fully_diluted_market_cap": {"type": "number"},
-                        "tvl": {"type": "number"},
+                        "tvl": {"anyOf": [{"type": "number"}, {"type": "null"}]},
                         "percent_change_1h": {"type": "number"},
                         "percent_change_24h": {"type": "number"},
                         "percent_change_7d": {"type": "number"},
@@ -55,6 +60,7 @@ TOKEN_DATA = {
             },
         },
     },
+    "required": ["id", "name", "symbol"],
 }
 
 TOKEN_METADATA = {

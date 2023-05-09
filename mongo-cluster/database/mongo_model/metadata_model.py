@@ -9,22 +9,16 @@ from services import convert_mongo_id, app_logger
 
 
 class MetadataModel(MongoBaseModel):
-    def __init__(
-        self, connection: MongoBaseConnector = None, option: ConnectionOption = None
-    ):
+    def __init__(self, connection: MongoBaseConnector = None, option: ConnectionOption = None):
         super().__init__(connection, option)
         _client = connection.get_connection()
         self.database = _client[AppConfig.Global.Mongo.DATABASE_NAME]
-        self._metadata_collection = self.database[
-            AppConfig.Global.Mongo.METADATA_COLLECTION
-        ]
+        self._metadata_collection = self.database[AppConfig.Global.Mongo.METADATA_COLLECTION]
 
     def insert_metadata(self, insert_data):
         try:
             _id = self._metadata_collection.insert_one(insert_data).inserted_id
-            _user_transaction = self._metadata_collection.find_one(
-                {"_id": ObjectId(_id)}
-            )
+            _user_transaction = self._metadata_collection.find_one({"_id": ObjectId(_id)})
             return convert_mongo_id(_user_transaction)
         except Exception as error:
             app_logger.error(error)
@@ -32,9 +26,7 @@ class MetadataModel(MongoBaseModel):
 
     def upsert_metadata(self, query, upsert_data):
         try:
-            upsert_result = self._metadata_collection.update_one(
-                query, upsert_data, upsert=True
-            )
+            upsert_result = self._metadata_collection.update_one(query, upsert_data, upsert=True)
             return {
                 "id": upsert_result.upserted_id,
                 "modified": upsert_result.modified_count,
@@ -48,7 +40,7 @@ class MetadataModel(MongoBaseModel):
         try:
             _requests = []
             for item in bulk_data:
-                _requests.append(UpdateOne(item["query"], item["data"], upsert=True))
+                _requests.append(UpdateOne(item["query"], {"$set": item["data"]}, upsert=True))
             _result = self._metadata_collection.bulk_write(_requests, ordered=False)
             return _result.bulk_api_result
         except BulkWriteError as bulk_error:
