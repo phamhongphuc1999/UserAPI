@@ -1,27 +1,27 @@
+using System;
+using System.Linq;
+using UserAPI.Services;
+using UserAPI.Configuration;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using UserAPI.Models.MySqlModel;
-using System;
 using UserAPI.Models.CommonModel;
-using UserAPI.Services;
-using Microsoft.Extensions.Primitives;
-using System.Linq;
+using System.Collections.Generic;
 using Microsoft.Extensions.Options;
-using UserAPI.Configuration;
+using Microsoft.Extensions.Primitives;
 
 namespace UserAPI.Controllers.SqlControllers
 {
   public class EmployeeController : BaseSqlController
   {
-    public EmployeeController(IOptions<JWTConfig> jwtConfig) : base(jwtConfig)
-    {
-    }
+    public EmployeeController(IOptions<JWTConfig> jwtConfig) : base(jwtConfig) { }
 
-    /// <summary>login</summary>
-    /// <remarks>login</remarks>
-    /// <returns>The token and basic information of user</returns>
-    /// <response code="200">return the new access token or announce already login</response>
+    /// <summary>Login</summary>
+    /// <remarks>Login</remarks>
+    /// <returns>The JWT token and user information</returns>
+    /// <response code="200">New JWT token or the announcement that you already login</response>
     /// <response code="400">Bad Request</response>
-    /// <response code="401">username or password is wrong</response>
+    /// <response code="401">Username or password is incorrect</response>
     /// <response code="403">This account is enable to login</response>
     [HttpPost("/sql/user")]
     [ProducesResponseType(201, Type = typeof(ResponseSuccessType))]
@@ -47,6 +47,32 @@ namespace UserAPI.Controllers.SqlControllers
           token = accessToken,
           user = result.data
         }));
+      }
+      catch (Exception error)
+      {
+        return BadRequest(Responder.Fail(error.Message));
+      }
+    }
+
+    /// <summary>Get current user information</summary>
+    /// <remarks>Get current user information</remarks>
+    /// <returns>The current user information</returns>
+    /// <response code="200">The current user information</response>
+    /// <response code="400">Bad request</response>
+    [HttpGet("/sql/users/current-user")]
+    [CustomAuthorization]
+    [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
+    [ProducesResponseType(400, Type = typeof(ResponseFailType))]
+    public ObjectResult GetCurrentUser()
+    {
+      try
+      {
+        string token = HttpContext.Request.Headers["token"];
+        List<Claim> claims = authService.GetTokenClaims(token).ToList();
+        string username = claims.Find(x => x.Type == ClaimTypes.Name).Value;
+        Result result = ServiceSelector.employeeService.GetEmployeeByUsername(username);
+        if (result.status == 200) return Ok(Responder.Success(result.data));
+        else return StatusCode(result.status, Responder.Fail(result.data));
       }
       catch (Exception error)
       {

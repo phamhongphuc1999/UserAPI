@@ -2,19 +2,31 @@
 
 ---
 
+### Build database
+
+- To create and start mysql database with docker, run following command:
+
+```shell
+docker-compose -f docker-db/docker-compose-mysql.yaml up -d
+```
+
 ### Run
+
+- To run simple API, run by follow command:
 
 ```shell
 make run
 ```
 
-Or run with specified launch
+- Or run with specified launch
 
 ```shell
 make run launch={your-launch}
 ```
 
-For more information, you can run command:
+Now, you can go [here](http://localhost:5000/index.html) and try API
+
+- For more information, you can run command:
 
 ```shell
 make help

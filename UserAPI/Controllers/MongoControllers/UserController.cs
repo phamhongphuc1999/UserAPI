@@ -26,12 +26,12 @@ namespace UserAPI.Controllers.MongoControllers
     {
     }
 
-    /// <summary>login</summary>
-    /// <remarks>login</remarks>
-    /// <returns>The token and basic information of user</returns>
-    /// <response code="200">return the new access token or announce already login</response>
+    /// <summary>Login</summary>
+    /// <remarks>Login</remarks>
+    /// <returns>The JWT token and user information</returns>
+    /// <response code="200">New JWT token or the announcement that you already login</response>
     /// <response code="400">Bad Request</response>
-    /// <response code="401">username or password is wrong</response>
+    /// <response code="401">Username or password is incorrect</response>
     /// <response code="403">This account is enable to login</response>
     [HttpPost("/login")]
     [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
@@ -143,11 +143,11 @@ namespace UserAPI.Controllers.MongoControllers
       }
     }
 
-    /// <summary>get current user</summary>
-    /// <remarks>get current user</remarks>
-    /// <returns>return information of current user</returns>
-    /// <response code="200">return information of current user</response>
-    /// <response code="400">if get mistake</response>
+    /// <summary>Get current user information</summary>
+    /// <remarks>Get current user information</remarks>
+    /// <returns>The current user information</returns>
+    /// <response code="200">The current user information</response>
+    /// <response code="400">Bad request</response>
     [HttpGet("/users/current-user")]
     [CustomAuthorization]
     [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]

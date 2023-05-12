@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
-using System;
-using System.Data.SQLite;
+﻿using System;
 using System.IO;
+using System.Data.SQLite;
 using UserAPI.Configuration;
+using Microsoft.Extensions.Configuration;
 
 namespace UserAPI.Connector
 {

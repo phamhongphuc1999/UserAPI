@@ -26,9 +26,16 @@ namespace UserAPI.Services.SqlService
       else return new Result { status = Status.BadRequest, data = null };
     }
 
-    public Result GetEmployeeById(string employeeId, string fields)
+    public Result GetEmployeeById(string employeeId, string fields = null)
     {
       List<Employee> result = this.SelectWithFilter($"WHERE id=${employeeId}", fields);
+      if (result.Count > 0) return new Result { status = Status.OK, data = result[0] };
+      else return new Result { status = Status.BadRequest, data = null };
+    }
+
+    public Result GetEmployeeByUsername(string username, string fields = null)
+    {
+      List<Employee> result = this.SelectWithFilter($"WHERE username=${username}", fields);
       if (result.Count > 0) return new Result { status = Status.OK, data = result[0] };
       else return new Result { status = Status.BadRequest, data = null };
     }

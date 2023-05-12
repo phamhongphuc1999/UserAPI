@@ -1,16 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Primitives;
-using System;
+﻿using System;
 using System.Linq;
-using UserAPI.Configuration;
-using UserAPI.Models.CommonModel;
-using UserAPI.Models.JWTModel;
-using UserAPI.Models.SQLiteModel;
 using UserAPI.Services;
 using UserAPI.Connector;
-using JwtHelper = UserAPI.Models.JWTModel.Helper;
+using UserAPI.Configuration;
+using UserAPI.Models.JWTModel;
+using Microsoft.AspNetCore.Mvc;
+using UserAPI.Models.CommonModel;
+using UserAPI.Models.SQLiteModel;
 using UserAPI.Services.JWTService;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
+using JwtHelper = UserAPI.Models.JWTModel.Helper;
 
 namespace UserAPI.Controllers.SQLiteControllers
 {
