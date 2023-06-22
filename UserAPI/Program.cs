@@ -20,10 +20,9 @@ namespace UserAPI
       APIConnection.InitMongoConnection(mongoSetting);
       APIConnection.InitSqliteConnection(sqliteSetting);
 
-      ServiceSelector.InitEmployeeService();
-      ServiceSelector.InitUserService();
-      ServiceSelector.InitProductionService();
-      ServiceSelector.InitUserSqliteService();
+      ServiceSelector.Mongo.Init();
+      ServiceSelector.Lite.Init();
+      ServiceSelector.Sql.Init();
 
       IHostBuilder builder = CreateHostBuilder(args);
       builder.Build().Run();

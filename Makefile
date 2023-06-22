@@ -8,7 +8,7 @@ RESET = $(shell tput -Txterm sgr0)
 GRAY = $(shell tput -Txterm setaf 6)
 TARGET_MAX_CHAR_NUM = 20
 
-## Build project | Common
+## Build project. | Run
 build:
 	dotnet build
 
@@ -20,9 +20,15 @@ run:
 runl:
 	dotnet run --launch-profile ${launch} --profile ./UserAPI
 
-# Help
+## Build mongo docker. | Build docker
+mongo:
+	docker-compose -f docker-db/docker-compose-mongo.yaml up -d
 
-## Shows help.
+## Build mysql docker.
+mysql:
+	docker-compose -f docker-db/docker-compose-mysql.yaml up -d
+
+## Shows help. | Help
 help:
 	@echo ''
 	@echo 'Usage:'

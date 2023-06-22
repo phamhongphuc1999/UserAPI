@@ -30,7 +30,7 @@ namespace UserAPI.Controllers.SQLiteControllers
     {
       try
       {
-        Result result = ServiceSelector.userSQLiteService.InsertUser(user, APIConnection.SQLite);
+        Result result = ServiceSelector.Lite.user.InsertUser(user, APIConnection.SQLite);
         if (result.status == Status.Created) return Ok(Responder.Success(result.data));
         else return StatusCode(result.status, Responder.Fail(result.data));
       }
@@ -53,7 +53,7 @@ namespace UserAPI.Controllers.SQLiteControllers
         Request.Headers.TryGetValue("token", out token);
         string _token = token.FirstOrDefault();
         if (Utilities.IsValidToken(_token)) return Ok(Responder.Success("Already login"));
-        Result result = ServiceSelector.userSQLiteService.Login(loginUser.Username, loginUser.Password, APIConnection.SQLite);
+        Result result = ServiceSelector.Lite.user.Login(loginUser.Username, loginUser.Password, APIConnection.SQLite);
         if (result.status != 200) return StatusCode(result.status, Responder.Fail(result.data));
         node1:
         HelperSQLiteTokenUser user = (HelperSQLiteTokenUser)result.data;

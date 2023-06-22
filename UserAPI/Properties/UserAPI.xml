@@ -6,13 +6,13 @@
     <members>
         <member name="M:UserAPI.Controllers.MongoControllers.ProductController.InsertOneProduct(UserAPI.Models.MongoModel.InsertProduct)">
             <summary>
-            Create new product
+            Create a new product
             </summary>
-            <remarks>Create new product</remarks>
-            <param name="entity"></param>
+            <remarks>Create a new product</remarks>
+            <param name="entity">The data for creating a new product</param>
             <returns></returns>
-            <response code="200">return information of new product</response>
-            <response code="400">if get mistake</response>
+            <response code="200">Return information of the new product</response>
+            <response code="400">Return error when it occur</response>
         </member>
         <member name="M:UserAPI.Controllers.MongoControllers.ProductController.GetProductById(System.String,System.String)">
             <summary>
@@ -20,10 +20,10 @@
             </summary>
             <remarks>Get product by id</remarks>
             <param name="productId">The product id</param>
-            <param name="fields">the specified fields you want to get</param>
+            <param name="fields">The specified fields you want to get</param>
             <returns></returns>
-            <response code="200">return information of product with specified fields</response>
-            <response code="400">if get mistake</response>
+            <response code="200">Return information of product respective with specified fields</response>
+            <response code="400">Return error when it occur</response>
         </member>
         <member name="M:UserAPI.Controllers.MongoControllers.UserController.Login(UserAPI.Models.MongoModel.UserLoginInfo)">
             <summary>Login</summary>
@@ -35,61 +35,61 @@
             <response code="403">This account is enable to login</response>
         </member>
         <member name="M:UserAPI.Controllers.MongoControllers.UserController.Logout">
-            <summary>logout</summary>
-            <remarks>logout</remarks>
+            <summary>Logout</summary>
+            <remarks>Logout</remarks>
             <returns></returns>
-            <response code="200">reset access token</response>
+            <response code="200">Reset access token</response>
         </member>
         <member name="M:UserAPI.Controllers.MongoControllers.UserController.Register(UserAPI.Models.MongoModel.NewUserInfo)">
-            <summary>create new user</summary>
-            <remarks>create new user</remarks>
-            <param name="newUser">the information of new user you want to add in your database</param>
+            <summary>Create new user</summary>
+            <remarks>Create new user</remarks>
+            <param name="newUser">The information of new user you want to add in your database</param>
             <returns></returns>
-            <response code="200">return information of new user</response>
-            <response code="400">if get mistake</response>
+            <response code="200">Return information of new user</response>
+            <response code="400">Return error when it occur</response>
         </member>
         <member name="M:UserAPI.Controllers.MongoControllers.UserController.GetUserById(System.String,System.String)">
-            <summary>get user by id</summary>
-            <remarks>get user by id</remarks>
-            <param name="userId">the id of user you want to get</param>
-            <param name="fields">the specified fields you want to get</param>
+            <summary>Get user by id</summary>
+            <remarks>Get user by id</remarks>
+            <param name="userId">The id of user you want to get</param>
+            <param name="fields">The specified fields you want to get</param>
             <returns></returns>
-            <response code="200">return information of user with specified fields</response>
-            <response code="400">if get mistake</response>
+            <response code="200">Return information of user with specified fields</response>
+            <response code="400">Return error when it occur</response>
         </member>
         <member name="M:UserAPI.Controllers.MongoControllers.UserController.GetCurrentUser">
             <summary>Get current user information</summary>
             <remarks>Get current user information</remarks>
             <returns>The current user information</returns>
             <response code="200">The current user information</response>
-            <response code="400">Bad request</response>
+            <response code="400">Return error when it occur</response>
         </member>
         <member name="M:UserAPI.Controllers.MongoControllers.UserController.GetListUser(System.Int32,System.Int32,System.String)">
-            <summary>get list users</summary>
-            <remarks>get list users</remarks>
-            <param name="pageIndex">the page index you want to get</param>
-            <param name="pageSize">the user per page you want to set</param>
-            <param name="fields">the specified fields you want to get</param>
+            <summary>Get list users</summary>
+            <remarks>Get list users</remarks>
+            <param name="pageIndex">The page index you want to get</param>
+            <param name="pageSize">The user per page you want to set</param>
+            <param name="fields">The specified fields you want to get</param>
             <returns></returns>
-            <response code="200">return information of list user with pagination</response>
-            <response code="400">if get mistake</response>
+            <response code="200">Return information of list user with pagination</response>
+            <response code="400">Return error when it occur</response>
         </member>
         <member name="M:UserAPI.Controllers.MongoControllers.UserController.UpdateUser(UserAPI.Models.MongoModel.UpdateUserInfo,System.String,System.String)">
-            <summary>update user</summary>
-            <remarks>update user</remarks>
+            <summary>Update user</summary>
+            <remarks>Update user</remarks>
             <returns></returns>
-            <param name="updateUser">the info used to update</param>
-            <param name="oldPassword">the confirm password to update</param>
-            <param name="oldUsername">the confirm username to update</param>
-            <response code="200">return information of user you updated</response>
-            <response code="400">if get mistake</response>
+            <param name="updateUser">The info used to update</param>
+            <param name="oldPassword">The confirm password to update</param>
+            <param name="oldUsername">The confirm username to update</param>
+            <response code="200">Return information of user you updated</response>
+            <response code="400">Return error when it occur</response>
         </member>
         <member name="M:UserAPI.Controllers.MongoControllers.UserController.DeleteUser">
-            <summary>delete user</summary>
-            <remarks>delete user</remarks>
+            <summary>Delete user</summary>
+            <remarks>Delete user</remarks>
             <returns></returns>
-            <response code="200">return information of user you deleted</response>
-            <response code="400">if get mistake</response>
+            <response code="200">Return information of user you deleted</response>
+            <response code="400">Return error when it occur</response>
             <response code="401">You not allow to action</response>
         </member>
         <member name="M:UserAPI.Controllers.SqlControllers.EmployeeController.Login(UserAPI.Models.MySqlModel.LoginEmployeeInfo)">

@@ -7,30 +7,41 @@ namespace UserAPI.Services
 {
   public static class ServiceSelector
   {
-    public static UserService userService { get; private set; }
-    public static ProductService productService { get; private set; }
-    public static UserSQLiteService userSQLiteService { get; private set; }
-    public static EmployeeService employeeService { get; private set; }
-
-    public static void InitUserService()
+    public static class Mongo
     {
-      userService = new UserService("Users");
+      public static UserService user { get; private set; }
+      public static ProductService product { get; private set; }
+
+      public static void Init()
+      {
+        user = new UserService("Users");
+        product = new ProductService("Products");
+      }
     }
 
-    public static void InitProductionService()
+    public static class Lite
     {
-      productService = new ProductService("Products");
+      public static UserSQLiteService user { get; private set; }
+      public static TemplateService template { get; private set; }
+
+      public static void Init()
+      {
+        user = new UserSQLiteService();
+        template = new TemplateService();
+        user.CreateTable(APIConnection.SQLite);
+      }
     }
 
-    public static void InitUserSqliteService()
+    public static class Sql
     {
-      userSQLiteService = new UserSQLiteService();
-      userSQLiteService.CreateTable(APIConnection.SQLite);
-    }
+      public static EmployeeService employee { get; private set; }
+      public static ProductionService product { get; private set; }
 
-    public static void InitEmployeeService()
-    {
-      employeeService = new EmployeeService();
+      public static void Init()
+      {
+        employee = new EmployeeService();
+        product = new ProductionService();
+      }
     }
   }
 }

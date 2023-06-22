@@ -7,7 +7,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: abc
       MONGO_INITDB_ROOT_PASSWORD: abc
     ports:
-      - 27013:27017
+      - 27017:27017
     volumes:
       - mongodb_user:/data/db
 

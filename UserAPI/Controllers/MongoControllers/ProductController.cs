@@ -19,13 +19,13 @@ namespace UserAPI.Controllers.MongoControllers
     }
 
     /// <summary>
-    /// Create new product
+    /// Create a new product
     /// </summary>
-    /// <remarks>Create new product</remarks>
-    /// <param name="entity"></param>
+    /// <remarks>Create a new product</remarks>
+    /// <param name="entity">The data for creating a new product</param>
     /// <returns></returns>
-    /// <response code="200">return information of new product</response>
-    /// <response code="400">if get mistake</response>
+    /// <response code="200">Return information of the new product</response>
+    /// <response code="400">Return error when it occur</response>
     [HttpPost("/product")]
     [CustomAuthorization]
     [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
@@ -37,9 +37,9 @@ namespace UserAPI.Controllers.MongoControllers
         string token = HttpContext.Request.Headers["token"];
         List<Claim> claims = authService.GetTokenClaims(token).ToList();
         string username = claims.Find(x => x.Type == ClaimTypes.Name).Value;
-        Result data = await ServiceSelector.userService.GetUserByUserNameAsync(username, new string[] { "username" });
+        Result data = await ServiceSelector.Mongo.user.GetUserByUserName(username, new string[] { "username" });
         User user = (User)data.data;
-        Result result = await ServiceSelector.productService.InsertOneProductAsync(entity, user.id);
+        Result result = await ServiceSelector.Mongo.product.AddNewProduct(entity, user.id);
         if (result.status == 200) return Ok(Responder.Success(result.data));
         else return StatusCode(result.status, Responder.Fail(result.data));
       }
@@ -54,10 +54,10 @@ namespace UserAPI.Controllers.MongoControllers
     /// </summary>
     /// <remarks>Get product by id</remarks>
     /// <param name="productId">The product id</param>
-    /// <param name="fields">the specified fields you want to get</param>
+    /// <param name="fields">The specified fields you want to get</param>
     /// <returns></returns>
-    /// <response code="200">return information of product with specified fields</response>
-    /// <response code="400">if get mistake</response>
+    /// <response code="200">Return information of product respective with specified fields</response>
+    /// <response code="400">Return error when it occur</response>
     [HttpGet("/product/{productId}")]
     [CustomAuthorization]
     [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
@@ -67,11 +67,11 @@ namespace UserAPI.Controllers.MongoControllers
       try
       {
         Result result;
-        if (fields == null) result = await ServiceSelector.productService.GetProductByIdAsync(productId);
+        if (fields == null) result = await ServiceSelector.Mongo.product.GetProductById(productId);
         else
         {
           string[] fieldList = Utilities.SplitFields(fields);
-          result = await ServiceSelector.productService.GetProductByIdAsync(productId, fieldList);
+          result = await ServiceSelector.Mongo.product.GetProductById(productId, fieldList);
         }
         if (result.status == 200) return Ok(Responder.Success(result.data));
         return StatusCode(result.status, Responder.Fail(result.data));

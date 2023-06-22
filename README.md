@@ -7,7 +7,13 @@
 - To create and start mysql database with docker, run following command:
 
 ```shell
-docker-compose -f docker-db/docker-compose-mysql.yaml up -d
+make mysql
+```
+
+- To create and start mongodb with docker, run below command:
+
+```shell
+make mongo
 ```
 
 ### Run

@@ -17,9 +17,9 @@ namespace UserAPI.Services.MongoService
       service = new ProductDataService(collection);
     }
 
-    public Result InsertOneProduct(InsertProduct insertProduct, string userId)
+    public async Task<Result> AddNewProduct(InsertProduct insertedProduct, string userId)
     {
-      bool result = service.InsertOneProduct(insertProduct, userId);
+      bool result = await service.InsertOneProduct(insertedProduct, userId);
       if (result) return new Result
       {
         status = Status.Created,
@@ -32,43 +32,11 @@ namespace UserAPI.Services.MongoService
       };
     }
 
-    public async Task<Result> InsertOneProductAsync(InsertProduct insertProduct, string userId)
-    {
-      bool result = await service.InsertOneProductAsync(insertProduct, userId);
-      if (result) return new Result
-      {
-        status = Status.Created,
-        data = Messages.OK
-      };
-      return new Result
-      {
-        status = Status.BadRequest,
-        data = Messages.BadRequest
-      };
-    }
-
-    public Result GetProductById(string productId, string[] fields = null)
+    public async Task<Result> GetProductById(string productId, string[] fields = null)
     {
       FilterDefinitionBuilder<BsonDocument> builder = Builders<BsonDocument>.Filter;
       FilterDefinition<BsonDocument> filter = builder.Eq("_id", ObjectId.Parse(productId));
-      Product product = service.GetSingleProduct(filter, fields);
-      if (product == null) return new Result
-      {
-        status = Status.BadRequest,
-        data = Messages.NotExistedUser
-      };
-      return new Result
-      {
-        status = Status.OK,
-        data = product
-      };
-    }
-
-    public async Task<Result> GetProductByIdAsync(string productId, string[] fields = null)
-    {
-      FilterDefinitionBuilder<BsonDocument> builder = Builders<BsonDocument>.Filter;
-      FilterDefinition<BsonDocument> filter = builder.Eq("_id", ObjectId.Parse(productId));
-      Product product = await service.GetSingleProductAsync(filter, fields);
+      Product product = await service.GetSingleProduct(filter, fields);
       if (product == null) return new Result
       {
         status = Status.BadRequest,

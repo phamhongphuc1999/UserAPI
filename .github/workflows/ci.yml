@@ -1,0 +1,34 @@
+name: CI User api
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - "!**.md"
+      - "!**.sh"
+      - "!.gitignore"
+      - "UserAPI/**"
+  pull_request:
+    branches:
+      - main
+      - develop
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: ["6.0.x"]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      - name: Install dependencies
+        run: dotnet restore
+        working-directory: UserAPI
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+        working-directory: UserAPI

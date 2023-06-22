@@ -46,7 +46,7 @@ namespace UserAPI.Controllers.MongoControllers
         Request.Headers.TryGetValue("token", out token);
         string _token = token.FirstOrDefault();
         if (Utilities.IsValidToken(_token)) return Ok(Responder.Success("Already login"));
-        Result result = await ServiceSelector.userService.LoginAsync(info.username, info.password);
+        Result result = await ServiceSelector.Mongo.user.Login(info.username, info.password);
         if (result.status != 200) return StatusCode(result.status, Responder.Fail(result.data));
         node1:
         HelperTokenUser user = (HelperTokenUser)result.data;
@@ -67,10 +67,10 @@ namespace UserAPI.Controllers.MongoControllers
     }
 
 #pragma warning disable CS1998
-    /// <summary>logout</summary>
-    /// <remarks>logout</remarks>
+    /// <summary>Logout</summary>
+    /// <remarks>Logout</remarks>
     /// <returns></returns>
-    /// <response code="200">reset access token</response>
+    /// <response code="200">Reset access token</response>
     [HttpPost("/logout")]
     [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
     public async Task<object> Logout()
@@ -89,12 +89,12 @@ namespace UserAPI.Controllers.MongoControllers
       }
     }
 
-    /// <summary>create new user</summary>
-    /// <remarks>create new user</remarks>
-    /// <param name="newUser">the information of new user you want to add in your database</param>
+    /// <summary>Create new user</summary>
+    /// <remarks>Create new user</remarks>
+    /// <param name="newUser">The information of new user you want to add in your database</param>
     /// <returns></returns>
-    /// <response code="200">return information of new user</response>
-    /// <response code="400">if get mistake</response>
+    /// <response code="200">Return information of new user</response>
+    /// <response code="400">Return error when it occur</response>
     [HttpPost("/register")]
     [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
     [ProducesResponseType(400, Type = typeof(ResponseFailType))]
@@ -102,7 +102,7 @@ namespace UserAPI.Controllers.MongoControllers
     {
       try
       {
-        Result result = await ServiceSelector.userService.RegisterAsync(newUser);
+        Result result = await ServiceSelector.Mongo.user.Register(newUser);
         if (result.status == 200) return Ok(Responder.Success(result.data));
         else return StatusCode(result.status, Responder.Fail(result.data));
       }
@@ -112,13 +112,13 @@ namespace UserAPI.Controllers.MongoControllers
       }
     }
 
-    /// <summary>get user by id</summary>
-    /// <remarks>get user by id</remarks>
-    /// <param name="userId">the id of user you want to get</param>
-    /// <param name="fields">the specified fields you want to get</param>
+    /// <summary>Get user by id</summary>
+    /// <remarks>Get user by id</remarks>
+    /// <param name="userId">The id of user you want to get</param>
+    /// <param name="fields">The specified fields you want to get</param>
     /// <returns></returns>
-    /// <response code="200">return information of user with specified fields</response>
-    /// <response code="400">if get mistake</response>
+    /// <response code="200">Return information of user with specified fields</response>
+    /// <response code="400">Return error when it occur</response>
     [HttpGet("/users/{userId}")]
     [CustomAuthorization]
     [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
@@ -131,9 +131,9 @@ namespace UserAPI.Controllers.MongoControllers
         if (fields != null)
         {
           string[] fieldList = Utilities.SplitFields(fields);
-          result = await ServiceSelector.userService.GetUserByIdAsync(userId, fieldList);
+          result = await ServiceSelector.Mongo.user.GetUserById(userId, fieldList);
         }
-        else result = await ServiceSelector.userService.GetUserByIdAsync(userId);
+        else result = await ServiceSelector.Mongo.user.GetUserById(userId);
         if (result.status == 200) return Ok(Responder.Success(result.data));
         return StatusCode(result.status, Responder.Fail(result.data));
       }
@@ -147,7 +147,7 @@ namespace UserAPI.Controllers.MongoControllers
     /// <remarks>Get current user information</remarks>
     /// <returns>The current user information</returns>
     /// <response code="200">The current user information</response>
-    /// <response code="400">Bad request</response>
+    /// <response code="400">Return error when it occur</response>
     [HttpGet("/users/current-user")]
     [CustomAuthorization]
     [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
@@ -159,7 +159,7 @@ namespace UserAPI.Controllers.MongoControllers
         string token = HttpContext.Request.Headers["token"];
         List<Claim> claims = authService.GetTokenClaims(token).ToList();
         string username = claims.Find(x => x.Type == ClaimTypes.Name).Value;
-        Result result = await ServiceSelector.userService.GetUserByUserNameAsync(username, new string[] { "username" });
+        Result result = await ServiceSelector.Mongo.user.GetUserByUserName(username, new string[] { "username" });
         if (result.status == 200) return Ok(Responder.Success(result.data));
         else return StatusCode(result.status, Responder.Fail(result.data));
       }
@@ -169,14 +169,14 @@ namespace UserAPI.Controllers.MongoControllers
       }
     }
 
-    /// <summary>get list users</summary>
-    /// <remarks>get list users</remarks>
-    /// <param name="pageIndex">the page index you want to get</param>
-    /// <param name="pageSize">the user per page you want to set</param>
-    /// <param name="fields">the specified fields you want to get</param>
+    /// <summary>Get list users</summary>
+    /// <remarks>Get list users</remarks>
+    /// <param name="pageIndex">The page index you want to get</param>
+    /// <param name="pageSize">The user per page you want to set</param>
+    /// <param name="fields">The specified fields you want to get</param>
     /// <returns></returns>
-    /// <response code="200">return information of list user with pagination</response>
-    /// <response code="400">if get mistake</response>
+    /// <response code="200">Return information of list user with pagination</response>
+    /// <response code="400">Return error when it occur</response>
     [HttpGet("/users")]
     [CustomAuthorization]
     [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
@@ -189,9 +189,9 @@ namespace UserAPI.Controllers.MongoControllers
         if (fields != null)
         {
           string[] fieldList = Utilities.SplitFields(fields);
-          result = await ServiceSelector.userService.GetListUserAsync(pageSize, pageIndex, fieldList);
+          result = await ServiceSelector.Mongo.user.GetListUser(pageSize, pageIndex, fieldList);
         }
-        else result = await ServiceSelector.userService.GetListUserAsync(pageSize, pageIndex);
+        else result = await ServiceSelector.Mongo.user.GetListUser(pageSize, pageIndex);
         if (result.status == 200) return Ok(Responder.Success(result.data));
         else return StatusCode(result.status, Responder.Fail(result.data));
       }
@@ -201,14 +201,14 @@ namespace UserAPI.Controllers.MongoControllers
       }
     }
 
-    /// <summary>update user</summary>
-    /// <remarks>update user</remarks>
+    /// <summary>Update user</summary>
+    /// <remarks>Update user</remarks>
     /// <returns></returns>
-    /// <param name="updateUser">the info used to update</param>
-    /// <param name="oldPassword">the confirm password to update</param>
-    /// <param name="oldUsername">the confirm username to update</param>
-    /// <response code="200">return information of user you updated</response>
-    /// <response code="400">if get mistake</response>
+    /// <param name="updateUser">The info used to update</param>
+    /// <param name="oldPassword">The confirm password to update</param>
+    /// <param name="oldUsername">The confirm username to update</param>
+    /// <response code="200">Return information of user you updated</response>
+    /// <response code="400">Return error when it occur</response>
     [HttpPut("/users")]
     [CustomAuthorization]
     [ProducesResponseType(200, Type = typeof(ResponseSuccessType))]
@@ -223,7 +223,7 @@ namespace UserAPI.Controllers.MongoControllers
         string username = claims.Find(x => x.Type == ClaimTypes.Name).Value;
         string password = claims.Find(x => x.Type == "Password").Value;
         if (oldUsername != username || oldPassword != password) return StatusCode(401, Responder.Fail("wrong username or password"));
-        Result result = await ServiceSelector.userService.UpdateUserAsync(username, updateUser);
+        Result result = await ServiceSelector.Mongo.user.UpdateUser(username, updateUser);
         if (result.status == 200) return Ok(Responder.Success(result.data));
         else return StatusCode(result.status, Responder.Fail(result.data));
       }
@@ -233,11 +233,11 @@ namespace UserAPI.Controllers.MongoControllers
       }
     }
 
-    /// <summary>delete user</summary>
-    /// <remarks>delete user</remarks>
+    /// <summary>Delete user</summary>
+    /// <remarks>Delete user</remarks>
     /// <returns></returns>
-    /// <response code="200">return information of user you deleted</response>
-    /// <response code="400">if get mistake</response>
+    /// <response code="200">Return information of user you deleted</response>
+    /// <response code="400">Return error when it occur</response>
     /// <response code="401">You not allow to action</response>
     [HttpDelete("/users")]
     [CustomAuthorization]
@@ -251,7 +251,7 @@ namespace UserAPI.Controllers.MongoControllers
         string token = HttpContext.Request.Headers["token"];
         List<Claim> claims = authService.GetTokenClaims(token).ToList();
         string username = claims.Find(x => x.Type == ClaimTypes.Name).Value;
-        Result result = await ServiceSelector.userService.DeleteUserAsync(username);
+        Result result = await ServiceSelector.Mongo.user.DeleteUser(username);
         if (result.status == 200) return Ok(Responder.Success(result.data));
         else return StatusCode(result.status, Responder.Fail(result.data));
       }

@@ -12,6 +12,20 @@ namespace UserAPI.Controllers.SqlControllers
 {
   public class ProductionController : BaseSqlController
   {
-    public ProductionController(IOptions<JWTConfig> jwtConfig) : base(jwtConfig) { }
+    public ProductionController(IOptions<JWTConfig> jwtConfig) : base(jwtConfig)
+    {
+    }
+
+    // public object GetProductionById(string productId)
+    // {
+    //   try
+    //   {
+    //     Result result = ServiceSelector.productService.
+    //   }
+    //   catch (Exception error)
+    //   {
+    //     return BadRequest(Responder.Fail(error));
+    //   }
+    // }
   }
 }

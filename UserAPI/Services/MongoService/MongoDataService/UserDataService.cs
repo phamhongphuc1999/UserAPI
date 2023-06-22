@@ -13,33 +13,7 @@ namespace UserAPI.Services.MongoService.MongoDataService
   {
     public UserDataService(string collection) : base(collection) { }
 
-    public bool InsertUser(NewUserInfo entity)
-    {
-      try
-      {
-        FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("username", entity.username);
-        BsonDocument user = mCollection.Find(filter).First();
-        if (user != null) return false;
-        BsonDocument newUser = new BsonDocument
-                {
-                    { "username", entity.username},
-                    { "password", Utilities.CalculateSHA256Hash(entity.password) },
-                    { "email", entity.email },
-                    { "createAt", DateTime.Now },
-                    { "updateAt", DateTime.Now },
-                    { "lastLogin", DateTime.Now },
-                    { "status", true }
-                };
-        mCollection.InsertOne(newUser);
-        return true;
-      }
-      catch
-      {
-        return false;
-      }
-    }
-
-    public async Task<bool> InsertUserAsync(NewUserInfo entity)
+    public async Task<bool> InsertUser(NewUserInfo entity)
     {
       try
       {
@@ -65,21 +39,7 @@ namespace UserAPI.Services.MongoService.MongoDataService
       }
     }
 
-    public User GetSingleUser(FilterDefinition<BsonDocument> filter, string[] fields = null)
-    {
-      BsonDocument user;
-      if (fields == null) user = mCollection.Find(filter).FirstOrDefault();
-      else
-      {
-        Dictionary<string, object> dic = new Dictionary<string, object>();
-        foreach (string field in fields) dic.Add(field, 1);
-        ProjectionDefinition<BsonDocument> projection = new BsonDocument(dic);
-        user = mCollection.Find(filter).Project(projection).FirstOrDefault();
-      }
-      return BsonSerializer.Deserialize<User>(user);
-    }
-
-    public async Task<User> GetSingleUserAsync(FilterDefinition<BsonDocument> filter, string[] fields = null)
+    public async Task<User> GetSingleUser(FilterDefinition<BsonDocument> filter, string[] fields = null)
     {
       BsonDocument user;
       if (fields == null) user = await mCollection.Find(filter).FirstOrDefaultAsync();
@@ -93,26 +53,7 @@ namespace UserAPI.Services.MongoService.MongoDataService
       return BsonSerializer.Deserialize<User>(user);
     }
 
-    public List<User> GetListUsers(FilterDefinition<BsonDocument> filter, string[] fields = null)
-    {
-      IEnumerable<BsonDocument> userList;
-      if (fields == null) userList = mCollection.Find(filter).ToEnumerable();
-      else
-      {
-        Dictionary<string, object> dic = new Dictionary<string, object>();
-        foreach (string field in fields) dic.Add(field, 1);
-        ProjectionDefinition<BsonDocument> projection = new BsonDocument(dic);
-        userList = mCollection.Find(filter).Project(projection).ToEnumerable();
-      }
-      return userList.Select(x => BsonSerializer.Deserialize<User>(x)).ToList();
-    }
-
-    public List<User> GetListUsers(string[] fields = null)
-    {
-      return GetListUsers(new BsonDocument(), fields);
-    }
-
-    public async Task<List<User>> GetListUsersAsync(FilterDefinition<BsonDocument> filter, string[] fields = null)
+    public async Task<List<User>> GetListUsers(FilterDefinition<BsonDocument> filter, string[] fields = null)
     {
       List<BsonDocument> userList = new List<BsonDocument>();
       if (fields == null) userList = await mCollection.Find(filter).ToListAsync();
@@ -126,39 +67,12 @@ namespace UserAPI.Services.MongoService.MongoDataService
       return userList.Select(x => BsonSerializer.Deserialize<User>(x)).ToList();
     }
 
-    public async Task<List<User>> GetListUsersAsync(string[] fields = null)
+    public async Task<List<User>> GetListUsers(string[] fields = null)
     {
-      return await GetListUsersAsync(new BsonDocument(), fields);
+      return await GetListUsers(new BsonDocument(), fields);
     }
 
-    public bool UpdateUser(FilterDefinition<BsonDocument> filter, UpdateUserInfo updateUser)
-    {
-      try
-      {
-        UpdateDefinition<BsonDocument> update = Builders<BsonDocument>.Update.Set("updateAt", BsonDateTime.Create(DateTime.Now));
-        if (updateUser.username != null)
-        {
-          FilterDefinition<BsonDocument> nameFilter = Builders<BsonDocument>.Filter.Eq("username", updateUser.username);
-          BsonDocument checkUser = mCollection.Find(nameFilter).First();
-          if (checkUser != null) return false;
-          update = update.Set("username", updateUser.username);
-        }
-        if (updateUser.password != null)
-        {
-          string newPassword = Utilities.CalculateSHA256Hash(updateUser.password);
-          update = update.Set("password", newPassword);
-        }
-        if (updateUser.email != null) update = update.Set("email", updateUser.email);
-        UpdateResult result = mCollection.UpdateOne(filter, update);
-        return result.ModifiedCount > 0;
-      }
-      catch
-      {
-        return false;
-      }
-    }
-
-    public async Task<bool> UpdateUserAsync(FilterDefinition<BsonDocument> filter, UpdateUserInfo updateUser)
+    public async Task<bool> UpdateUser(FilterDefinition<BsonDocument> filter, UpdateUserInfo updateUser)
     {
       try
       {
@@ -185,21 +99,7 @@ namespace UserAPI.Services.MongoService.MongoDataService
       }
     }
 
-    public bool DeleteUser(string userId)
-    {
-      try
-      {
-        FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("_id", userId);
-        DeleteResult result = mCollection.DeleteOne(filter);
-        return result.DeletedCount > 0;
-      }
-      catch
-      {
-        return false;
-      }
-    }
-
-    public async Task<bool> DeleteUserAsync(string userId)
+    public async Task<bool> DeleteUser(string userId)
     {
       try
       {

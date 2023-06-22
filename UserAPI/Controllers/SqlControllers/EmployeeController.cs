@@ -34,7 +34,7 @@ namespace UserAPI.Controllers.SqlControllers
         Request.Headers.TryGetValue("token", out token);
         string _token = token.FirstOrDefault();
         if (Utilities.IsValidToken(_token)) return Ok(Responder.Success("Already login"));
-        Result result = ServiceSelector.employeeService.Login(user.Username, user.Password);
+        Result result = ServiceSelector.Sql.employee.Login(user.Username, user.Password);
         if (result.status != 200) return StatusCode(result.status, Responder.Fail(result.data));
         node1:
         Models.MongoModel.HelperTokenUser _user = (Models.MongoModel.HelperTokenUser)result.data;
@@ -70,7 +70,7 @@ namespace UserAPI.Controllers.SqlControllers
         string token = HttpContext.Request.Headers["token"];
         List<Claim> claims = authService.GetTokenClaims(token).ToList();
         string username = claims.Find(x => x.Type == ClaimTypes.Name).Value;
-        Result result = ServiceSelector.employeeService.GetEmployeeByUsername(username);
+        Result result = ServiceSelector.Sql.employee.GetEmployeeByUsername(username);
         if (result.status == 200) return Ok(Responder.Success(result.data));
         else return StatusCode(result.status, Responder.Fail(result.data));
       }
